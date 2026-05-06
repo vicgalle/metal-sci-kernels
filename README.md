@@ -40,11 +40,6 @@ compute-bound, multi-field/exotic-memory).
   iteration sees the previous attempt, the incumbent best, and a short
   history. Persists prompts, responses, sources, and JSON results.
 
-## Install
-
-```sh
-pip install -r requirements.txt
-```
 
 ## Quickstart
 
