@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:15:35: warning: unknown attribute 'threadgroup_size_in_threadgroup' ignored [-Wunknown-attributes]\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:15:24: error: invalid type 'uint' (aka 'unsigned int') for input declaration in a kernel function\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                       ^~~~~~~~\n\" UserInfo={NSLocalizedDescription=program_source:15:35: warning: unknown attribute 'threadgroup_size_in_threadgroup' ignored [-Wunknown-attributes]\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:15:24: error: invalid type 'uint' (aka 'unsigned int') for input declaration in a kernel function\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                       ^~~~~~~~\n}",
+  "sizes": []
+}
