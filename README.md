@@ -43,20 +43,20 @@ pip install -r requirements.txt
 Verify the seed kernels compile, pass correctness, and time:
 
 ```sh
-python3 run_benchmark.py --task saxpy  --evaluate-seed-only
-python3 run_benchmark.py --task heat2d --evaluate-seed-only
-python3 run_benchmark.py --task nbody  --evaluate-seed-only
-python3 run_benchmark.py --task lbm    --evaluate-seed-only
+uv run run_benchmark.py --task saxpy  --evaluate-seed-only
+uv run run_benchmark.py --task heat2d --evaluate-seed-only
+uv run run_benchmark.py --task nbody  --evaluate-seed-only
+uv run run_benchmark.py --task lbm    --evaluate-seed-only
 ```
 
 Run an evolution loop with Claude or Gemini:
 
 ```sh
 # Gemini (requires GEMINI_API_KEY or GOOGLE_API_KEY)
-python3 run_benchmark.py --task nbody --model gemini-2.5-flash --iterations 5
+uv run run_benchmark.py --task nbody --model gemini-2.5-flash --iterations 5
 
 # Claude via the Agent SDK
-python3 run_benchmark.py --task heat2d --model claude-sonnet-4-6 --iterations 3
+uv run run_benchmark.py --task heat2d --model claude-sonnet-4-6 --iterations 3
 ```
 
 Per run, an output directory is created under `results/` containing:
