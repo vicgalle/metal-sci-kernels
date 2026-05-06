@@ -4,7 +4,8 @@ Benchmark for LLM-generated Metal compute kernels on Apple Silicon. See
 `PLAN.md` for the design rationale and the full eight-task roadmap.
 
 This repo is a phase-1 cut: full evaluation harness end-to-end, with
-three starter tasks across two optimization regimes.
+four starter tasks across three optimization regimes (regular stencils,
+compute-bound, multi-field/exotic-memory).
 
 ## What's here
 
@@ -19,10 +20,11 @@ three starter tasks across two optimization regimes.
   generation, dispatch, CPU reference, tolerance, and roofline math.
   Score = geometric mean of `achieved / ceiling` across sizes; any
   correctness failure forces score = 0.
-- **Three tasks**:
+- **Four tasks**:
   - `saxpy` — BW-bound smoke task (12 B/elem)
   - `heat2d` — 5-point stencil, ping-pong over multiple steps
   - `nbody` — all-pairs gravity with leapfrog (compute-bound)
+  - `lbm` — D2Q9 lattice Boltzmann, fused pull-stream + BGK (multi-field, periodic BCs)
 - **LLM bridge** (`metal_kernels/llm.py`): single `call_llm` entry that
   dispatches to Claude (via `claude_agent_sdk`) or Gemini (via
   `google-genai`) based on model name.
@@ -44,6 +46,7 @@ Verify the seed kernels compile, pass correctness, and time:
 python3 run_benchmark.py --task saxpy  --evaluate-seed-only
 python3 run_benchmark.py --task heat2d --evaluate-seed-only
 python3 run_benchmark.py --task nbody  --evaluate-seed-only
+python3 run_benchmark.py --task lbm    --evaluate-seed-only
 ```
 
 Run an evolution loop with Claude or Gemini:
@@ -138,30 +141,30 @@ is the obvious next lever; neither model has tried it.
 
 ## Example runs (lbm, M1 Pro)
 
-One 25-iteration run on `lbm` (D2Q9, fused pull-stream + BGK collision,
+Two 25-iteration runs on `lbm` (D2Q9, fused pull-stream + BGK collision,
 periodic BCs). The seed is BW-bound and already hits peak DRAM at the
-largest size, so the headroom lives in the mid-size 128² regime.
+largest size, so the headroom lives in the small/mid-size regimes.
 
-| Model | Seed score | Best score | Speedup | Best at 128²×100 | Iter that won | Wall time |
-|---|---|---|---|---|---|---|
-| `claude-opus-4-6` | 0.392 | 0.545 | **1.39×** | 119 GB/s (60% peak) | 7 (after iters 5-6 climb) | ~14 min |
+| Model | Seed | Best | Speedup | 64² peak | 128² peak | 256² peak | Compile fails |
+|---|---|---|---|---|---|---|---|
+| `claude-opus-4-6` | 0.392 | 0.545 | **1.39×** | 0.29 (1× iter) | 0.63 | 1.35 | 6 / 25 |
+| `claude-opus-4-7` | 0.395 | 0.576 | **1.46×** | 0.34 (3× iters) | 0.62 | 1.30 | 0 / 25 |
 
-The win is algebraic, not architectural. **Iters 5-6-7** discovered that
-the BGK equilibrium has pairwise symmetry along each velocity axis — for
-opposite directions `k=1,3` (`±x`), `k=2,4` (`±y`), `k=5,7` (`±(x+y)`),
-`k=6,8` (`±(y−x)`), the `f_eq` formulas share `w_k·ρ·(1 + 4.5·(c·u)² −
-1.5·|u|²)` and differ only by the sign of `3·(c·u)`. Folding that into
-two FMAs per opposite pair, with `(1 − 1/τ)` and `(1/τ)` precomputed
-once, took 128²×100 from 35% → 60% of peak DRAM. The 256² case sits
-above 100% on every iteration (working set is SLC-resident, so the 8
-B/cell roofline understates the achievable rate).
+Both models found the same algebraic win on 128². The BGK equilibrium
+has pairwise symmetry along each velocity axis — for opposite directions
+`k=1,3` (`±x`), `k=2,4` (`±y`), `k=5,7` (`±(x+y)`), `k=6,8` (`±(y−x)`),
+the `f_eq` formulas share `w_k·ρ·(1 + 4.5·(c·u)² − 1.5·|u|²)` and differ
+only by the sign of `3·(c·u)`. Folding that into two FMAs per opposite
+pair, with `(1 − 1/τ)` and `(1/τ)` precomputed once, took 128²×100 from
+35% → 60% of peak DRAM. The 256² case sits above 100% of nominal peak
+on every iteration (working set is SLC-resident, so the 8 B/cell
+roofline understates the achievable rate).
 
-Notable from iter 7 (`results/lbm_claude-opus-4-6_20260506_110442/07_candidate.metal`):
+Notable from 4-6 iter 7 (`results/lbm_claude-opus-4-6_20260506_110442/07_candidate.metal`):
 
 ```metal
 const float omtau   = 1.0f - inv_tau;          // f_out = omtau·f_in + (1/τ)·f_eq
 const float base    = 1.0f - 1.5f * (ux*ux + uy*uy);
-const float rw49    = (4.0f / 9.0f)  * rho;
 const float rw19    = (1.0f / 9.0f)  * rho;
 const float rw136   = (1.0f / 36.0f) * rho;
 
@@ -182,19 +185,47 @@ const float rw136   = (1.0f / 36.0f) * rho;
 }
 ```
 
-Two patterns worth flagging. (1) Iter 7's apparent 1.8× spike on
-64²×50 (0.287 vs 0.157 elsewhere) is timing noise — the source diff
-against iter 6 is purely cosmetic, no other correct candidate ever
-hit that number, and the workload is 0.5 ms total. The robust 128²
-gain is the actual progress. (2) Six of the 25 iterations (4, 9, 15,
-17, 19, 21) failed to compile with **the exact same error** every
-time: `[[max_total_threads_per_threadgroup(N)]]` placed before
-the kernel declaration as a standalone statement instead of as a
-function attribute on the `kernel void ...` line. Each prose
-preamble proposed threadgroup-memory cooperative tiling — the
-textbook structural lever for this kernel — but the model could not
-get past the attribute syntax across six attempts and eventually
-fell back to incremental edits of the iter-7 family.
+The model differences are meaningful and concentrated on the small
+grid. **4-7 cracked 64²×50** with a structural lever 4-6 missed:
+attaching `[[max_total_threads_per_threadgroup(N)]]` to the kernel
+declaration to pin a small group geometry (8×8, 16×16, 32×2 in iters
+3/21/23 respectively). All three iters held 64² ≥ 0.28 — a real,
+repeatable 2× speedup on that size, not measurement variance. **4-6's
+single 64² spike at iter 7 was noise**: the source diff against iter
+6 is purely cosmetic, no other correct 4-6 candidate hit that number,
+and the workload is 0.5 ms total.
+
+The compile-failure pattern explains why 4-6 missed the lever. Six of
+its 25 iterations (4, 9, 15, 17, 19, 21) crashed with **the exact same
+error** every time — `[[max_total_threads_per_threadgroup(N)]]` placed
+before the kernel declaration as a standalone statement instead of as
+a function attribute on the `kernel void ...` line. Every preamble
+proposed threadgroup-memory cooperative tiling, but the model could
+not get past the attribute syntax across six attempts. **4-7 placed
+the attribute correctly on its first try at iter 3**, kept it across
+the rest of the run, and had zero compile failures.
+
+Notable from 4-7 iter 23 (`results/lbm_claude-opus-4-7_20260506_112341/23_candidate.metal`),
+the eventual best:
+
+```metal
+// 32x2 = 64 threads/tg, matching SIMD width along x for clean
+// 128-byte coalesced loads per simdgroup
+[[max_total_threads_per_threadgroup(64)]]
+kernel void lbm_step(device const float *f_in   [[buffer(0)]],
+                     device       float *f_out  [[buffer(1)]],
+                     constant uint        &NX   [[buffer(2)]],
+                     constant uint        &NY   [[buffer(3)]],
+                     constant float       &tau  [[buffer(4)]],
+                     uint2 gid [[thread_position_in_grid]]) { ... }
+```
+
+Convergence shape also differed. 4-6 climbed early (peak at iter 7,
+then 18 iterations of cosmetic permutations). 4-7 hit a strong iter 1
+(0.49) and iter 3 (0.54), then 17 iterations of regressions in the
+−27% to −44% band, then re-broke through at iter 23 (0.58). Same
+budget, similar wall time, different exploration shapes — but only
+4-7's late breakthrough actually beat its own iter 3.
 
 ## Adding a new task
 
