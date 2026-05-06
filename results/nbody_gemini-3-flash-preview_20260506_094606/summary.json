@@ -1,0 +1,77 @@
+{
+  "task": "nbody",
+  "model": "gemini-3-flash-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 5,
+  "seed_score": 0.020228761441132028,
+  "best_score": 0.060466732796491146,
+  "improvement": 2.989146566014738,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.020228761441132028,
+      "fail_reason": null,
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/00_seed.metal",
+      "elapsed_s": 1.5758962631225586,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.022442939800843845,
+      "fail_reason": null,
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/01_candidate.metal",
+      "elapsed_s": 106.7619116306305,
+      "is_new_best": true
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:15:35: warning: unknown attribute 'threadgroup_size_in_threadgroup' ignored [-Wunknown-attributes]\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:15:24: error: invalid type 'uint' (aka 'unsigned int') for input declaration in a kernel function\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                       ^~~~~~~~\n\" UserInfo={NSLocalizedDescription=program_source:15:35: warning: unknown attribute 'threadgroup_size_in_threadgroup' ignored [-Wunknown-attributes]\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:15:24: error: invalid type 'uint' (aka 'unsigned int') for input declaration in a kernel function\n                       uint tgs [[threadgroup_size_in_threadgroup]]) {\n                       ^~~~~~~~\n}",
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/02_candidate.metal",
+      "elapsed_s": 81.04068183898926,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements\nkernel void nbody_step(device const float4 *pos_in  [[buffer(0)]],\n            ^\nprogram_source:13:29: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here\n                       uint i [[thread_position_in_grid]],\n                       ~~~~~^\nprogram_source:15:30: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here\n                       uint3 tgs [[threads_per_threadgroup]]) {\n                       ~~~~~~^~~\n\" UserInfo={NSLocalizedDescription=program_source:4:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements\nkernel void nbody_step(device const float4 *pos_in  [[buffer(0)]],\n            ^\nprogram_source:13:29: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here\n                       uint i [[thread_position_in_grid]],\n                       ~~~~~^\nprogram_source:15:30: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here\n                       uint3 tgs [[threads_per_threadgroup]]) {\n                       ~~~~~~^~~\n}",
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/03_candidate.metal",
+      "elapsed_s": 62.96991491317749,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.042641989903706906,
+      "fail_reason": null,
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/04_candidate.metal",
+      "elapsed_s": 67.41287302970886,
+      "is_new_best": true
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.060466732796491146,
+      "fail_reason": null,
+      "source_path": "results/nbody_gemini-3-flash-preview_20260506_094606/05_candidate.metal",
+      "elapsed_s": 78.92671036720276,
+      "is_new_best": true
+    }
+  ]
+}
