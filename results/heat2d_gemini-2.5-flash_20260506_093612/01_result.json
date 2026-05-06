@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:25:25: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                      [[max_total_threads_per_threadgroup(THREADGROUP_TILE_DIM_X * THREADGROUP_TILE_DIM_Y)]]\n                        ^\nprogram_source:79:36: error: no member named 'threadgroup_mem_fence' in 'metal::mem_flags'\n    threadgroup_barrier(mem_flags::threadgroup_mem_fence);\n                        ~~~~~~~~~~~^\n\" UserInfo={NSLocalizedDescription=program_source:25:25: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                      [[max_total_threads_per_threadgroup(THREADGROUP_TILE_DIM_X * THREADGROUP_TILE_DIM_Y)]]\n                        ^\nprogram_source:79:36: error: no member named 'threadgroup_mem_fence' in 'metal::mem_flags'\n    threadgroup_barrier(mem_flags::threadgroup_mem_fence);\n                        ~~~~~~~~~~~^\n}",
+  "sizes": []
+}
