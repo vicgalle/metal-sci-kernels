@@ -1,0 +1,24 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.02359713728340117,
+    "fail_reason": null,
+    "source_path": "results/nbody_claude-haiku-4-5-20251001_20260506_093704/00_seed.metal",
+    "elapsed_s": 1.5631208419799805,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.012179238422603862,
+    "fail_reason": null,
+    "source_path": "results/nbody_claude-haiku-4-5-20251001_20260506_093704/01_candidate.metal",
+    "elapsed_s": 20.31247568130493,
+    "is_new_best": false
+  }
+]
