@@ -1,0 +1,132 @@
+{
+  "task": "hmc",
+  "model": "claude-opus-4-7",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.008820980244713755,
+  "best_score": 0.09316451457762556,
+  "improvement": 10.561696318666769,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.008820980244713755,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/00_seed.metal",
+      "elapsed_s": 6.574841022491455,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.008896577055895305,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/01_candidate.metal",
+      "elapsed_s": 31.086840867996216,
+      "is_new_best": true
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.018287045685874234,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/02_candidate.metal",
+      "elapsed_s": 37.10007071495056,
+      "is_new_best": true
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.0034231485888168525,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/03_candidate.metal",
+      "elapsed_s": 47.21832895278931,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.017603216634095798,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/04_candidate.metal",
+      "elapsed_s": 40.58398389816284,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.027114045324608524,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/05_candidate.metal",
+      "elapsed_s": 41.027276277542114,
+      "is_new_best": true
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.09316451457762556,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/06_candidate.metal",
+      "elapsed_s": 32.245699882507324,
+      "is_new_best": true
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": false,
+      "score": null,
+      "fail_reason": "correctness failed at size d32_K1024: max(mean/tol, cov_fro/tol, accept_excess)=1.270e+00",
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/07_candidate.metal",
+      "elapsed_s": 59.326427698135376,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.09093050813467153,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/08_candidate.metal",
+      "elapsed_s": 35.936492919921875,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.0703651146705733,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/09_candidate.metal",
+      "elapsed_s": 41.91948890686035,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.06793935369504926,
+      "fail_reason": null,
+      "source_path": "results/hmc_claude-opus-4-7_20260506_182733/10_candidate.metal",
+      "elapsed_s": 41.91654586791992,
+      "is_new_best": false
+    }
+  ]
+}
