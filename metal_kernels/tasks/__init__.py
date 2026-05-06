@@ -23,3 +23,7 @@ try:
     from . import lj      # noqa: F401
 except ImportError:
     pass
+try:
+    from . import wave3d  # noqa: F401
+except ImportError:
+    pass
