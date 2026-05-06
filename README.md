@@ -20,11 +20,14 @@ compute-bound, multi-field/exotic-memory).
   generation, dispatch, CPU reference, tolerance, and roofline math.
   Score = geometric mean of `achieved / ceiling` across sizes; any
   correctness failure forces score = 0.
-- **Four tasks**:
+- **Tasks**:
   - `saxpy` — BW-bound smoke task (12 B/elem)
   - `heat2d` — 5-point stencil, ping-pong over multiple steps
   - `nbody` — all-pairs gravity with leapfrog (compute-bound)
   - `lbm` — D2Q9 lattice Boltzmann, fused pull-stream + BGK (multi-field, periodic BCs)
+  - `gradshaf` — Grad-Shafranov fixed-boundary Picard-Jacobi: max-reduction
+    + variable-coefficient 5-point stencil with nonlinear source, two
+    kernels per outer step (first multi-kernel + reduction task in the suite)
 - **LLM bridge** (`metal_kernels/llm.py`): single `call_llm` entry that
   dispatches to Claude (via `claude_agent_sdk`) or Gemini (via
   `google-genai`) based on model name.

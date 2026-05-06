@@ -35,3 +35,7 @@ try:
     from . import hmc     # noqa: F401
 except ImportError:
     pass
+try:
+    from . import gradshaf  # noqa: F401
+except ImportError:
+    pass
