@@ -27,3 +27,11 @@ try:
     from . import wave3d  # noqa: F401
 except ImportError:
     pass
+try:
+    from . import ising   # noqa: F401
+except ImportError:
+    pass
+try:
+    from . import hmc     # noqa: F401
+except ImportError:
+    pass
