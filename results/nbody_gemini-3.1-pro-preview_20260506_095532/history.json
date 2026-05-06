@@ -1,0 +1,68 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.02036964781168574,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/00_seed.metal",
+    "elapsed_s": 1.6407430171966553,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0445744530902113,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/01_candidate.metal",
+    "elapsed_s": 236.3358986377716,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.030858532408641868,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/02_candidate.metal",
+    "elapsed_s": 147.1504819393158,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:15:66: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                       uint tsize [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(1024)]] {\n                                                                 ^\n\" UserInfo={NSLocalizedDescription=program_source:15:66: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                       uint tsize [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(1024)]] {\n                                                                 ^\n}",
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/03_candidate.metal",
+    "elapsed_s": 187.12894892692566,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.028353970220150095,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/04_candidate.metal",
+    "elapsed_s": 168.94167804718018,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.029008245055246983,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260506_095532/05_candidate.metal",
+    "elapsed_s": 196.22042965888977,
+    "is_new_best": false
+  }
+]
