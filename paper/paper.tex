@@ -15,6 +15,8 @@
 \usepackage{amssymb}
 \usepackage{microtype}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc}
 
 % Compact display math
 \setlength{\abovedisplayskip}{4pt}
@@ -60,43 +62,41 @@ compiles, runs, verifies, and scores in seconds.
 LLM code-search systems --- FunSearch~[1], AlphaEvolve~[2], and recent
 kernel-generation work~[3] --- evaluate language models as
 \emph{optimisers} of executable artefacts. The choice of artefact matters:
-KernelBench targets PyTorch ML kernels (GEMM, attention, convolution,
-elementwise) on CUDA, where canonical implementations are heavily represented
-in pretraining data and the optimisation surface is dominated by tiling and
+KernelBench targets PyTorch ML kernels (GEMM, attention, convolution) on
+CUDA, where canonical implementations are heavily represented in
+pretraining data and the optimisation surface is dominated by tiling and
 warp-level reductions.
 
 Scientific computing exposes a different surface. Stencils are
 bandwidth-bound and reward halo and temporal blocking. All-pairs
-gravitational interactions are compute-bound and reward register blocking
-plus shared-memory cooperative loads. Lattice Boltzmann methods
-ping-pong nine distribution functions per cell with non-trivial pull-stream
-indexing. Molecular dynamics with cell lists touches irregular memory through
-atomic counters. Hamiltonian Monte Carlo runs many chains in parallel where
+interactions are compute-bound and reward register blocking with
+shared-memory cooperative loads. Lattice Boltzmann ping-pongs nine
+distribution functions per cell with non-trivial pull-stream indexing.
+Cell-list molecular dynamics touches irregular memory through atomic
+counters. Hamiltonian Monte Carlo runs many chains in parallel where
 register pressure scales with the problem dimension $d$. Grad-Shafranov
-solvers chain a max-reduction with a variable-coefficient stencil over many
-Picard outer steps. Each pattern stresses a distinct dimension of the
-compiler/scheduler/memory hierarchy, and the canonical optimisations cited in
-the literature~[5,6,7,8] differ regime-to-regime.
+solvers chain a max-reduction with a variable-coefficient stencil. Each
+pattern stresses a distinct dimension of the compiler/memory hierarchy,
+and canonical optimisations~[5,6,7,8] differ regime-to-regime.
 
-We choose Apple Silicon's Metal compute pipeline as the target for three
-reasons. First, it is underrepresented in CUDA-centric training data; we observe
-that frontier models reliably mishandle Metal-specific syntax such as the
-\texttt{[[max\_total\_threads\_per\_threadgroup]]} kernel attribute --- a
-real out-of-distribution generalisation test. Second, the unified memory
-model removes the host-device copy plumbing, enabling sub-second compile-run-verify
-cycles per candidate that are essential for fast evolutionary loops.
-Third, the architecture supports rich simdgroup intrinsics
-(\texttt{simd\_max}, \texttt{simd\_broadcast}) and threadgroup-memory tiling,
-giving the LLM a non-trivial optimisation surface.
+We target Apple Silicon's Metal compute pipeline. It is underrepresented
+in CUDA-centric training data --- frontier models reliably mishandle
+Metal-specific syntax such as the
+\texttt{[[max\_total\_threads\_per\_threadgroup]]} kernel attribute, a real
+out-of-distribution generalisation test. Its unified memory model removes
+host-device copy plumbing, enabling sub-second compile-run-verify cycles
+per candidate that are essential for fast evolutionary loops. And it
+supports rich simdgroup intrinsics (\texttt{simd\_max},
+\texttt{simd\_broadcast}) and threadgroup-memory tiling, giving the LLM a
+non-trivial optimisation surface.
 
-\paragraph{Contributions.} (i) A 9-task scientific compute benchmark
-spanning five optimisation regimes, each with a CPU reference,
-roofline-anchored fitness function, and multi-size generalisation gate.
-(ii) A runtime-compiled harness (no offline \texttt{xcrun metal} toolchain)
-that exposes compile errors, correctness diagnostics, and per-size GPU
-timing back to the LLM. (iii) Preliminary evolution runs across Claude
+\paragraph{Contributions.} (i) A 9-task scientific compute benchmark over
+five optimisation regimes, each with a CPU reference, roofline-anchored
+fitness, and multi-size generalisation gate. (ii) A runtime-compiled
+harness that exposes compile errors, correctness diagnostics, and per-size
+GPU timing back to the LLM. (iii) Preliminary evolution runs across Claude
 Opus~4.7 and Gemini~3 on M1 Pro, qualitatively analysing which patterns
-each model recovers and which it misses.
+each model recovers.
 
 \section{Benchmark tasks}
 \label{sec:tasks}
@@ -116,8 +116,7 @@ interior cell:
 u^{n+1}_{i,j} \;=\; u^n_{i,j} + \alpha\!\left(u^n_{i-1,j}+u^n_{i+1,j}
    + u^n_{i,j-1}+u^n_{i,j+1} - 4\,u^n_{i,j}\right).
 \end{equation}
-Bandwidth-bound at the cache-perfect 8\,B/cell limit; tests halo handling
-and temporal blocking. Sizes: $256^2$, $512^2$, $1024^2$.
+Bandwidth-bound at 8\,B/cell; tests halo handling and temporal blocking.
 
 \paragraph{wave3d.} Three-dimensional acoustic wave equation, 7-point
 isotropic Laplacian, leapfrog in time:
@@ -126,10 +125,8 @@ u^{n+1}_{i,j,k} = 2u^n_{i,j,k} - u^{n-1}_{i,j,k}
    + \alpha\,\big(u^n_{i\pm 1,j,k}+u^n_{i,j\pm 1,k}+u^n_{i,j,k\pm 1}-6\,u^n_{i,j,k}\big),
 \end{equation}
 where each $\pm$ expands to two terms. CFL stability requires
-$\alpha=(c\Delta t/\Delta x)^2<1/3$ (we use $0.18$).
-Triple-buffered ping-pong; 12\,B/cell unique DRAM traffic. Tests register
-pressure, 2.5D blocking, and choice of marching axis. Sizes: $64^3$,
-$160^3$, $192^3$.
+$\alpha=(c\Delta t/\Delta x)^2<1/3$ (we use $0.18$). 12\,B/cell unique
+DRAM traffic. Tests register pressure, 2.5D blocking, and marching-axis choice.
 
 \subsection{Compute-bound (regime R2)}
 
@@ -142,9 +139,9 @@ body $i$ per step:
 \quad \mathbf{v}\!\mathrel{+}\!=\mathbf{a}\Delta t,
 \quad \mathbf{r}\!\mathrel{+}\!=\mathbf{v}\Delta t.
 \end{equation}
-Self-interaction is masked by the softening $\varepsilon$. $20$\,FLOPs per
-pair; ceiling at peak FP32 GFLOPS. Tests register blocking and threadgroup
-cooperative loads. Sizes: $N\in\{256,1024,2048\}$, 10 steps.
+Self-interaction is masked by the softening $\varepsilon$. $\sim$20\,FLOPs
+per pair; ceiling at peak FP32 GFLOPS. Tests register blocking and
+threadgroup cooperative loads.
 
 \paragraph{hmc.} Hamiltonian Monte Carlo on an anisotropic Gaussian target,
 $U(q)=\tfrac12 q^\top A q$ with $A=\Sigma^{-1}$. One thread per chain;
@@ -158,8 +155,8 @@ p \leftarrow p - \tfrac{\varepsilon}{2}A q,
 \end{equation}
 followed by a Metropolis accept/reject with $\log u_{\mathrm{acc}}<-\Delta H$.
 Correctness is verified statistically (sample mean and Frobenius covariance
-error vs.\ the target). Three sizes $(d, K)\in\{(8,16384),(16,4096),(32,1024)\}$
-probe the register-pressure boundary; at $d{=}32$ the per-thread state
+error vs.\ the target). Three sizes $(d,K)\in\{(8,16{\rm K}),(16,4{\rm K}),(32,1{\rm K})\}$
+probe the register-pressure boundary; at $d{=}32$ per-thread state
 ($\sim$512\,B) competes with the register file.
 
 \subsection{Multi-field, exotic memory (regime R3)}
@@ -202,10 +199,8 @@ hash. Three kernels per step --- \texttt{clear\_cells}, \texttt{build\_cells}
 \qquad r_{ij}<r_{\mathrm{cut}}=2.5,
 \end{equation}
 with minimum-image periodic wrap. Cell occupancy is built via
-\texttt{atomic\_fetch\_add} on a per-cell counter. Sizes: $K^3$
-particles for $K\in\{12,16,22\}$; $N\in\{1728,4096,10648\}$.
-Tests load balancing, atomic contention, and the irregular access patterns
-characteristic of neighbour-list MD.
+\texttt{atomic\_fetch\_add} on a per-cell counter. Tests load balancing,
+atomic contention, and the irregular access patterns of neighbour-list MD.
 
 \subsection{Multi-kernel reductions (regime R5)}
 
@@ -220,13 +215,10 @@ J = R\,p_{\mathrm{axis}}\cdot 4\psi_{\mathrm{norm}}(1-\psi_{\mathrm{norm}})\cdot
 \Delta^*\psi &= a_W\psi_W+a_E\psi_E+a_N\psi_N+a_S\psi_S+a_C\psi_C,\\
 \psi^{n+1} &= \psi^n + \omega\,(-\mu_0 R J - \Delta^*\psi)/a_C,
 \end{align}
-with $a_{W,E}=1/dR^2 \pm 1/(2RdR)$ ($R$-dependent: breaks east/west
-symmetry), $a_{N,S}=1/dZ^2$, $a_C=-2(1/dR^2+1/dZ^2)$. Tests
-in-kernel reduction strategies (single-TG vs simdgroup-tree) and multi-kernel
-composition with implicit dispatch ordering. Sizes: $65^2$, $257^2$, $513^2$.
-
-A bandwidth-bound smoke-test (\texttt{saxpy}, $y\!\leftarrow\!\alpha x+y$) is also
-included to validate the harness. We omit it from the analysis.
+with $R$-dependent $a_{W,E}=1/dR^2 \pm 1/(2RdR)$, $a_{N,S}=1/dZ^2$,
+$a_C=-2(1/dR^2+1/dZ^2)$. Tests in-kernel reduction strategies (single-TG
+vs simdgroup-tree) and multi-kernel composition. A bandwidth-bound
+smoke-test (\texttt{saxpy}) is also included to validate the harness.
 
 \section{Harness}
 \label{sec:harness}
@@ -234,42 +226,30 @@ included to validate the harness. We omit it from the analysis.
 \paragraph{Compile and dispatch.} The harness uses PyObjC's Metal bindings
 and runtime-compiles \texttt{.metal} source via
 \texttt{MTLDevice.newLibraryWithSource}, avoiding the offline
-\texttt{xcrun metal}/\texttt{metallib} toolchain. Compilation errors are
-returned as structured strings to the LLM. Buffers are allocated in unified
-memory (\texttt{MTLResourceStorageModeShared}); host-side numpy views
-alias buffer contents with a single copy on read-back. All dispatches for
-a multi-size run share one \texttt{MTLCommandBuffer}, and timings are taken
-from \texttt{GPUEndTime}\,$-$\,\texttt{GPUStartTime} (not wall clock).
-Each measurement uses 3 warmup and 10 timed dispatches; we report the
-median across timed runs.
+\texttt{xcrun metal} toolchain; compile errors are returned as structured
+strings to the LLM. Buffers are allocated in unified memory; numpy views
+alias buffer contents with a single copy on read-back. All dispatches for a
+multi-size run share one \texttt{MTLCommandBuffer}, and timings come from
+\texttt{GPUEndTime}\,$-$\,\texttt{GPUStartTime} (3 warmup, 10 timed,
+median reported). The chip is detected from \texttt{sysctl} and looked up
+in a per-family table (M1 through M4) for peak FP32 GFLOPS and DRAM
+bandwidth; all runs here are on Apple M1 Pro (4500\,GFLOPS, 200\,GB/s).
 
-\paragraph{Hardware introspection.} The chip is detected via \texttt{sysctl}
-\texttt{machdep.cpu.brand\_string} and looked up in a per-family table of
-peak FP32 GFLOPS and DRAM bandwidth (M1 through M4, base/Pro/Max/Ultra).
-The lookup gives the roofline for each task at registration time. All runs
-in this paper are on Apple M1 Pro (4500\,GFLOPS, 200\,GB/s).
-
-\paragraph{Scoring.} For a candidate that passes correctness at every size,
-the score is the geometric mean of $\mathrm{achieved}/\mathrm{ceiling}$
-across in-distribution sizes:
-$
-S = \left(\prod_{i} f_i\right)^{1/n}
-$
-with $f_i\in[0,1]$. Any tolerance failure forces $S=0$; this hard gate
-prevents the search from trading correctness for speed. The geometric
-mean across sizes (rather than a single problem size) discourages
+\paragraph{Scoring.} For a candidate passing correctness at every size,
+$S = \left(\prod_{i} f_i\right)^{1/n}$ with $f_i=\mathrm{achieved}_i/\mathrm{ceiling}_i$.
+Any tolerance failure forces $S{=}0$; this hard gate prevents trading
+correctness for speed, and the geometric mean across sizes discourages
 overfitting to one regime.
 
-\paragraph{Evolution loop.} A single-population $(\mu{=}1+\lambda{=}1)$
+\paragraph{Evolution loop.} A single-population $(\mu{=}1{+}\lambda{=}1)$
 loop. Iteration $i$ shows the LLM the previous candidate, the incumbent
-best, a short history of correctness/score per iteration, and the original
-task spec. The LLM returns a single Metal source block (multi-kernel tasks
-emit multiple \texttt{kernel} functions in one file). The harness compiles,
-verifies at all sizes, times, and promotes the candidate if it strictly
-beats the incumbent. We persist prompts, raw responses, extended-thinking
-tokens, extracted source, and per-size JSON results to disk. The
+best, a short history per iteration, and the original task spec. The LLM
+returns a Metal source block (multi-kernel tasks emit multiple
+\texttt{kernel} functions in one file). Candidates strictly beating the
+incumbent are promoted; prompts, raw responses, extended-thinking tokens,
+sources, and per-size JSON results are persisted. A single
 \texttt{call\_llm} bridge dispatches Claude via the Agent SDK and Gemini
-via \texttt{google-genai} from a single entry point.
+via \texttt{google-genai}.
 
 \section{Preliminary results}
 \label{sec:results}
@@ -313,15 +293,70 @@ DRAM-only, while the streamed 9-distribution working set fits in SLC at this
 size. We report it unmodified to flag the limitation of the static roofline
 in the multi-field, multi-step regime.
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  code/.style={draw, rounded corners=2pt, fill=gray!5,
+               inner sep=5pt, align=left, font=\scriptsize\ttfamily,
+               text width=54mm, anchor=north west},
+  arr/.style={-{Stealth[length=3.5mm]}, line width=1.4pt},
+]
+\node[code] (l) at (0,0) {%
+\textcolor{gray!70}{// iter 5: runtime d, D\_MAX=32 layout}\\
+for (uint i=0; i<d; ++i) \{\\
+\ \ float4 acc = Arow[0] * q4[0];\\
+\ \ acc = fma(Arow[1], q4[1], acc);\\
+\ \ \textcolor{gray!70}{/* ... 6 more, always 8 ... */}\\
+\ \ acc = fma(Arow[7], q4[7], acc);\\
+\ \ f[i] = acc.x+acc.y+acc.z+acc.w;\\
+\}\\
+\textcolor{gray!70}{// d=8: 121 GFLOPS (2.7\% of peak)}};
+
+\node[code] (r) at ($(l.north east)+(20mm,0)$) {%
+\textcolor{gray!70}{// iter 6: template <uint D>}\\
+template <uint D>\\
+inline void run(...) \{\\
+\ \ float q[D], p[D], f[D];\\
+\ \ \textcolor{gray!70}{\#pragma unroll}\\
+\ \ for (uint i=0; i<D; ++i) \{\\
+\ \ \ \ float acc = 0.0f;\\
+\ \ \ \ \textcolor{gray!70}{\#pragma unroll}\\
+\ \ \ \ for (uint j=0; j<D; ++j)\\
+\ \ \ \ \ \ acc = fma(A[i*D+j], q[j], acc);\\
+\ \ \ \ f[i] = acc;\\
+\} \}\\
+if (d==8u) run<8u>(...);\\
+else if (d==16u) run<16u>(...);\\
+else \ \ \ \ \ \ \ \ \ \ run<32u>(...);\\
+\textcolor{gray!70}{// d=8: 970 GFLOPS (22\% of peak)}};
+
+\coordinate (lm) at ($(l.east|-l.center)$);
+\coordinate (rm) at (lm-|r.west);
+\node[font=\footnotesize\sffamily, align=center, above=1mm of $(lm)!0.5!(rm)$]
+  (lab) {\textbf{+ template}\\[-1pt]\textbf{<uint D>}\\[-1pt]\textit{compile-time D}};
+\node[font=\footnotesize\sffamily\bfseries, below=1mm of $(lm)!0.5!(rm)$] {$8.0\times$};
+\draw[arr] (lm) -- (rm);
+\end{tikzpicture}
+\caption{Paradigmatic candidate evolution: HMC, Opus~4.7, iter~5\,$\rightarrow$\,6.
+The structural change is one declaration --- \texttt{template <uint D>}
+with three runtime-dispatched instantiations $d\in\{8,16,32\}$. Iter~5 had a
+manually-unrolled float4 inner loop against a fixed $D_{\max}{=}32$ layout
+(over-computing at $d{=}8$, plus a 4-way horizontal sum); iter~6 sizes
+\texttt{q,p,f} exactly to $D$ so both loops fully unroll into scalar FMAs ---
+moving $d{=}8$ from 121 to 970\,GFLOPS in one iteration after five had
+stalled at 2--4\% of peak.}
+\label{fig:hmc-evol}
+\end{figure}
+
 \paragraph{Qualitative findings.} Three patterns recur across runs.
 \emph{(i) Models recover canonical optimisations on well-trodden tasks.}
 On nbody, Gemini-3.1-Pro one-shots threadgroup-memory tiling with
 cooperative load and 4-way ILP unroll (Nyland 2007); on LBM, both Claude
 4.6 and 4.7 independently find the BGK pairwise-symmetry algebraic
-factorisation; on HMC, Opus~4.7 introduces a \texttt{template <uint D>}
-worker dispatched on $d$ at iteration 6, taking $d{=}8$ from
-121 to 970\,GFLOPS in a single iteration by enabling full unroll of the
-inner $A q$ matvec.
+factorisation; on HMC (Fig.~\ref{fig:hmc-evol}), Opus~4.7 introduces a
+\texttt{template <uint D>} worker dispatched on runtime $d$ at iteration~6,
+taking $d{=}8$ from 121 to 970\,GFLOPS in a single iteration by enabling
+full unroll of the inner $A q$ matvec.
 \emph{(ii) Metal-specific syntax is a real OOD failure.} On LBM, Opus~4.6
 mishandles the \texttt{[[max\_total\_threads\_per\_threadgroup(N)]]}
 attribute placement on six independent iterations (the same compile error
@@ -339,45 +374,28 @@ search-strategy work.
 
 \section{Discussion}
 
-\paragraph{Why a roofline-anchored score?}
-A single fraction-of-ceiling per size answers ``how close are we to the
-hardware?'' in physical units, and the geometric mean across sizes gives
-a single scalar that is hard to game by overfitting one regime. By
-contrast, raw GFLOPS rewards bigger problems and obscures the
-small-problem/launch-overhead regime that scientific workflows typically
-care about.
+A roofline-anchored score answers ``how close are we to the hardware?'' in
+physical units; the geometric mean across sizes is hard to game by
+overfitting one regime. Apple Silicon's unified memory halves the host-side
+scaffolding compared to CUDA, enabling sub-second compile-run-verify
+cycles per candidate --- which matters more than it sounds: an evolutionary
+loop with tens of candidates needs a fast \emph{harness}, not a fast kernel.
+Metal's smaller, quirkier surface (simdgroup intrinsics, threadgroup
+attributes) also surfaces OOD failures of CUDA-trained LLMs on tasks that
+are otherwise textbook.
 
-\paragraph{Why Apple Silicon?}
-The unified memory model halves the host-side scaffolding compared to
-discrete-GPU CUDA, enabling sub-second compile-run-verify cycles per
-candidate. This matters more than it sounds: an evolutionary loop with
-50\,iterations and 10 candidates per generation needs a fast harness, not
-a fast kernel. Metal also exposes a smaller and quirkier surface than CUDA
-(simdgroup intrinsics, threadgroup attributes, no explicit shared-memory
-sizing), which surfaces real OOD failures of CUDA-trained LLMs on tasks
-that are otherwise textbook.
-
-\paragraph{Limitations.} (i) The ceilings are static per-chip family lookups
-and do not account for system-level cache residency at small sizes
-(see the LBM 256$^2$ result above). A workload-aware roofline
-[4] per task and per size would tighten the score.
-(ii) The single-population $(1{+}1)$ loop is the simplest evolutionary
-strategy and tends to plateau within 10--25 iterations on most tasks; an
-island-model or FunSearch-style~[1] archive is the
-natural next experiment.
-(iii) We do not attempt to detect verbatim retrieval of canonical kernels
-(Nyland N-body, etc.) and currently treat ``model recalled the answer'' and
-``model optimised'' identically.
-
-\paragraph{Future work.} Adding sparse linear algebra (SpMV, CG) covers the
-last regime in the roadmap; cross-chip generalisation (evolve on M2~Pro,
-evaluate on M3~Max) measures how chip-specific the discovered optimisations
-are; and adding a novelty signal in the spirit of [2] should help
-on the irregular-memory tasks where the search currently plateaus.
+\paragraph{Limitations and future work.} The static per-chip ceilings do not
+account for SLC residency at small sizes (see the LBM 256$^2$ result above);
+a workload-aware roofline~[4] per task and per size would tighten the score.
+The single-population $(1{+}1)$ loop plateaus within 10--25 iterations on
+most tasks --- an island-model or FunSearch-style~[1] archive with a novelty
+signal~[2] is the natural next step, particularly for the irregular-memory
+tasks. Future tasks include sparse linear algebra (SpMV, CG) and
+cross-chip generalisation (evolve on M2~Pro, evaluate on M3~Max).
 
 \section*{References}
-\small
-\begin{itemize}\setlength{\itemsep}{1pt}
+\footnotesize
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\topsep}{0pt}
 \item[\textnormal{[1]}] Romera-Paredes, B.\ et al.\ (2024) Mathematical
 discoveries from program search with large language models. \emph{Nature}
 \textbf{625}, 468--475.
