@@ -52,10 +52,14 @@ report preliminary 5--25 iteration evolution runs for Claude Opus~4.7,
 Gemini~3-Flash, and Gemini~3.1-Pro on an Apple M1 Pro. Frontier models
 recover canonical optimisations on well-trodden tasks (threadgroup tiling
 on N-body, BGK symmetry algebra on Lattice Boltzmann, template specialisation
-on HMC, Stockham auto-sort + radix-4 on 3D FFT) yet still mishandle
-Metal-specific concurrency and naming syntax, miss resource-pressure
-tradeoffs that gate occupancy, and stall at single-digit percent of peak
-on irregular-memory tasks (Lennard-Jones with cell lists). The benchmark is designed for fast iteration: each candidate
+on HMC) yet still mishandle Metal-specific concurrency and naming syntax
+and stall at single-digit percent of peak on irregular-memory tasks
+(Lennard-Jones with cell lists). On 3D FFT we observe a clean dichotomy:
+Opus~4.7 recovers the CUDA-style Stockham + twiddle-table recipe but
+sacrifices threadgroup occupancy ($1.03\times$ over the seed), while
+Gemini-3.1-Pro reaches for Metal-native \texttt{simd\_shuffle\_xor}
+intra-simdgroup butterflies and wins ($1.19\times$, $2$--$2.4\times$ ahead
+of Opus at the cache-resident sizes). The benchmark is designed for fast iteration: each candidate
 compiles, runs, verifies, and scores in seconds.
 \end{abstract}
 
@@ -317,6 +321,7 @@ lj       & claude-opus-4-7        & 10 & 0.003 & 0.005 & 1.77$\times$ &  1.0\% \
 lj       & gemini-3.1-pro-preview & 15 & 0.003 & 0.006 & 1.98$\times$ &  --- \\
 gradshaf & claude-opus-4-7        & 10 & 0.022 & 0.041 & 1.89$\times$ & 10.7\% \\
 fft3d    & claude-opus-4-7        & 10 & 0.162 & 0.167 & 1.03$\times$ & 29.8\% \\
+fft3d    & gemini-3.1-pro-preview & 10 & 0.237 & 0.282 & 1.19$\times$ & 31.5\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -382,7 +387,7 @@ stalled at 2--4\% of peak.}
 \label{fig:hmc-evol}
 \end{figure}
 
-\paragraph{Qualitative findings.} Three patterns recur across runs.
+\paragraph{Qualitative findings.} Four patterns recur across runs.
 \emph{(i) Models recover canonical optimisations on well-trodden tasks.}
 On nbody, Gemini-3.1-Pro one-shots threadgroup-memory tiling with
 cooperative load and 4-way ILP unroll (Nyland 2007); on LBM, both Claude
@@ -391,37 +396,46 @@ factorisation; on HMC (Fig.~\ref{fig:hmc-evol}), Opus~4.7 introduces a
 \texttt{template <uint D>} worker dispatched on runtime $d$ at iteration~6,
 taking $d{=}8$ from 121 to 970\,GFLOPS in a single iteration by enabling
 full unroll of the inner $A q$ matvec.
-\emph{(ii) Metal-specific syntax is a real OOD failure.} On LBM, Opus~4.6
-mishandles the \texttt{[[max\_total\_threads\_per\_threadgroup(N)]]}
-attribute placement on six independent iterations (the same compile error
-each time), missing a structural lever Opus~4.7 uses correctly on its first
-attempt. On gradshaf, an early run hit 6/10 NaN failures because the model
-hard-coded a $32{\times}8$ tile against a host-pinned $16{\times}16$
-threadgroup; an explicit task-spec note about dispatch geometry steered the
-next run cleanly past the trap. On fft3d, two of ten Opus~4.7 iterations
-(1 and 6) tripped the same Metal-specific naming collision: a local
-\texttt{uint half = N >> 1u;} clashes with MSL's built-in \texttt{half}
-type (fp16), producing a cascading parse error that is not a CUDA failure
-mode. Iteration~1 also placed the threadgroup-size attribute as a suffix
-\emph{after} the parameter list rather than \emph{before} the kernel
-declaration --- a different syntactic mistake from LBM's, but the same
-underlying gap: Metal's attribute grammar is structurally distinct from
-CUDA \texttt{\_\_launch\_bounds\_\_}.
-\emph{(iii) Irregular and shuffle-bound tasks remain hard.} Lennard-Jones
-with cell lists sits at $\sim$1\% of FP32 peak after 10 iterations across
-both Claude and Gemini. The atomic scatter in \texttt{build\_cells} and the
-variable-occupancy neighbour-cell loop are not patterns the models
-recombine effectively in our budget. fft3d shows a related but distinct
-failure: by iteration~10 Opus~4.7 has recovered the textbook optimisation
---- Stockham auto-sort, mixed radix-4 + radix-2 final stage, cooperative
-twiddle-table precompute --- yet the candidate scores only $1.03\times$
-over the seed because it carries two ${\sim}8$\,KB threadgroup ping-pong
-buffers plus the twiddle table (${\sim}20$\,KB total), pushing TG-memory
-occupancy above the level at which the M1~Pro can resident-schedule
-enough threadgroups to saturate DRAM at $128^3$. The algorithmic recall
-is correct; the resource-pressure reasoning is missing. Together with LJ,
-fft3d is the second task in the suite where 10 iterations of a frontier
-model fails to clear a $2\times$ gain.
+\emph{(ii) Metal-specific syntax is a real OOD failure, and replicates
+across models.} On LBM, Opus~4.6 mishandles the
+\texttt{[[max\_total\_threads\_per\_threadgroup(N)]]} attribute placement
+on six independent iterations (the same compile error each time),
+missing a structural lever Opus~4.7 uses correctly on its first attempt.
+On gradshaf, an early run hit 6/10 NaN failures from a hard-coded
+$32{\times}8$ tile against a host-pinned $16{\times}16$ threadgroup. On
+fft3d, \emph{both} Opus~4.7 and Gemini-3.1-Pro placed the same attribute
+as a \emph{suffix} after the parameter list (between \texttt{)} and
+\texttt{\{}) on iteration~1, an independent reproduction of the same OOD
+failure across model families. Two further fft3d failures were
+single-model: Opus~4.7 hit \texttt{uint half = N >> 1u;} on iters 1 and
+6 --- \texttt{half} is reserved as MSL's fp16 type, producing a
+cascading parse error not seen in CUDA --- and Gemini-3.1-Pro called
+\texttt{sincospi}, which exists in CUDA but not in MSL (only
+\texttt{sincos}). All four are Metal-grammar / Metal-stdlib mismatches
+with no analogue in CUDA training data.
+\emph{(iii) Models pick different optimisation axes; Metal-native beats
+CUDA-style.} On fft3d, the two models diverge meaningfully. Opus~4.7
+recovers the CUDA-FFT canonical recipe by iteration~10 --- Stockham
+auto-sort, mixed radix-4 + radix-2 final stage, cooperative twiddle-table
+precompute --- but pays for it with ${\sim}20$\,KB of threadgroup memory
+(two ${\sim}8$\,KB ping-pong buffers plus the twiddle table), suppressing
+resident-TG count and capping the gain at $1.03\times$. Gemini-3.1-Pro
+finds the Metal-native lever instead: \texttt{simd\_shuffle\_xor}-based
+intra-simdgroup butterflies that make the first five stages (i.e.\ the
+entire FFT for $N{\leq}32$, all but 1--2 stages for $N{=}64,128$)
+\emph{barrier-free}, plus \texttt{reverse\_bits} and \texttt{ctz}
+intrinsics and a $i{+}i/32$ bank-conflict padding scheme. Twiddles are
+recomputed on the fly, freeing the 4\,KB Opus spent on its table.
+Result: $1.19\times$ over the seed and a $2.0$--$2.4\times$ per-size lead
+over Opus at $32^3$ and $64^3$ (21\% / 34\% of peak BW vs 9\% / 18\%),
+narrowing to a tie at $128^3$ where DRAM dominates. The signal is sharper
+than ``one is better'': the models are reaching for different priors ---
+CUDA-FFT vs Metal-shuffle --- and on this hardware the latter wins.
+\emph{(iv) Irregular tasks remain hard.} Lennard-Jones with cell lists
+still sits at $\sim$1\% of FP32 peak after 10 iterations across both
+Claude and Gemini; the atomic scatter and variable-occupancy
+neighbour-cell loop are not patterns either model recombines
+effectively in our budget.
 
 \section{Discussion}
 
