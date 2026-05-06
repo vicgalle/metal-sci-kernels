@@ -92,9 +92,12 @@ class NBodyTask(Task):
             "                       constant float       &G      [[buffer(8)]],\n"
             "                       uint i [[thread_position_in_grid]]);\n"
             "\n"
-            "Threads are dispatched 1-D over N. Guard with `if (i >= N) "
-            "return;`. The host ping-pongs (pos_in, pos_out) and "
-            "(vel_in, vel_out) buffer pairs each step."
+            "Threads are dispatched 1-D, one per body — guard with `if "
+            "(i >= N) return;`. Each thread MUST update exactly one body; "
+            "the host will not shrink the dispatch if you process multiple "
+            "bodies per thread, so extra threads just idle. The host "
+            "ping-pongs (pos_in, pos_out) and (vel_in, vel_out) buffer "
+            "pairs each step."
         ),
         kernel_names=["nbody_step"],
         seed_path=_SEED,

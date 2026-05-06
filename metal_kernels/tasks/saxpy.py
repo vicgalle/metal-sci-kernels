@@ -40,8 +40,11 @@ class SaxpyTask(Task):
             "                  uint i [[thread_position_in_grid]]);\n"
             "\n"
             "Update y[i] = a * x[i] + y[i] for i in [0, N). Threads are "
-            "dispatched 1-D over N; grid size will be padded up to a "
-            "multiple of the threadgroup width, so guard against i >= N."
+            "dispatched 1-D, one per element (grid is padded up to a "
+            "multiple of the threadgroup width, so guard against i >= N). "
+            "Each thread MUST handle exactly one i; the host will not "
+            "shrink the dispatch if you process multiple elements per "
+            "thread — extra threads just idle."
         ),
         kernel_names=["saxpy"],
         seed_path=_SEED,

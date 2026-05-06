@@ -86,9 +86,12 @@ class Heat2DTask(Task):
             "                      constant float     &alpha [[buffer(4)]],\n"
             "                      uint2 gid [[thread_position_in_grid]]);\n"
             "\n"
-            "Grid is dispatched 2-D as (NX, NY); guard with `if (i >= NX || "
-            "j >= NY) return;`. Boundary cells (i==0, j==0, i==NX-1, j==NY-1) "
-            "must copy u_in -> u_out unchanged."
+            "Grid is dispatched 2-D as `threadsPerGrid = (NX, NY)`, one "
+            "thread per output cell — guard with `if (i >= NX || j >= NY) "
+            "return;`. Each thread MUST update exactly one cell; the host "
+            "will not shrink the dispatch if you process multiple cells per "
+            "thread, so extra threads just idle. Boundary cells (i==0, "
+            "j==0, i==NX-1, j==NY-1) must copy u_in -> u_out unchanged."
         ),
         kernel_names=["heat_step"],
         seed_path=_SEED,

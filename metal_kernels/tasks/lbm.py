@@ -135,9 +135,13 @@ class LBMD2Q9Task(Task):
             "                     constant float       &tau  [[buffer(4)]],\n"
             "                     uint2 gid [[thread_position_in_grid]]);\n"
             "\n"
-            "Grid is dispatched 2-D as (NX, NY); guard with `if (i >= NX "
-            "|| j >= NY) return;`. SoA layout MUST be preserved on buffers "
-            "0 and 1; the kernel may use any internal layout/optimization."
+            "Grid is dispatched 2-D as `threadsPerGrid = (NX, NY)`, one "
+            "thread per output cell — guard with `if (i >= NX || j >= NY) "
+            "return;`. Each thread MUST update exactly one cell; the host "
+            "will not shrink the dispatch if you process multiple cells "
+            "per thread, so extra threads just idle. SoA layout MUST be "
+            "preserved on buffers 0 and 1; the kernel may use any internal "
+            "layout/optimization (threadgroup tiling, simdgroup ops, etc.)."
         ),
         kernel_names=["lbm_step"],
         seed_path=_SEED,
