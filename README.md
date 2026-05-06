@@ -227,6 +227,62 @@ then 18 iterations of cosmetic permutations). 4-7 hit a strong iter 1
 budget, similar wall time, different exploration shapes — but only
 4-7's late breakthrough actually beat its own iter 3.
 
+## Example runs (hmc, M1 Pro)
+
+A 10-iteration run on `hmc` (HMC sampler on an anisotropic Gaussian,
+one thread per chain). Three sizes vary register pressure:
+`d=8 K=16384`, `d=16 K=4096`, `d=32 K=1024`. The seed sits at 0.3–2%
+of FP32 peak — the deepest hole among the compute-bound tasks.
+
+| Model | Seed | Best | Speedup | d=8 peak | d=16 peak | d=32 peak | Iter that won | Compile fails |
+|---|---|---|---|---|---|---|---|---|
+| `claude-opus-4-7` | 0.0088 | 0.0932 | **10.6×** | 970 GFLOPS (22%) | 551 GFLOPS (12%) | 138 GFLOPS (3.1%) | 6 | 0 / 10 |
+
+The breakthrough is one structural change at iter 6: a
+**`template <uint D>` worker dispatched on `d`**, on top of a
+threadgroup-cached `A`. With `D` a compile-time constant, the matvec
+fully unrolls, the per-thread `q/p/f/q_old` arrays are sized exactly,
+and the entire 21-force-eval leapfrog becomes one statically scheduled
+FMA chain.
+
+Notable from iter 6 (`results/hmc_claude-opus-4-7_20260506_182733/06_candidate.metal`):
+
+```metal
+template <uint D>
+inline void hmc_run(uint chain_idx, ...,
+                    threadgroup const float *Atile, ...) {
+    float q[D];  float p[D];  float f[D];  float qold[D];
+    // ...
+    #pragma unroll
+    for (uint i = 0u; i < D; ++i) {
+        threadgroup const float *Arow = Atile + i * D;
+        float acc = 0.0f;
+        #pragma unroll
+        for (uint j = 0u; j < D; ++j) acc = fma(Arow[j], q[j], acc);
+        f[i] = acc;
+    }
+    // ... leapfrog inner loop, unrolled per-D ...
+}
+if      (d == 8u)  hmc_run<8u> (chain_idx, ..., Atile, ...);
+else if (d == 16u) hmc_run<16u>(chain_idx, ..., Atile, ...);
+else               hmc_run<32u>(chain_idx, ..., Atile, ...);
+```
+
+The runtime-`d` variants in iters 1–5 had the same ingredients
+(tg-cached A, float4 matvec) but never crossed 4% of peak — the
+compiler couldn't unroll the inner reduction without `D` as a
+constant. The template-D change alone took d=8 from 121 → 970 GFLOPS
+in one iteration.
+
+Iter 7 failed correctness only at d=32: the model moved
+`(q, p, f, q_old)` into a threadgroup `[D][TG_W]` layout (right
+intuition, botched implementation) and the d=32 sample covariance
+landed 0.38 off target vs 0.18 for the iter-6 baseline — exactly the
+discriminating behaviour the per-size K budget was tuned for. Iters
+8–10 reverted to the iter-6 baseline plus float4 matvec, but the
+`acc.x+y+z+w` horizontal sum cost more than it saved at d=8 and the
+score never recovered.
+
 ## Adding a new task
 
 Drop a `seeds/<name>.metal` and a `metal_kernels/tasks/<name>.py`
