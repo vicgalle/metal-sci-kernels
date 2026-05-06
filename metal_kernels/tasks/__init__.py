@@ -19,3 +19,7 @@ try:
     from . import lbm     # noqa: F401
 except ImportError:
     pass
+try:
+    from . import lj      # noqa: F401
+except ImportError:
+    pass
