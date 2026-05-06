@@ -136,6 +136,66 @@ N=256/1024 (no barrier overhead). Both runs are still well below the
 plan's 70-85% target — register blocking (multiple bodies per thread)
 is the obvious next lever; neither model has tried it.
 
+## Example runs (lbm, M1 Pro)
+
+One 25-iteration run on `lbm` (D2Q9, fused pull-stream + BGK collision,
+periodic BCs). The seed is BW-bound and already hits peak DRAM at the
+largest size, so the headroom lives in the mid-size 128² regime.
+
+| Model | Seed score | Best score | Speedup | Best at 128²×100 | Iter that won | Wall time |
+|---|---|---|---|---|---|---|
+| `claude-opus-4-6` | 0.392 | 0.545 | **1.39×** | 119 GB/s (60% peak) | 7 (after iters 5-6 climb) | ~14 min |
+
+The win is algebraic, not architectural. **Iters 5-6-7** discovered that
+the BGK equilibrium has pairwise symmetry along each velocity axis — for
+opposite directions `k=1,3` (`±x`), `k=2,4` (`±y`), `k=5,7` (`±(x+y)`),
+`k=6,8` (`±(y−x)`), the `f_eq` formulas share `w_k·ρ·(1 + 4.5·(c·u)² −
+1.5·|u|²)` and differ only by the sign of `3·(c·u)`. Folding that into
+two FMAs per opposite pair, with `(1 − 1/τ)` and `(1/τ)` precomputed
+once, took 128²×100 from 35% → 60% of peak DRAM. The 256² case sits
+above 100% on every iteration (working set is SLC-resident, so the 8
+B/cell roofline understates the achievable rate).
+
+Notable from iter 7 (`results/lbm_claude-opus-4-6_20260506_110442/07_candidate.metal`):
+
+```metal
+const float omtau   = 1.0f - inv_tau;          // f_out = omtau·f_in + (1/τ)·f_eq
+const float base    = 1.0f - 1.5f * (ux*ux + uy*uy);
+const float rw49    = (4.0f / 9.0f)  * rho;
+const float rw19    = (1.0f / 9.0f)  * rho;
+const float rw136   = (1.0f / 36.0f) * rho;
+
+// k=1,3: cu = ±ux  — share base + 4.5·ux², differ by ±3·ux
+{
+    const float sym  = base + 4.5f * ux * ux;
+    const float rw   = rw19 * inv_tau;
+    f_out[    N + idx] = fma(omtau, f1, rw * (sym + 3.0f * ux));
+    f_out[3u* N + idx] = fma(omtau, f3, rw * (sym - 3.0f * ux));
+}
+// k=5,7: cu = ±(ux+uy)  — same trick on the diagonal axis
+{
+    const float cu   = ux + uy;
+    const float sym  = fma(4.5f, cu * cu, base);
+    const float rw   = rw136 * inv_tau;
+    f_out[5u* N + idx] = fma(omtau, f5, rw * (sym + 3.0f * cu));
+    f_out[7u* N + idx] = fma(omtau, f7, rw * (sym - 3.0f * cu));
+}
+```
+
+Two patterns worth flagging. (1) Iter 7's apparent 1.8× spike on
+64²×50 (0.287 vs 0.157 elsewhere) is timing noise — the source diff
+against iter 6 is purely cosmetic, no other correct candidate ever
+hit that number, and the workload is 0.5 ms total. The robust 128²
+gain is the actual progress. (2) Six of the 25 iterations (4, 9, 15,
+17, 19, 21) failed to compile with **the exact same error** every
+time: `[[max_total_threads_per_threadgroup(N)]]` placed before
+the kernel declaration as a standalone statement instead of as a
+function attribute on the `kernel void ...` line. Each prose
+preamble proposed threadgroup-memory cooperative tiling — the
+textbook structural lever for this kernel — but the model could not
+get past the attribute syntax across six attempts and eventually
+fell back to incremental edits of the iter-7 family.
+
 ## Adding a new task
 
 Drop a `seeds/<name>.metal` and a `metal_kernels/tasks/<name>.py`
