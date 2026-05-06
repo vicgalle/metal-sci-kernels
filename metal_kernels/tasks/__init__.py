@@ -39,3 +39,7 @@ try:
     from . import gradshaf  # noqa: F401
 except ImportError:
     pass
+try:
+    from . import fft3d   # noqa: F401
+except ImportError:
+    pass
