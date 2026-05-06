@@ -15,3 +15,7 @@ try:
     from . import nbody   # noqa: F401
 except ImportError:
     pass
+try:
+    from . import lbm     # noqa: F401
+except ImportError:
+    pass
