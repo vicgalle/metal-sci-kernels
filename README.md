@@ -28,6 +28,11 @@ compute-bound, multi-field/exotic-memory).
   - `gradshaf` — Grad-Shafranov fixed-boundary Picard-Jacobi: max-reduction
     + variable-coefficient 5-point stencil with nonlinear source, two
     kernels per outer step (first multi-kernel + reduction task in the suite)
+  - `fft3d` — 3D complex-to-complex forward FFT, fp32, power-of-two cube;
+    three named kernels (one per axis) with shared-memory radix-2
+    Cooley-Tukey butterflies. New "data-shuffle / butterfly" regime —
+    optimization is dominated by twiddle caching, simdgroup shuffles,
+    and bank-conflict avoidance, not stencil tiling.
 - **LLM bridge** (`metal_kernels/llm.py`): single `call_llm` entry that
   dispatches to Claude (via `claude_agent_sdk`) or Gemini (via
   `google-genai`) based on model name.

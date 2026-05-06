@@ -40,10 +40,11 @@ LLM-driven code search has produced impressive results on GPU ML kernels (GEMM,
 attention, convolution), but the optimization patterns in scientific computing
 are systematically different: bandwidth-bound stencils with halo tiling,
 register-blocked all-pairs interactions, multi-field Boltzmann updates,
-neighbour-list molecular dynamics with atomics, parallel-chain MCMC, and
-multi-kernel nonlinear PDE solvers. We present \textsc{Metal-Sci}, a 9-task
-benchmark of scientific Apple-Silicon Metal compute kernels spanning five
-optimization regimes. Every task ships a CPU reference, a roofline ceiling,
+neighbour-list molecular dynamics with atomics, parallel-chain MCMC,
+multi-kernel nonlinear PDE solvers, and butterfly/data-shuffle spectral
+transforms. We present \textsc{Metal-Sci}, a 10-task benchmark of
+scientific Apple-Silicon Metal compute kernels spanning six optimization
+regimes. Every task ships a CPU reference, a roofline ceiling,
 and a naive but correct seed; the fitness signal is the geometric mean of
 \emph{achieved/ceiling} across three problem sizes, with any tolerance
 failure forcing the score to zero. We release the harness and seeds, and
@@ -51,9 +52,10 @@ report preliminary 5--25 iteration evolution runs for Claude Opus~4.7,
 Gemini~3-Flash, and Gemini~3.1-Pro on an Apple M1 Pro. Frontier models
 recover canonical optimisations on well-trodden tasks (threadgroup tiling
 on N-body, BGK symmetry algebra on Lattice Boltzmann, template specialisation
-on HMC) yet still mishandle Metal-specific concurrency syntax and stall at
-single-digit percent of peak on irregular-memory tasks (Lennard-Jones with
-cell lists). The benchmark is designed for fast iteration: each candidate
+on HMC, Stockham auto-sort + radix-4 on 3D FFT) yet still mishandle
+Metal-specific concurrency and naming syntax, miss resource-pressure
+tradeoffs that gate occupancy, and stall at single-digit percent of peak
+on irregular-memory tasks (Lennard-Jones with cell lists). The benchmark is designed for fast iteration: each candidate
 compiles, runs, verifies, and scores in seconds.
 \end{abstract}
 
@@ -75,9 +77,11 @@ distribution functions per cell with non-trivial pull-stream indexing.
 Cell-list molecular dynamics touches irregular memory through atomic
 counters. Hamiltonian Monte Carlo runs many chains in parallel where
 register pressure scales with the problem dimension $d$. Grad-Shafranov
-solvers chain a max-reduction with a variable-coefficient stencil. Each
-pattern stresses a distinct dimension of the compiler/memory hierarchy,
-and canonical optimisations~[5,6,7,8] differ regime-to-regime.
+solvers chain a max-reduction with a variable-coefficient stencil. 3D
+FFTs are dominated by data-shuffle/butterfly patterns and twiddle-factor
+caching rather than tiling. Each pattern stresses a distinct dimension of
+the compiler/memory hierarchy, and canonical optimisations~[5,6,7,8,11]
+differ regime-to-regime.
 
 We target Apple Silicon's Metal compute pipeline. It is underrepresented
 in CUDA-centric training data --- frontier models reliably mishandle
@@ -90,8 +94,8 @@ supports rich simdgroup intrinsics (\texttt{simd\_max},
 \texttt{simd\_broadcast}) and threadgroup-memory tiling, giving the LLM a
 non-trivial optimisation surface.
 
-\paragraph{Contributions.} (i) A 9-task scientific compute benchmark over
-five optimisation regimes, each with a CPU reference, roofline-anchored
+\paragraph{Contributions.} (i) A 10-task scientific compute benchmark over
+six optimisation regimes, each with a CPU reference, roofline-anchored
 fitness, and multi-size generalisation gate. (ii) A runtime-compiled
 harness that exposes compile errors, correctness diagnostics, and per-size
 GPU timing back to the LLM. (iii) Preliminary evolution runs across Claude
@@ -217,8 +221,37 @@ J = R\,p_{\mathrm{axis}}\cdot 4\psi_{\mathrm{norm}}(1-\psi_{\mathrm{norm}})\cdot
 \end{align}
 with $R$-dependent $a_{W,E}=1/dR^2 \pm 1/(2RdR)$, $a_{N,S}=1/dZ^2$,
 $a_C=-2(1/dR^2+1/dZ^2)$. Tests in-kernel reduction strategies (single-TG
-vs simdgroup-tree) and multi-kernel composition. A bandwidth-bound
-smoke-test (\texttt{saxpy}) is also included to validate the harness.
+vs simdgroup-tree) and multi-kernel composition.
+
+\subsection{Data-shuffle / butterfly (regime R6)}
+
+\paragraph{fft3d.} 3D complex-to-complex forward FFT, fp32, on a
+power-of-two cube of side $N$. Convention is unnormalised (matches
+\texttt{numpy.fft.fftn}); storage is row-major \texttt{float2}$[N][N][N]$.
+Three named kernels --- \texttt{fft3d\_x}, \texttt{fft3d\_y},
+\texttt{fft3d\_z} --- are dispatched in sequence with two ping-ponged
+buffers, each kernel performing a length-$N$ 1D FFT per threadgroup of
+$N$ cooperating threads:
+\begin{equation}
+Y[k_1,k_2,k_3] \;=\; \sum_{n_1,n_2,n_3=0}^{N-1} X[n_1,n_2,n_3]\,
+   \exp\!\left(-\frac{2\pi i}{N}(k_1 n_1 + k_2 n_2 + k_3 n_3)\right).
+\end{equation}
+Sizes $N \in \{32, 64, 128\}$ cover three working-set regimes: $32^3$
+(${\sim}256$\,KB) is SLC-resident and compute-bound; $128^3$
+(${\sim}16$\,MB) DRAM-binds. The optimisation surface is dominated by
+data movement, not arithmetic --- bit-reversal vs Stockham auto-sort,
+twiddle-factor caching, mixed-radix (radix-4, radix-8) butterflies for
+fewer barriers, and \texttt{simd\_shuffle} / \texttt{simd\_shuffle\_xor}
+for intra-simdgroup butterflies are all on the table. Tests
+threadgroup-memory bank-conflict avoidance and the per-axis stride
+asymmetry (stride 1 along $x$ vs strides $N$ and $N^2$ along $y$, $z$).
+$\sim 5N\log_2 N$ FLOPs per 1D FFT; effective DRAM traffic 96\,B/cell
+across the three axis passes (16\,B read + 16\,B write per pass).
+Verification is max-norm against \texttt{numpy.fft.fftn} on a fixed
+seeded Gaussian input, tolerance $10^{-3}{+}10^{-3}\|Y\|_\infty$.
+
+A bandwidth-bound smoke-test (\texttt{saxpy}) is also included to validate
+the harness.
 
 \section{Harness}
 \label{sec:harness}
@@ -283,6 +316,7 @@ ising    & claude-opus-4-7        & 10 & 0.066 & 0.075 & 1.13$\times$ & 11.6\% \
 lj       & claude-opus-4-7        & 10 & 0.003 & 0.005 & 1.77$\times$ &  1.0\% \\
 lj       & gemini-3.1-pro-preview & 15 & 0.003 & 0.006 & 1.98$\times$ &  --- \\
 gradshaf & claude-opus-4-7        & 10 & 0.022 & 0.041 & 1.89$\times$ & 10.7\% \\
+fft3d    & claude-opus-4-7        & 10 & 0.162 & 0.167 & 1.03$\times$ & 29.8\% \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -364,13 +398,30 @@ each time), missing a structural lever Opus~4.7 uses correctly on its first
 attempt. On gradshaf, an early run hit 6/10 NaN failures because the model
 hard-coded a $32{\times}8$ tile against a host-pinned $16{\times}16$
 threadgroup; an explicit task-spec note about dispatch geometry steered the
-next run cleanly past the trap.
-\emph{(iii) Irregular tasks remain hard.} Lennard-Jones with cell lists sits
-at $\sim$1\% of FP32 peak after 10 iterations across both Claude and Gemini.
-The atomic scatter in \texttt{build\_cells} and the variable-occupancy
-neighbour-cell loop are not patterns the models recombine effectively in our
-budget; this is the largest gap in the suite and an obvious target for
-search-strategy work.
+next run cleanly past the trap. On fft3d, two of ten Opus~4.7 iterations
+(1 and 6) tripped the same Metal-specific naming collision: a local
+\texttt{uint half = N >> 1u;} clashes with MSL's built-in \texttt{half}
+type (fp16), producing a cascading parse error that is not a CUDA failure
+mode. Iteration~1 also placed the threadgroup-size attribute as a suffix
+\emph{after} the parameter list rather than \emph{before} the kernel
+declaration --- a different syntactic mistake from LBM's, but the same
+underlying gap: Metal's attribute grammar is structurally distinct from
+CUDA \texttt{\_\_launch\_bounds\_\_}.
+\emph{(iii) Irregular and shuffle-bound tasks remain hard.} Lennard-Jones
+with cell lists sits at $\sim$1\% of FP32 peak after 10 iterations across
+both Claude and Gemini. The atomic scatter in \texttt{build\_cells} and the
+variable-occupancy neighbour-cell loop are not patterns the models
+recombine effectively in our budget. fft3d shows a related but distinct
+failure: by iteration~10 Opus~4.7 has recovered the textbook optimisation
+--- Stockham auto-sort, mixed radix-4 + radix-2 final stage, cooperative
+twiddle-table precompute --- yet the candidate scores only $1.03\times$
+over the seed because it carries two ${\sim}8$\,KB threadgroup ping-pong
+buffers plus the twiddle table (${\sim}20$\,KB total), pushing TG-memory
+occupancy above the level at which the M1~Pro can resident-schedule
+enough threadgroups to saturate DRAM at $128^3$. The algorithmic recall
+is correct; the resource-pressure reasoning is missing. Together with LJ,
+fft3d is the second task in the suite where 10 iterations of a frontier
+model fails to clear a $2\times$ gain.
 
 \section{Discussion}
 
@@ -423,6 +474,9 @@ computation on GPUs using CUDA. \emph{Proc.\ GPGPU-2}.
 \item[\textnormal{[10]}] Geb, L.\ et al.\ (2022) Seamless GPU acceleration
 for C++ based physics on the Apple M1's unified processing units.
 \emph{arXiv:2206.01791}.
+\item[\textnormal{[11]}] Govindaraju, N.\ K.\ et al.\ (2008) High
+performance discrete Fourier transforms on graphics processors.
+\emph{Proc.\ SC '08}.
 \end{itemize}
 
 \end{document}
