@@ -130,7 +130,8 @@ async def evolve(
                 best_source, best_result,
                 history=[
                     {"iteration": h.iteration, "compile_ok": h.compile_ok,
-                     "correct": h.correct, "score": h.score}
+                     "correct": h.correct, "score": h.score,
+                     "is_new_best": h.is_new_best}
                     for h in history
                 ],
             )
