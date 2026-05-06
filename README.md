@@ -286,6 +286,62 @@ discriminating behaviour the per-size K budget was tuned for. Iters
 `acc.x+y+z+w` horizontal sum cost more than it saved at d=8 and the
 score never recovered.
 
+## Example runs (gradshaf, M1 Pro)
+
+A 10-iteration run on `gradshaf` (Grad-Shafranov fixed-boundary
+Picard-Jacobi: max-reduction + variable-coefficient 5-point stencil
+with nonlinear source, two kernels per outer step). The seed sits at
+2% of peak BW with a deliberately-naive single-threadgroup reduction
+and an untiled stencil — the headroom is in the reduction.
+
+| Model | Seed | Best | Speedup | 65² peak | 257² peak | 513² peak | Iter that won | Compile fails |
+|---|---|---|---|---|---|---|---|---|
+| `claude-opus-4-7` | 0.0217 | 0.0410 | **1.89×** | 1.1% | 5.8% | 10.7% | 4 | 1 / 10 |
+
+The breakthrough at iter 4 is **simdgroup-tree reduction with 4-way
+unrolled strided loads**, paired with an FMA-fused stencil that drops
+divisions for reciprocal-multiplies and folds N+S into one FMA. The
+stencil stays untiled (relying on L1/L2 for the 5 neighbour reads);
+the model never tried threadgroup-memory tiling.
+
+Notable from iter 4
+(`results/gradshaf_claude-opus-4-7_20260506_204437/04_candidate.metal`):
+
+```metal
+// Reduction: 4-way unrolled strided sweep, then simd_max tree.
+for (; k + stride4 <= total; k += stride4) {
+    float v0 = psi[(j0 + 1u) * NR + (i0 + 1u)];
+    float v1 = psi[(j1 + 1u) * NR + (i1 + 1u)];
+    float v2 = psi[(j2 + 1u) * NR + (i2 + 1u)];
+    float v3 = psi[(j3 + 1u) * NR + (i3 + 1u)];
+    local_max = max(local_max, max(max(v0, v1), max(v2, v3)));
+}
+float sg_max = simd_max(local_max);
+if ((tid & 31u) == 0u) simd_partials[tid >> 5] = sg_max;
+// ... cross-simdgroup pass ...
+
+// Stencil: FMA-chained Δ*ψ with N/S folded, reciprocal-multiply update.
+float delta_psi = fma(a_W, psi_W,
+                   fma(a_E, psi_E,
+                    fma(a_NS, psi_N + psi_S,
+                      a_C * psi_C)));
+psi_out[idx] = fma(omega * r, inv_aC, psi_C);
+```
+
+The speedup scales with grid size (1.4× → 1.6× → **2.7×** at 513²),
+exactly the shape expected when the lever is the reduction:
+single-TG sweep cost grows with the field, simdgroup_max collapses
+that to ~log32 levels.
+
+A first 10-iter run (not shown) hit **6/10 NaN failures**, all with
+the same root cause — the model attempted a threadgroup-memory
+stencil tile with a hard-coded `TILE_X=32, TILE_Y=8`, while the
+host pins the step kernel's threadgroup at 16×16. Tile origins
+strided by 32 over a grid that strides by 16; tiles overlapped and
+NaN propagated. Adding an explicit "dispatch geometry: TG = (16, 16),
+tile dims must match" note to the task description steered the next
+run cleanly past the trap with zero correctness failures.
+
 ## Adding a new task
 
 Drop a `seeds/<name>.metal` and a `metal_kernels/tasks/<name>.py`
