@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0030730385492032603,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/00_seed.metal",
+    "elapsed_s": 72.29971098899841,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.00330260376920569,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/01_candidate.metal",
+    "elapsed_s": 100.85355401039124,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.004894774396644935,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/02_candidate.metal",
+    "elapsed_s": 105.48958015441895,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0020042000297635356,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/03_candidate.metal",
+    "elapsed_s": 118.52470374107361,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.005350697320563725,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/04_candidate.metal",
+    "elapsed_s": 112.7372612953186,
+    "is_new_best": true
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.004724822160139575,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/05_candidate.metal",
+    "elapsed_s": 112.07766199111938,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.004755291815577179,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/06_candidate.metal",
+    "elapsed_s": 117.72644591331482,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.005196182957927437,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/07_candidate.metal",
+    "elapsed_s": 109.79948210716248,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.004837212941432476,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/08_candidate.metal",
+    "elapsed_s": 123.2755880355835,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.005306435216706997,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/09_candidate.metal",
+    "elapsed_s": 123.198246717453,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.005441014246844355,
+    "fail_reason": null,
+    "source_path": "results/lj_claude-opus-4-7_20260506_142036/10_candidate.metal",
+    "elapsed_s": 117.56113719940186,
+    "is_new_best": true
+  }
+]

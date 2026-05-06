@@ -1,0 +1,44 @@
+{
+  "compile_ok": true,
+  "correct": true,
+  "score": 0.005441014246844355,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "N1728_M5_steps20",
+      "correct": true,
+      "error_value": 9.5367431640625e-07,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0022015833328623557,
+      "achieved": 10.55640259130406,
+      "achieved_unit": "GFLOPS (useful pairs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0023458672425120133
+    },
+    {
+      "label": "N4096_M7_steps15",
+      "correct": true,
+      "error_value": 1.9073486328125e-06,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.001382583332087961,
+      "achieved": 29.882755737844725,
+      "achieved_unit": "GFLOPS (useful pairs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.006640612386187717
+    },
+    {
+      "label": "N10648_M10_steps10",
+      "correct": true,
+      "error_value": 1.9073486328125e-06,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0015353958333435003,
+      "achieved": 46.53080231722672,
+      "achieved_unit": "GFLOPS (useful pairs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.010340178292717049
+    }
+  ]
+}
