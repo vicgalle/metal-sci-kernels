@@ -722,25 +722,25 @@ Package microtype Info: Loading generic protrusion settings for font family
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 437.
  [5]
-Underfull \hbox (badness 3612) in paragraph at lines 491--493
+Underfull \hbox (badness 3612) in paragraph at lines 521--523
 []\T1/ptm/m/n/8 Novikov, A. et al. (2025) Al-phaE-volve: A cod-ing agent for sc
 i-en-tific and al-go-rith-mic dis-cov-ery.
  []
 
 [6]
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 613--618
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 643--648
  [][] 
  []
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 622.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 652.
 
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 681--687
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 711--717
  [][] 
  []
 
-[7] [8] (paper.aux)
+[7] [8] [9] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 29B081250872B7A61745D5055A16850E;3789.
  )
-Output written on paper.xdv (8 pages, 67696 bytes).
+Output written on paper.xdv (9 pages, 70332 bytes).

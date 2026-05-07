@@ -455,23 +455,53 @@ and generalised cleanly.}
 
 \section{Discussion}
 
-A roofline-anchored score answers ``how close are we to the hardware?'' in
-physical units; the geometric mean across sizes is hard to game by
-overfitting one regime, but the held-out gate is what surfaces
-specialisation/generalisation tradeoffs (HMC, LBM) that the in-distribution
-score hides. The Opus--Gemini asymmetry is concrete: at matched iteration
-budgets the in-distribution scores are close, but Gemini's optimisations
-preserve correctness across the held-out size on every task while Opus's
-break it on one. If kernels will be deployed across configurations the
-training set did not cover, that robustness is worth the
-$5{-}10{\times}$ wall-time premium.
-Apple Silicon's unified memory halves the host-side scaffolding compared
-to CUDA, enabling sub-second compile-run-verify cycles per candidate ---
-which matters more than it sounds: an evolutionary loop with tens of
-candidates needs a fast \emph{harness}, not a fast kernel. Metal's
-smaller, quirkier surface (simdgroup intrinsics, threadgroup attributes)
-also surfaces OOD failures of CUDA-trained LLMs on tasks that are
-otherwise textbook.
+\paragraph{The held-out gate as agent oversight.}
+The benchmark's $(1{+}1)$ loop is, modulo terminology, an autonomous
+coding agent: it reads a Metal source, edits it, runs it, and
+self-promotes its own outputs based on an internal fitness signal.
+A human merging the agent's incumbent into a downstream codebase
+sees only the in-distribution score the agent reports --- and that
+score is gameable in two ways our held-out gate catches.
+\textbf{Silent correctness violation.} On HMC, Opus's incumbent hits
+$10.6\times$ with all in-distribution checks green; held out at
+$d{=}24$ --- a problem dimension that sits between two training
+values and is not flagged as out-of-scope --- the same code returns
+samples whose covariance is off by ${\sim}10\sigma$. A user who
+trusted the reported number would ship a sampler that looks
+calibrated and isn't. \textbf{Silent regression.} On LBM both
+models report in-distribution wins ($1.46\times$, $1.06\times$) that
+flip to slowdowns at the held-out grid ($0.41\times$, $0.50\times$);
+the agent confidently labels its output as ``improvement'' on a
+configuration only $1.5\times$ from the training sizes. Both
+failures share a structural shape: the agent specialised against
+the visible workload and reported a number that does not carry over.
+A single auxiliary problem instance per task --- one extra dispatch,
+seconds of GPU time --- is enough to surface both. This reframes
+the contribution toward the workshop's verifiability/oversight
+agenda: \textsc{Metal-Sci}'s value lies less in providing a hard
+benchmark and more in instantiating a cheap, mechanical trust
+contract on top of an autonomous coding agent. The roofline anchor,
+per-size tolerance, and geometric mean are the inner scoring
+machinery; the held-out gate is the lightweight oversight primitive
+that lets a human (or a downstream automated reviewer) catch
+confidently-wrong agent code before deployment.
+
+\paragraph{Other observations.}
+A roofline-anchored score answers ``how close are we to the
+hardware?'' in physical units; the gmean across sizes is hard to
+game by overfitting one regime. The Opus--Gemini asymmetry is
+concrete: at matched iteration budgets the in-distribution scores
+are close, but Gemini's optimisations preserve correctness across
+the held-out size on every task while Opus's break it on one. If
+kernels will be deployed across configurations the training set did
+not cover, that robustness is worth the $5{-}10{\times}$ wall-time
+premium. Apple Silicon's unified memory halves the host-side
+scaffolding compared to CUDA, enabling sub-second compile-run-verify
+cycles per candidate --- which matters more than it sounds: an
+evolutionary loop with tens of candidates needs a fast \emph{harness},
+not a fast kernel. Metal's smaller, quirkier surface also surfaces
+OOD failures of CUDA-trained LLMs on tasks that are otherwise
+textbook.
 
 \paragraph{Limitations and future work.} The static per-chip ceilings do not
 account for SLC residency at small sizes (see the LBM 256$^2$ result above);
