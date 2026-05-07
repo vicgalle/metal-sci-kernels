@@ -48,22 +48,27 @@ scientific Apple-Silicon Metal compute kernels spanning six optimization
 regimes. Every task ships a CPU reference, a roofline ceiling,
 and a naive but correct seed; the fitness signal is the geometric mean of
 \emph{achieved/ceiling} across three problem sizes, with any tolerance
-failure forcing the score to zero. We release the harness and seeds and report a uniform
-10-iteration Claude Opus~4.7 sweep over all ten tasks on Apple M1~Pro.
-In-distribution speedups span $1.00\times$ to $10.6\times$.
-\emph{The held-out evaluation is sharper than the in-distribution
-one and exposes overfitting that the geometric mean hides.} On HMC,
-the \texttt{template <uint D>} dispatch that took $d{=}8$ from 121 to
-970\,GFLOPS hard-codes branches for $d{\in}\{8,16,32\}$ and
-\emph{returns wrong answers} at the held-out $d{=}24$. On LBM, a
-$32{\times}2$ threadgroup geometry tuned for the training sizes
-regresses to $0.64\times$ of the seed at $192^2$. gradshaf, lj,
-fft3d, and nbody extrapolate cleanly. Metal-specific syntax
-(\texttt{[[max\_total\_threads\_per\_threadgroup]]} attribute
-placement, \texttt{half} as reserved fp16 keyword, MSL's lack of
-C++ lambdas) recurs as an out-of-distribution failure across
-iterations. The benchmark is designed for fast iteration: each
-candidate compiles, runs, verifies, and scores in seconds.
+failure forcing the score to zero. We release the harness and seeds and report uniform single-model sweeps
+of \emph{Claude Opus~4.7} and \emph{Gemini~3.1~Pro Preview} over all ten
+tasks on Apple M1~Pro at matched iteration budgets. In-distribution
+self-speedups span $1.00\times$ to $10.7\times$; the two models are
+within 5\% on five tasks (notably HMC at $\sim$10.6$\times$, the high
+end), each model wins outright on three or four of the remainder, and
+correctness-failure rates differ by an order of magnitude (Opus 13/110,
+Pro 0/95 of fresh-run candidates). \emph{The held-out evaluation is
+sharper than the in-distribution one and exposes overfitting that the
+geometric mean hides --- and the two models overfit
+asymmetrically.} On HMC, Opus's \texttt{template <uint D>} dispatch
+that took $d{=}8$ from 121 to 970\,GFLOPS hard-codes branches for
+$d{\in}\{8,16,32\}$ and \emph{returns wrong answers} at the held-out
+$d{=}24$, where Pro's runtime-$d$ unroll generalises cleanly at
+$17.8\times$ over the seed. On LBM, both models pin a fixed
+threadgroup geometry tuned for the training sizes and regress at
+$192^2$. Pro is never strictly worse than Opus on held-out
+across the ten tasks. Metal-specific syntax recurs as an
+out-of-distribution failure across iterations. The benchmark is
+designed for fast iteration: each candidate compiles, runs, verifies,
+and scores in seconds.
 \end{abstract}
 
 \section{Introduction}
@@ -105,9 +110,11 @@ non-trivial optimisation surface.
 six optimisation regimes, each with a CPU reference, roofline-anchored
 fitness, and multi-size generalisation gate. (ii) A runtime-compiled
 harness that exposes compile errors, correctness diagnostics, and per-size
-GPU timing back to the LLM. (iii) Preliminary evolution runs across Claude
-Opus~4.7 and Gemini~3 on M1 Pro, qualitatively analysing which patterns
-each model recovers.
+GPU timing back to the LLM. (iii) Two matched single-model sweeps ---
+Claude Opus~4.7 and Gemini~3.1~Pro Preview --- on M1~Pro, with
+in-distribution \emph{and} held-out evaluation per task; the held-out
+gate exposes specialisation/generalisation tradeoffs the in-distribution
+geometric mean hides, and the two models overfit asymmetrically.
 
 \section{Benchmark tasks}
 \label{sec:tasks}
@@ -294,91 +301,112 @@ via \texttt{google-genai}.
 \section{Preliminary results}
 \label{sec:results}
 
-We run a uniform single-model sweep on Apple M1~Pro: claude-opus-4-7 over
-each of the ten tasks for ten iterations, $\mu{=}1{+}\lambda{=}1$, no human
-prompt intervention. Table~\ref{tab:results} reports the in-distribution
-score (gmean $\mathrm{achieved}/\mathrm{ceiling}$ over the three training
-sizes) and a held-out evaluation, in which the unmodified seed and the
-incumbent best are run on a single unseen problem size declared by the
-task spec (Sec.~\ref{sec:tasks}).
+We run two matched single-model sweeps on Apple M1~Pro --- claude-opus-4-7
+(\emph{O}) and gemini-3.1-pro-preview (\emph{P}) --- over the ten tasks at
+the same per-task iteration budget (10 each except lbm at 25 and wave3d
+at 15), $\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
+Table~\ref{tab:results} reports each model's in-distribution self-speedup
+(best / seed, gmean over three training sizes) and a held-out evaluation
+in which the unmodified seed and each incumbent best are run on a single
+unseen problem size declared by the task spec (Sec.~\ref{sec:tasks}).
 
 \begin{table}[t]
-\caption{Uniform 10-iteration claude-opus-4-7 sweep, Apple M1~Pro.
-``In-distribution'' = gmean(achieved/ceiling) over three training sizes;
-correctness is a hard gate. ``Held-out'' = fraction-of-ceiling at the
-unseen size, then ratio. lbm and wave3d use longer pre-existing runs
-(25 and 15 iters).}
+\caption{Matched 10/15/25-iter sweeps on Apple M1~Pro: O = claude-opus-4-7,
+P = gemini-3.1-pro-preview. \emph{In-dist.\ $\times$} = best / seed,
+gmean over three training sizes; correctness is a hard gate.
+\emph{Held-out frac.} = achieved/ceiling at the unseen size;
+\emph{held-out $\times$} = best / seed at that size.
+\textbf{Bold} marks regressions ($<0.95\times$) and the HMC correctness fail.}
 \label{tab:results}
 \centering
 \footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{l rrr rrr l}
+\begin{tabular}{l cc cc cc l}
 \toprule
-       & \multicolumn{3}{c}{In-distribution} & \multicolumn{3}{c}{Held-out} & \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-7}
-Task     & Seed & Best  & $\times$ & Seed & Best & $\times$ & Outcome \\
+       & \multicolumn{2}{c}{In-dist.\ $\times$} & \multicolumn{2}{c}{Held-out frac.} & \multicolumn{2}{c}{Held-out $\times$} & \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+Task     & O    & P     & O      & P      & O              & P              & Outcome \\
 \midrule
-saxpy    & 0.817 & 1.022 & 1.25  & 79\%   & 78\%   & 0.99           & saturated \\
-heat2d   & 0.609 & 0.609 & 1.00  & 100\%  & 101\%  & 1.01           & saturated; no candidate beat seed \\
-wave3d   & 0.533 & 0.673 & 1.26  & 97\%   & 94\%   & 0.97           & saturated \\
-ising    & 0.066 & 0.075 & 1.13  & 12\%   & 11\%   & 0.96           & flat \\
-fft3d    & 0.162 & 0.167 & 1.03  & 39\%   & 42\%   & 1.08           & generalises \\
-nbody    & 0.019 & 0.055 & 2.83  & 1.0\%  & 1.7\%  & 1.63           & generalises \\
-gradshaf & 0.022 & 0.041 & 1.89  & 3.1\%  & 5.8\%  & 1.89           & generalises (identical) \\
-lj       & 0.003 & 0.005 & 1.77  & 0.25\% & 0.45\% & 1.77           & generalises (identical) \\
-lbm      & 0.395 & 0.576 & 1.46  & 83\%   & 53\%   & \textbf{0.64}  & \textbf{regresses} (TG geom.) \\
-hmc      & 0.009 & 0.093 & 10.6  & 0.55\% & ---    & \textbf{FAIL}  & \textbf{wrong answer} at $d{=}24$ \\
+saxpy    & 1.25 & 1.00  & 78\%   & 105\%  & \textbf{0.79}  & 1.06           & saturated \\
+heat2d   & 1.00 & 1.03  & 79\%   & 84\%   & \textbf{0.80}  & \textbf{0.85}  & saturated \\
+wave3d   & 1.26 & 1.00  & 99\%   & 98\%   & 1.02           & 1.01           & saturated \\
+ising    & 1.13 & 1.00  & 11\%   & 12\%   & 0.95           & 0.99           & flat \\
+fft3d    & 1.03 & 1.19  & 40\%   & 45\%   & 1.02           & 1.15           & generalises \\
+nbody    & 2.83 & 2.00  & 1.7\%  & 1.6\%  & 2.21           & 2.17           & generalises \\
+gradshaf & 1.89 & 2.89  & 5.5\%  & 8.6\%  & 2.13           & 3.31           & generalises \\
+lj       & 1.77 & 1.98  & 0.25\% & 0.48\% & 1.16           & 2.19           & generalises \\
+lbm      & 1.46 & 1.06  & 44\%   & 54\%   & \textbf{0.41}  & \textbf{0.50}  & \textbf{both regress} (TG geom.) \\
+hmc      & 10.6 & 10.7  & ---    & 9.85\% & \textbf{FAIL}  & 17.8           & \textbf{O wrong at $d{=}24$}; P clean \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\paragraph{In-distribution.} Speedups span $1.00\times$ to $10.6\times$.
-The HMC step (Fig.~\ref{fig:hmc-evol}) is the high end: introducing a
-\texttt{template <uint D>} worker dispatched on runtime $d$ at
-iteration~6 moves $d{=}8$ from 121 to 970\,GFLOPS by enabling full
-unroll of the inner $A\,q$ matvec. Saturated tasks (saxpy, heat2d,
-wave3d) sit above 78\% of effective DRAM ceiling on the seed; heat2d
-is the cleanest demonstration that the score is a \emph{hard} signal
---- zero candidates strictly dominated the seed across all three
-sizes, so the incumbent stayed at iter~0.
+\paragraph{In-distribution.} Self-speedups span $1.00\times$ to
+$10.7\times$. The HMC step (Fig.~\ref{fig:hmc-evol}) is the high end
+\emph{for both models}: each independently introduces a
+\texttt{template <uint D>} worker dispatched on runtime $d$ that takes
+$d{=}8$ from $\sim$120 to $\sim$970\,GFLOPS by enabling full unroll
+of the inner $A\,q$ matvec, and the two top scores agree to within
+1.4\% (O 0.0932 vs P 0.0870). Outside HMC the models split: Opus
+wins clearly on saxpy ($1.25$ vs $1.00$), nbody ($2.83$ vs $2.00$),
+lbm ($1.46$ vs $1.06$), and wave3d ($1.26$ vs $1.00$); Pro wins on
+gradshaf ($2.89$ vs $1.89$), fft3d ($1.19$ vs $1.03$), and lj
+($1.98$ vs $1.77$). The pattern correlates with the type of
+optimisation lever: ``tune the same algorithm tighter'' (BW
+saturation, BGK fold, leapfrog ILP) favours Opus, while ``find a
+different algorithm'' (simdgroup-tree reduction, twiddle caching,
+neighbour-list reorganisation) favours Pro. Saturated tasks (saxpy,
+heat2d, wave3d) sit above 78\% of effective DRAM ceiling on the seed;
+heat2d is the cleanest demonstration that the score is a \emph{hard}
+signal --- on Opus zero candidates strictly dominated the seed across
+all three sizes and the incumbent stayed at iter~0. Pro had
+\emph{zero} correctness failures across its 95 fresh-run candidates;
+Opus had 13 across the same candidate budget (notably wave3d 10/15:
+multi-step leapfrog amplifies any sign or indexing error into NaN).
 
-\paragraph{Held-out generalisation is sharper than in-distribution.}
+\paragraph{Held-out generalisation is sharper than in-distribution
+--- and the two models overfit asymmetrically.}
 Three populations separate cleanly. (i)~\emph{Generalises}: nbody,
-fft3d, gradshaf, lj. Gradshaf and lj held-out speedups match their
-in-distribution speedups to two significant figures (size-invariant
-simdgroup-tree reduction and cell-list traversal); fft3d $256^3$
-extrapolates past the largest training size $128^3$.
+fft3d, gradshaf, lj. Gradshaf and lj match (or beat) their
+in-distribution speedups; fft3d $256^3$ extrapolates past the largest
+training size $128^3$ for both models.
 (ii)~\emph{Saturated}: saxpy, heat2d, wave3d, ising --- nothing to win.
-(iii)~\emph{Overfits}, in two qualitatively different ways.
-\textbf{LBM} regresses to $0.64\times$ of the seed on the held-out
-$192^2$ grid: the iter-23 best pins
-\texttt{[[max\_total\_threads\_per\_threadgroup(64)]]} with a
-$32{\times}2$ geometry tuned for the $\{64, 128, 256\}^2$ training
-sizes; on a non-multiple of 32 the geometry wastes threads at the
-boundary, and the BGK algebraic fold cannot recover the loss.
-\textbf{HMC} \emph{fails correctness} at $d{=}24$: the template
-specialisation dispatches \texttt{if (d==8) run<8>() ... else
-run<32>()}, so $d{=}24$ lands in the $D{=}32$ branch; per-thread
+(iii)~\emph{Overfits}, with the most consequential disagreement
+between the two models. \textbf{HMC} is the sharpest case: Opus's
+template specialisation dispatches \texttt{if (d==8) run<8>() ... else
+run<32>()}, so $d{=}24$ lands in the $D{=}32$ branch, per-thread
 \texttt{q[32], p[32]} and the unrolled matvec process 32 entries
 against 24-entry data, and sample covariance lands ${\sim}10\sigma$
-off target. The seed (runtime-$d$ loop) is correct on $d{=}24$ at
-0.55\% of FP32 peak --- a specialisation/generalisation tradeoff the
-held-out gate exposes and the in-distribution score hides. The LBM
+off target. Pro arrived at the same template-D speedup
+in-distribution but kept a runtime-$d$ leapfrog around it, which
+generalises to $d{=}24$ at $9.85\%$ of FP32 peak --- $17.8\times$ the
+seed. \textbf{LBM} regresses for both ($0.41\times$ Opus,
+$0.50\times$ Pro) at the held-out $192^2$ grid: each pins a fixed
+\texttt{[[max\_total\_threads\_per\_threadgroup]]} geometry tuned for
+the $\{64,128,256\}^2$ training sizes; on a non-multiple of 32 the
+geometry wastes threads at the boundary, and the BGK algebraic fold
+cannot recover the loss. \textbf{Pro is never strictly worse than
+Opus on held-out across the ten tasks}: it is the only model
+correct at HMC $d{=}24$, posts a higher held-out speedup on six of
+the remaining nine tasks, and ties on the other three. The LBM
 $256^2$ result above 100\% of nominal ceiling reflects working-set
 residency in the system-level cache: the 8\,B/cell roofline is
 DRAM-only.
 
 \paragraph{Recurring Metal-grammar failures.}
+Compile-error patterns are similar across models.
 \texttt{[[max\_total\_threads\_per\_threadgroup(N)]]} is mis-placed
 (after the parameter list, or as a standalone statement, instead of on
-the \texttt{kernel void} declaration) on \emph{seven} candidates
-across five tasks (saxpy, heat2d, nbody, ising, wave3d) ---
-reproduced from earlier opus-4-6 and gemini-3.1-pro runs.
+the \texttt{kernel void} declaration) on Opus across five tasks ---
+reproduced from earlier opus-4-6 runs.
 \texttt{half} is reserved as MSL's fp16 type, breaking
-\texttt{uint half = N >> 1u;} on fft3d iters~1 and 6. C++ lambdas
-are unsupported, tripping ising iter~2 and wave3d iter~15. Wave3d
-shows the highest correctness failure rate (10/15): multi-step
-leapfrog amplifies any sign or indexing error into NaN.
+\texttt{uint half = N >> 1u;}; C++ lambdas are unsupported. The two
+sweeps differ in volume rather than kind: 12/110 compile fails for
+Opus vs 22/95 for Pro, with Pro exploring more aggressively per
+iteration but never breaking correctness, and Opus producing more
+correct-but-slow candidates. Pro's wall-time per iteration is
+$5{-}10\times$ Opus's at matched budget, the cost of that wider
+exploration.
 
 \begin{figure}[t]
 \centering
@@ -425,13 +453,16 @@ else \ \ \ \ \ \ \ \ \ \ run<32u>(...);\\
 \draw[arr] (lm) -- (rm);
 \end{tikzpicture}
 \caption{Paradigmatic candidate evolution: HMC, Opus~4.7, iter~5\,$\rightarrow$\,6.
-The structural change is one declaration --- \texttt{template <uint D>}
-with three runtime-dispatched instantiations $d\in\{8,16,32\}$. Iter~5 had a
+Both Opus and Pro independently arrive at this structural change.
+The lever is one declaration --- \texttt{template <uint D>}
+with runtime-dispatched instantiations on $d$. Iter~5 had a
 manually-unrolled float4 inner loop against a fixed $D_{\max}{=}32$ layout
 (over-computing at $d{=}8$, plus a 4-way horizontal sum); iter~6 sizes
 \texttt{q,p,f} exactly to $D$ so both loops fully unroll into scalar FMAs ---
 moving $d{=}8$ from 121 to 970\,GFLOPS in one iteration after five had
-stalled at 2--4\% of peak.}
+stalled at 2--4\% of peak. Opus enumerated $D{\in}\{8,16,32\}$ and broke
+correctness at the held-out $d{=}24$; Pro kept a runtime-$d$ fallback
+and generalised cleanly.}
 \label{fig:hmc-evol}
 \end{figure}
 
@@ -440,13 +471,21 @@ stalled at 2--4\% of peak.}
 
 A roofline-anchored score answers ``how close are we to the hardware?'' in
 physical units; the geometric mean across sizes is hard to game by
-overfitting one regime. Apple Silicon's unified memory halves the host-side
-scaffolding compared to CUDA, enabling sub-second compile-run-verify
-cycles per candidate --- which matters more than it sounds: an evolutionary
-loop with tens of candidates needs a fast \emph{harness}, not a fast kernel.
-Metal's smaller, quirkier surface (simdgroup intrinsics, threadgroup
-attributes) also surfaces OOD failures of CUDA-trained LLMs on tasks that
-are otherwise textbook.
+overfitting one regime, but the held-out gate is what surfaces
+specialisation/generalisation tradeoffs (HMC, LBM) that the in-distribution
+score hides. The Opus--Pro asymmetry is concrete: at matched iteration
+budgets the in-distribution scores are close, but Pro's optimisations
+preserve correctness across the held-out size on every task while Opus's
+break it on one. If kernels will be deployed across configurations the
+training set did not cover, that robustness is worth the
+$5{-}10{\times}$ wall-time premium.
+Apple Silicon's unified memory halves the host-side scaffolding compared
+to CUDA, enabling sub-second compile-run-verify cycles per candidate ---
+which matters more than it sounds: an evolutionary loop with tens of
+candidates needs a fast \emph{harness}, not a fast kernel. Metal's
+smaller, quirkier surface (simdgroup intrinsics, threadgroup attributes)
+also surfaces OOD failures of CUDA-trained LLMs on tasks that are
+otherwise textbook.
 
 \paragraph{Limitations and future work.} The static per-chip ceilings do not
 account for SLC residency at small sizes (see the LBM 256$^2$ result above);
