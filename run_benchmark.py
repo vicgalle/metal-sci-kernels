@@ -63,7 +63,6 @@ async def run_evolution(args) -> int:
         output_dir=out_dir,
         n_warmup=args.warmup,
         n_measure=args.measure,
-        thinking_budget=args.thinking_budget,
     )
     return 0
 
@@ -93,10 +92,6 @@ def main() -> int:
     parser.add_argument(
         "--measure", type=int, default=10,
         help="Measured dispatches per timing measurement.",
-    )
-    parser.add_argument(
-        "--thinking-budget", type=int, default=16_000,
-        help="Extended-thinking token budget (Gemini only; Claude uses effort).",
     )
     parser.add_argument(
         "--output-dir", default="results",
