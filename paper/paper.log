@@ -739,8 +739,11 @@ Overfull \hbox (4.5819pt too wide) in paragraph at lines 711--717
  [][] 
  []
 
-[7] [8] [9] (paper.aux)
+[7] [8]
+File: figs/convergence.png Graphic file (type bmp)
+<figs/convergence.png>
+ [9] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 29B081250872B7A61745D5055A16850E;3789.
+(rerunfilecheck)             Checksum: 8A3F423DA631593C119585CBC0AD72D2;4099.
  )
-Output written on paper.xdv (9 pages, 70332 bytes).
+Output written on paper.xdv (9 pages, 73528 bytes).

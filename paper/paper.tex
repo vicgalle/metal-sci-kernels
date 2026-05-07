@@ -822,4 +822,42 @@ KernelCraft~[16]      & accelerator asm           & ML  & compiler speedup     &
 }
 \end{table}
 
+\section{Further results: convergence and iteration budgets}
+\label{app:convergence}
+
+The per-task iteration budget is uneven --- lbm 25, wave3d 15, all
+others 10. Figure~\ref{fig:convergence} shows the running self-speedup
+\emph{best/seed} per iteration and justifies the choice. Two patterns
+recur. First, on most tasks (saxpy, heat2d, nbody, gradshaf, fft3d,
+hmc, ising, lj) the incumbent stops moving by iteration $\sim$8;
+extending past 10 would not change the headline number. Second, lbm
+and wave3d are different: lbm's Opus run plateaus at $1.36\times$
+from iter~3 through iter~22, then breaks through to $1.46\times$ at
+iter~23 (the BGK fold + pinned threadgroup of App.~\ref{app:code}); a
+10-iter budget would have reported $1.36\times$ and missed
+App.~\ref{app:code}'s exemplar. Wave3d's Opus run shows the same
+shape with the lift at iter~14. Both late-arriving wins land in tasks
+where the seed is already saturated on at least one size --- the
+search has to pick a structural lever (kernel attribute, marching
+axis), and $1+1$ exploration finds those rarely. The figure also
+makes the silent-correctness story visible: every \texttt{x} on the
+$y{=}1$ baseline is a candidate that compiled or ran wrong, and Opus
+emits more of them than Gemini at every task with non-trivial
+search (nbody, hmc, ising, lj, wave3d).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/convergence.png}
+\caption{Per-task running self-speedup (best-so-far / seed) versus
+iteration, Opus 4.7 (purple) vs Gemini 3.1 Pro (green). Filled
+circles mark the iteration that achieved the final best; \texttt{x}
+along $y{=}1$ marks compile or correctness failures (which leave
+the incumbent unchanged). lbm and wave3d are the two tasks where
+extending the budget past 10 paid off: lbm's Opus best lands at
+iter~23 ($1.46\times$, vs $1.36\times$ at iter~10), wave3d's at
+iter~14 ($1.26\times$, vs $1.00\times$ at iter~10). Every other task
+plateaus by iter~$\sim$8.}
+\label{fig:convergence}
+\end{figure}
+
 \end{document}
