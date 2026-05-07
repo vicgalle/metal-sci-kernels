@@ -71,7 +71,6 @@ async def evolve(
     output_dir: Path,
     n_warmup: int = 3,
     n_measure: int = 10,
-    thinking_budget: int = 16_000,
     chip: ChipSpec | None = None,
 ) -> dict:
     """Run the evolution loop. Returns a summary dict; writes everything to disk."""
@@ -143,7 +142,6 @@ async def evolve(
         try:
             full_text, reasoning = await call_llm(
                 SYSTEM_PROMPT, user_prompt, model,
-                thinking_budget=thinking_budget,
             )
         except Exception as e:
             log(f"  LLM call failed: {e}")

@@ -24,10 +24,9 @@ def is_gemini(model: str) -> bool:
     return model.startswith("gemini") or model.startswith("gemma")
 
 
-async def call_llm(system: str, user: str, model: str,
-                   thinking_budget: int = 16_000) -> tuple[str, str]:
+async def call_llm(system: str, user: str, model: str) -> tuple[str, str]:
     if is_gemini(model):
-        return await _call_gemini(system, user, model, thinking_budget)
+        return await _call_gemini(system, user, model)
     return await _call_claude(system, user, model)
 
 
@@ -67,8 +66,7 @@ async def _call_claude(system: str, user: str, model: str) -> tuple[str, str]:
     return "\n".join(text_parts), "\n".join(thinking_parts)
 
 
-async def _call_gemini(system: str, user: str, model: str,
-                       thinking_budget: int) -> tuple[str, str]:
+async def _call_gemini(system: str, user: str, model: str) -> tuple[str, str]:
     from google import genai
     from google.genai import types
 
@@ -78,9 +76,7 @@ async def _call_gemini(system: str, user: str, model: str,
         contents=user,
         config=types.GenerateContentConfig(
             system_instruction=system,
-            thinking_config=types.ThinkingConfig(
-                thinking_budget=thinking_budget,
-            ),
+            thinking_config=types.ThinkingConfig(thinking_level="high"),
         ),
     )
 
