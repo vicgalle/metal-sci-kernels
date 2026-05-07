@@ -15,6 +15,7 @@
 \usepackage{amssymb}
 \usepackage{microtype}
 \usepackage{xcolor}
+\usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, calc}
 
@@ -491,6 +492,130 @@ for C++ based physics on the Apple M1's unified processing units.
 \item[\textnormal{[11]}] Govindaraju, N.\ K.\ et al.\ (2008) High
 performance discrete Fourier transforms on graphics processors.
 \emph{Proc.\ SC '08}.
+\item[\textnormal{[12]}] Li, J.\ et al.\ (2025) TritonBench: Benchmarking
+large language model capabilities for generating Triton operators.
+\emph{Findings of ACL 2025}, pp.\ 23053--23066.
+\item[\textnormal{[13]}] Saroufim, M.\ et al.\ (2025) BackendBench:
+benchmarking PyTorch-backend kernel generation.
+\item[\textnormal{[14]}] Wen, J.\ et al.\ (2025) MultiKernelBench:
+multi-platform LLM kernel generation across CUDA, Ascend\,C, and Pallas.
+\item[\textnormal{[15]}] Kalade, S.\ \& Schelle, G.\ (2025) NPUEval:
+optimising NPU kernels with LLMs and open-source compilers.
+\emph{arXiv:2507.14403}.
+\item[\textnormal{[16]}] Nie, J.\ et al.\ (2026) KernelCraft: benchmarking
+agentic close-to-metal kernel generation on emerging hardware.
+\emph{arXiv:2603.08721}.
+\item[\textnormal{[17]}] Lange, R.\ T.\ et al.\ (2025) Towards robust
+agentic CUDA kernel benchmarking, verification, and optimisation.
+\emph{arXiv:2509.14279}.
+\item[\textnormal{[18]}] Guo, P.\ et al.\ (2025) EvoEngineer: mastering
+automated CUDA kernel evolution with large language models.
+\emph{arXiv:2510.03760}.
 \end{itemize}
+
+\appendix
+
+\section{Related work}
+\label{app:related}
+
+\subsection{LLM-driven kernel-generation benchmarks}
+
+A wave of benchmarks has emerged for evaluating LLMs as generators of
+high-performance GPU kernels. \emph{KernelBench}~[3] targets PyTorch ML
+kernels (GEMM, attention, convolution, normalisation, activation) on
+CUDA and scores single-shot generation by speedup against the PyTorch
+eager baseline. \emph{TritonBench}~[12] extends to the Triton DSL and
+adds reference code-similarity to correctness and performance.
+\emph{BackendBench}~[13] evaluates correctness alone for kernels written
+against the PyTorch backend interface. \emph{MultiKernelBench}~[14]
+broadens the platform set to CUDA, Ascend\,C, and Pallas while retaining
+the ML-operator workload set. \emph{NPUEval}~[15] targets the AMD AIE
+NPU in C++ and exposes a tool-use feedback loop with multi-turn
+regeneration. Most recently, \emph{KernelCraft}~[16] benchmarks
+bare-metal assembly kernel generation on emerging accelerator ISAs
+(PLENA, AMD NPU, Coral NPU, Sonic BOOM), with native tool interfaces
+(\texttt{check\_syntax}, \texttt{run\_evaluation}, \texttt{view\_output},
+\texttt{grep\_docs}) and a three-tier ML-task taxonomy (primitive,
+composite, end-to-end). Across these benchmarks the workload is ML and
+the headline number is speedup against a vendor or compiler baseline.
+
+\subsection{LLM-driven evolutionary code search}
+
+The broader paradigm of LLMs as \emph{optimisers} inside evolutionary
+code-search loops was established by \emph{FunSearch}~[1] for
+symbolic-algorithm discovery and scaled by \emph{AlphaEvolve}~[2] across
+mathematical and algorithmic domains. \emph{AI CUDA Engineer}~[17] and
+\emph{EvoEngineer}~[18] specialise this paradigm to CUDA kernel
+optimisation, replacing single-shot or agentic regeneration with a
+population/archive driven by a fitness signal --- closer in spirit to
+our $(\mu{=}1{+}\lambda{=}1)$ loop, but on CUDA ML kernels rather than
+Apple Silicon scientific kernels.
+
+\subsection{Where \textsc{Metal-Sci} differs}
+
+Existing kernel-generation benchmarks share three structural choices
+that \textsc{Metal-Sci} deviates from. \emph{(i) Workload domain.} All
+listed benchmarks target ML operators, where the optimisation surface
+is dominated by tiling and warp-level reduction patterns heavily
+represented in pretraining data. \textsc{Metal-Sci} targets scientific
+compute --- regular and irregular stencils, all-pairs interactions,
+multi-field Boltzmann updates, neighbour-list molecular dynamics,
+parallel-chain MCMC, multi-kernel nonlinear PDE solvers, and butterfly
+spectral transforms --- six structurally distinct optimisation regimes
+(R1--R6 of Section~\ref{sec:tasks}) whose canonical recipes
+[5,6,7,8,11] do not transfer between regimes. \emph{(ii) Score basis.}
+All listed benchmarks normalise \emph{achieved} against a vendor or
+compiler baseline (PyTorch eager, compiler-emitted code, expert
+hand-tuned reference). This couples the headline number to the
+strength of that baseline. \textsc{Metal-Sci} normalises against the
+per-chip roofline ceiling (peak FP32 GFLOPS, peak DRAM GB/s), a
+hardware-anchored target independent of any reference implementation,
+with a hard correctness gate ($S{=}0$ on tolerance failure) and a
+geometric mean across three problem sizes that discourages overfit to a
+single working-set regime. \emph{(iii) Hardware.} No listed benchmark
+targets Apple Silicon's Metal compute pipeline. Metal is structurally
+underrepresented in CUDA-centric pretraining data and surfaces a real
+out-of-distribution generalisation test on Metal-grammar and
+Metal-stdlib idioms --- the
+\texttt{[[max\_total\_threads\_per\_threadgroup]]} attribute placement
+(Sec.~\ref{sec:results}, four independent reproductions across
+Opus~4.7, Opus~4.6, and Gemini-3.1-Pro), \texttt{half} as a reserved
+fp16 keyword, the availability of \texttt{simd\_shuffle\_xor} for
+intra-simdgroup butterflies, and the absence of \texttt{sincospi}.
+Table~\ref{tab:related} summarises these axes against the comparator set.
+
+\begin{table}[t]
+\caption{\textsc{Metal-Sci} versus existing LLM kernel-generation
+benchmarks across the axes that drive the design of our harness.
+\emph{Domain}: ML = neural-network operators (GEMM, attention,
+convolution, normalisation, activation); HPC = scientific compute
+(stencil, $N$-body, LBM, MD, MCMC, PDE solver, FFT). \emph{Score basis}:
+what \emph{achieved} is normalised against. \emph{Multi-size}: whether
+the score requires generalisation across problem sizes. \emph{Search}:
+the loop structure exposed to the LLM. Within the ML row, all listed
+benchmarks span a single optimisation regime (matmul-style, with
+norm/activation epilogues); \textsc{Metal-Sci} spans six structurally
+distinct regimes (R1--R6 of Section~\ref{sec:tasks}).}
+\label{tab:related}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l l l l l}
+\toprule
+Benchmark & Target & Domain & Score basis & Multi-size & Search \\
+\midrule
+KernelBench~[3]       & CUDA                      & ML  & PyTorch speedup      & ---            & single-shot \\
+TritonBench~[12]      & Triton DSL                & ML  & speedup\,+\,code-sim & ---            & single-shot \\
+BackendBench~[13]     & PyTorch backend           & ML  & correctness only     & ---            & single-shot \\
+MultiKernelBench~[14] & CUDA / Ascend\,C / Pallas & ML  & compiler speedup     & ---            & multi-turn \\
+NPUEval~[15]          & AIE C++ (AMD NPU)         & ML  & compiler speedup     & ---            & tool-use \\
+KernelCraft~[16]      & accelerator asm           & ML  & compiler speedup     & cfg.\ vars     & agentic tool-use \\
+\midrule
+\textbf{\textsc{Metal-Sci} (ours)} & \textbf{Apple Metal MSL} & \textbf{HPC} & \textbf{\% of roofline} & \textbf{3 in\,+\,1 held-out} & \textbf{evolutionary $(1{+}1)$} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
 \end{document}
