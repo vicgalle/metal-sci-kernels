@@ -695,23 +695,23 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [1
 
-
-]
-Underfull \hbox (badness 3407) in paragraph at lines 98--108
+Underfull \hbox (badness 3407) in paragraph at lines 78--88
 []\T1/ptm/m/n/10 We tar-get Ap-ple Sil-i-con's Metal com-pute pipeline. It is u
 n-der-rep-re-sented in CUDA-
  []
 
-[2] [3] [4]
-Underfull \hbox (badness 5203) in paragraph at lines 397--410
+[1
+
+
+] [2] [3] [4]
+Underfull \hbox (badness 5203) in paragraph at lines 383--396
  []\T1/ptm/b/n/10 Recurring Metal-grammar fail-ures.[] \T1/ptm/m/n/10 Compile-e
 rror pat-terns are sim-i-lar across mod-els.
  []
 
-LaTeX Font Info:    Trying to load font information for T1+phv on input line 45
-1.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 43
+7.
 (t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
@@ -720,19 +720,27 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 451.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 437.
  [5]
-Underfull \hbox (badness 3612) in paragraph at lines 505--507
+Underfull \hbox (badness 3612) in paragraph at lines 491--493
 []\T1/ptm/m/n/8 Novikov, A. et al. (2025) Al-phaE-volve: A cod-ing agent for sc
 i-en-tific and al-go-rith-mic dis-cov-ery.
  []
 
+[6]
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 613--618
+ [][] 
+ []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 622.
 
- [6]
-[7] (paper.aux)
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 681--687
+ [][] 
+ []
+
+[7] [8] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 0FE556F99800EF5173070094F2897355;2780.
+(rerunfilecheck)             Checksum: 29B081250872B7A61745D5055A16850E;3789.
  )
-Output written on paper.xdv (7 pages, 55292 bytes).
+Output written on paper.xdv (8 pages, 67696 bytes).
