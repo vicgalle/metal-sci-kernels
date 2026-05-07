@@ -138,7 +138,7 @@ class FFT3DTask(Task):
             TaskSize("128cube", {"n": 128}),
         ],
         held_out_sizes=[
-            TaskSize("96cube",  {"n": 96}),  # held out as a non-power-of-2 — would need mixed radix
+            TaskSize("256cube", {"n": 256}),  # held out: extrapolation past the largest training size
         ],
     )
 

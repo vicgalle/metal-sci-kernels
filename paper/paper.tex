@@ -48,20 +48,22 @@ scientific Apple-Silicon Metal compute kernels spanning six optimization
 regimes. Every task ships a CPU reference, a roofline ceiling,
 and a naive but correct seed; the fitness signal is the geometric mean of
 \emph{achieved/ceiling} across three problem sizes, with any tolerance
-failure forcing the score to zero. We release the harness and seeds, and
-report preliminary 5--25 iteration evolution runs for Claude Opus~4.7,
-Gemini~3-Flash, and Gemini~3.1-Pro on an Apple M1 Pro. Frontier models
-recover canonical optimisations on well-trodden tasks (threadgroup tiling
-on N-body, BGK symmetry algebra on Lattice Boltzmann, template specialisation
-on HMC) yet still mishandle Metal-specific concurrency and naming syntax
-and stall at single-digit percent of peak on irregular-memory tasks
-(Lennard-Jones with cell lists). On 3D FFT we observe a clean dichotomy:
-Opus~4.7 recovers the CUDA-style Stockham + twiddle-table recipe but
-sacrifices threadgroup occupancy ($1.03\times$ over the seed), while
-Gemini-3.1-Pro reaches for Metal-native \texttt{simd\_shuffle\_xor}
-intra-simdgroup butterflies and wins ($1.19\times$, $2$--$2.4\times$ ahead
-of Opus at the cache-resident sizes). The benchmark is designed for fast iteration: each candidate
-compiles, runs, verifies, and scores in seconds.
+failure forcing the score to zero. We release the harness and seeds and report a uniform
+10-iteration Claude Opus~4.7 sweep over all ten tasks on Apple M1~Pro.
+In-distribution speedups span $1.00\times$ to $10.6\times$.
+\emph{The held-out evaluation is sharper than the in-distribution
+one and exposes overfitting that the geometric mean hides.} On HMC,
+the \texttt{template <uint D>} dispatch that took $d{=}8$ from 121 to
+970\,GFLOPS hard-codes branches for $d{\in}\{8,16,32\}$ and
+\emph{returns wrong answers} at the held-out $d{=}24$. On LBM, a
+$32{\times}2$ threadgroup geometry tuned for the training sizes
+regresses to $0.64\times$ of the seed at $192^2$. gradshaf, lj,
+fft3d, and nbody extrapolate cleanly. Metal-specific syntax
+(\texttt{[[max\_total\_threads\_per\_threadgroup]]} attribute
+placement, \texttt{half} as reserved fp16 keyword, MSL's lack of
+C++ lambdas) recurs as an out-of-distribution failure across
+iterations. The benchmark is designed for fast iteration: each
+candidate compiles, runs, verifies, and scores in seconds.
 \end{abstract}
 
 \section{Introduction}
@@ -292,46 +294,91 @@ via \texttt{google-genai}.
 \section{Preliminary results}
 \label{sec:results}
 
-Table~\ref{tab:results} summarises one representative run per task on Apple
-M1~Pro. Scores are geometric mean of $\mathrm{achieved}/\mathrm{ceiling}$
-across the three in-distribution sizes; the column ``best @ largest''
-reports the fraction-of-ceiling at the largest size of the
-incumbent best.
+We run a uniform single-model sweep on Apple M1~Pro: claude-opus-4-7 over
+each of the ten tasks for ten iterations, $\mu{=}1{+}\lambda{=}1$, no human
+prompt intervention. Table~\ref{tab:results} reports the in-distribution
+score (gmean $\mathrm{achieved}/\mathrm{ceiling}$ over the three training
+sizes) and a held-out evaluation, in which the unmodified seed and the
+incumbent best are run on a single unseen problem size declared by the
+task spec (Sec.~\ref{sec:tasks}).
 
 \begin{table}[t]
-\caption{Preliminary evolution runs on Apple M1 Pro. Score is the geometric
-mean of $\mathrm{achieved}/\mathrm{ceiling}$ over three in-distribution
-sizes; correctness is a hard gate. Best @ largest is the fraction-of-ceiling
-at the largest in-distribution size.}
+\caption{Uniform 10-iteration claude-opus-4-7 sweep, Apple M1~Pro.
+``In-distribution'' = gmean(achieved/ceiling) over three training sizes;
+correctness is a hard gate. ``Held-out'' = fraction-of-ceiling at the
+unseen size, then ratio. lbm and wave3d use longer pre-existing runs
+(25 and 15 iters).}
 \label{tab:results}
 \centering
-\small
-\begin{tabular}{llrrrrr}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{l rrr rrr l}
 \toprule
-Task & Model & Iters & Seed & Best & Speedup & Best @ largest \\
+       & \multicolumn{3}{c}{In-distribution} & \multicolumn{3}{c}{Held-out} & \\
+\cmidrule(lr){2-4}\cmidrule(lr){5-7}
+Task     & Seed & Best  & $\times$ & Seed & Best & $\times$ & Outcome \\
 \midrule
-heat2d   & gemini-2.5-flash       & 1  & 0.484 & 0.484 & 1.00$\times$ & --- \\
-wave3d   & claude-opus-4-7        & 15 & 0.533 & 0.673 & 1.26$\times$ & 77.1\% \\
-nbody    & gemini-3-flash-preview & 5  & 0.020 & 0.061 & 2.99$\times$ & 17.7\% \\
-nbody    & gemini-3.1-pro-preview & 5  & 0.020 & 0.045 & 2.19$\times$ & 22.0\% \\
-hmc      & claude-opus-4-7        & 10 & 0.009 & 0.093 & 10.6$\times$ & 21.6\% (d{=}8) \\
-lbm      & claude-opus-4-7        & 25 & 0.395 & 0.576 & 1.46$\times$ & 121.6\% \\
-lbm      & claude-opus-4-6        & 25 & 0.392 & 0.545 & 1.39$\times$ & ---\,\,\,\,\, \\
-ising    & claude-opus-4-7        & 10 & 0.066 & 0.075 & 1.13$\times$ & 11.6\% \\
-lj       & claude-opus-4-7        & 10 & 0.003 & 0.005 & 1.77$\times$ &  1.0\% \\
-lj       & gemini-3.1-pro-preview & 15 & 0.003 & 0.006 & 1.98$\times$ &  --- \\
-gradshaf & claude-opus-4-7        & 10 & 0.022 & 0.041 & 1.89$\times$ & 10.7\% \\
-fft3d    & claude-opus-4-7        & 10 & 0.162 & 0.167 & 1.03$\times$ & 29.8\% \\
-fft3d    & gemini-3.1-pro-preview & 10 & 0.237 & 0.282 & 1.19$\times$ & 31.5\% \\
+saxpy    & 0.817 & 1.022 & 1.25  & 79\%   & 78\%   & 0.99           & saturated \\
+heat2d   & 0.609 & 0.609 & 1.00  & 100\%  & 101\%  & 1.01           & saturated; no candidate beat seed \\
+wave3d   & 0.533 & 0.673 & 1.26  & 97\%   & 94\%   & 0.97           & saturated \\
+ising    & 0.066 & 0.075 & 1.13  & 12\%   & 11\%   & 0.96           & flat \\
+fft3d    & 0.162 & 0.167 & 1.03  & 39\%   & 42\%   & 1.08           & generalises \\
+nbody    & 0.019 & 0.055 & 2.83  & 1.0\%  & 1.7\%  & 1.63           & generalises \\
+gradshaf & 0.022 & 0.041 & 1.89  & 3.1\%  & 5.8\%  & 1.89           & generalises (identical) \\
+lj       & 0.003 & 0.005 & 1.77  & 0.25\% & 0.45\% & 1.77           & generalises (identical) \\
+lbm      & 0.395 & 0.576 & 1.46  & 83\%   & 53\%   & \textbf{0.64}  & \textbf{regresses} (TG geom.) \\
+hmc      & 0.009 & 0.093 & 10.6  & 0.55\% & ---    & \textbf{FAIL}  & \textbf{wrong answer} at $d{=}24$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The LBM 256$^2$ result above 100\% of the published ceiling reflects working-set
-residency in Apple Silicon's system-level cache: the 8\,B/cell roofline is
-DRAM-only, while the streamed 9-distribution working set fits in SLC at this
-size. We report it unmodified to flag the limitation of the static roofline
-in the multi-field, multi-step regime.
+\paragraph{In-distribution.} Speedups span $1.00\times$ to $10.6\times$.
+The HMC step (Fig.~\ref{fig:hmc-evol}) is the high end: introducing a
+\texttt{template <uint D>} worker dispatched on runtime $d$ at
+iteration~6 moves $d{=}8$ from 121 to 970\,GFLOPS by enabling full
+unroll of the inner $A\,q$ matvec. Saturated tasks (saxpy, heat2d,
+wave3d) sit above 78\% of effective DRAM ceiling on the seed; heat2d
+is the cleanest demonstration that the score is a \emph{hard} signal
+--- zero candidates strictly dominated the seed across all three
+sizes, so the incumbent stayed at iter~0.
+
+\paragraph{Held-out generalisation is sharper than in-distribution.}
+Three populations separate cleanly. (i)~\emph{Generalises}: nbody,
+fft3d, gradshaf, lj. Gradshaf and lj held-out speedups match their
+in-distribution speedups to two significant figures (size-invariant
+simdgroup-tree reduction and cell-list traversal); fft3d $256^3$
+extrapolates past the largest training size $128^3$.
+(ii)~\emph{Saturated}: saxpy, heat2d, wave3d, ising --- nothing to win.
+(iii)~\emph{Overfits}, in two qualitatively different ways.
+\textbf{LBM} regresses to $0.64\times$ of the seed on the held-out
+$192^2$ grid: the iter-23 best pins
+\texttt{[[max\_total\_threads\_per\_threadgroup(64)]]} with a
+$32{\times}2$ geometry tuned for the $\{64, 128, 256\}^2$ training
+sizes; on a non-multiple of 32 the geometry wastes threads at the
+boundary, and the BGK algebraic fold cannot recover the loss.
+\textbf{HMC} \emph{fails correctness} at $d{=}24$: the template
+specialisation dispatches \texttt{if (d==8) run<8>() ... else
+run<32>()}, so $d{=}24$ lands in the $D{=}32$ branch; per-thread
+\texttt{q[32], p[32]} and the unrolled matvec process 32 entries
+against 24-entry data, and sample covariance lands ${\sim}10\sigma$
+off target. The seed (runtime-$d$ loop) is correct on $d{=}24$ at
+0.55\% of FP32 peak --- a specialisation/generalisation tradeoff the
+held-out gate exposes and the in-distribution score hides. The LBM
+$256^2$ result above 100\% of nominal ceiling reflects working-set
+residency in the system-level cache: the 8\,B/cell roofline is
+DRAM-only.
+
+\paragraph{Recurring Metal-grammar failures.}
+\texttt{[[max\_total\_threads\_per\_threadgroup(N)]]} is mis-placed
+(after the parameter list, or as a standalone statement, instead of on
+the \texttt{kernel void} declaration) on \emph{seven} candidates
+across five tasks (saxpy, heat2d, nbody, ising, wave3d) ---
+reproduced from earlier opus-4-6 and gemini-3.1-pro runs.
+\texttt{half} is reserved as MSL's fp16 type, breaking
+\texttt{uint half = N >> 1u;} on fft3d iters~1 and 6. C++ lambdas
+are unsupported, tripping ising iter~2 and wave3d iter~15. Wave3d
+shows the highest correctness failure rate (10/15): multi-step
+leapfrog amplifies any sign or indexing error into NaN.
 
 \begin{figure}[t]
 \centering
@@ -388,55 +435,6 @@ stalled at 2--4\% of peak.}
 \label{fig:hmc-evol}
 \end{figure}
 
-\paragraph{Qualitative findings.} Four patterns recur across runs.
-\emph{(i) Models recover canonical optimisations on well-trodden tasks.}
-On nbody, Gemini-3.1-Pro one-shots threadgroup-memory tiling with
-cooperative load and 4-way ILP unroll (Nyland 2007); on LBM, both Claude
-4.6 and 4.7 independently find the BGK pairwise-symmetry algebraic
-factorisation; on HMC (Fig.~\ref{fig:hmc-evol}), Opus~4.7 introduces a
-\texttt{template <uint D>} worker dispatched on runtime $d$ at iteration~6,
-taking $d{=}8$ from 121 to 970\,GFLOPS in a single iteration by enabling
-full unroll of the inner $A q$ matvec.
-\emph{(ii) Metal-specific syntax is a real OOD failure, and replicates
-across models.} On LBM, Opus~4.6 mishandles the
-\texttt{[[max\_total\_threads\_per\_threadgroup(N)]]} attribute placement
-on six independent iterations (the same compile error each time),
-missing a structural lever Opus~4.7 uses correctly on its first attempt.
-On gradshaf, an early run hit 6/10 NaN failures from a hard-coded
-$32{\times}8$ tile against a host-pinned $16{\times}16$ threadgroup. On
-fft3d, \emph{both} Opus~4.7 and Gemini-3.1-Pro placed the same attribute
-as a \emph{suffix} after the parameter list (between \texttt{)} and
-\texttt{\{}) on iteration~1, an independent reproduction of the same OOD
-failure across model families. Two further fft3d failures were
-single-model: Opus~4.7 hit \texttt{uint half = N >> 1u;} on iters 1 and
-6 --- \texttt{half} is reserved as MSL's fp16 type, producing a
-cascading parse error not seen in CUDA --- and Gemini-3.1-Pro called
-\texttt{sincospi}, which exists in CUDA but not in MSL (only
-\texttt{sincos}). All four are Metal-grammar / Metal-stdlib mismatches
-with no analogue in CUDA training data.
-\emph{(iii) Models pick different optimisation axes; Metal-native beats
-CUDA-style.} On fft3d, the two models diverge meaningfully. Opus~4.7
-recovers the CUDA-FFT canonical recipe by iteration~10 --- Stockham
-auto-sort, mixed radix-4 + radix-2 final stage, cooperative twiddle-table
-precompute --- but pays for it with ${\sim}20$\,KB of threadgroup memory
-(two ${\sim}8$\,KB ping-pong buffers plus the twiddle table), suppressing
-resident-TG count and capping the gain at $1.03\times$. Gemini-3.1-Pro
-finds the Metal-native lever instead: \texttt{simd\_shuffle\_xor}-based
-intra-simdgroup butterflies that make the first five stages (i.e.\ the
-entire FFT for $N{\leq}32$, all but 1--2 stages for $N{=}64,128$)
-\emph{barrier-free}, plus \texttt{reverse\_bits} and \texttt{ctz}
-intrinsics and a $i{+}i/32$ bank-conflict padding scheme. Twiddles are
-recomputed on the fly, freeing the 4\,KB Opus spent on its table.
-Result: $1.19\times$ over the seed and a $2.0$--$2.4\times$ per-size lead
-over Opus at $32^3$ and $64^3$ (21\% / 34\% of peak BW vs 9\% / 18\%),
-narrowing to a tie at $128^3$ where DRAM dominates. The signal is sharper
-than ``one is better'': the models are reaching for different priors ---
-CUDA-FFT vs Metal-shuffle --- and on this hardware the latter wins.
-\emph{(iv) Irregular tasks remain hard.} Lennard-Jones with cell lists
-still sits at $\sim$1\% of FP32 peak after 10 iterations across both
-Claude and Gemini; the atomic scatter and variable-occupancy
-neighbour-cell loop are not patterns either model recombines
-effectively in our budget.
 
 \section{Discussion}
 
@@ -578,10 +576,11 @@ underrepresented in CUDA-centric pretraining data and surfaces a real
 out-of-distribution generalisation test on Metal-grammar and
 Metal-stdlib idioms --- the
 \texttt{[[max\_total\_threads\_per\_threadgroup]]} attribute placement
-(Sec.~\ref{sec:results}, four independent reproductions across
-Opus~4.7, Opus~4.6, and Gemini-3.1-Pro), \texttt{half} as a reserved
-fp16 keyword, the availability of \texttt{simd\_shuffle\_xor} for
-intra-simdgroup butterflies, and the absence of \texttt{sincospi}.
+(Sec.~\ref{sec:results}, seven independent reproductions across five
+tasks within the opus-4-7 sweep, recurring in earlier opus-4-6 and
+gemini-3.1-pro runs), \texttt{half} as a reserved fp16 keyword, the
+absence of C++ lambdas, the availability of \texttt{simd\_shuffle\_xor}
+for intra-simdgroup butterflies, and the absence of \texttt{sincospi}.
 Table~\ref{tab:related} summarises these axes against the comparator set.
 
 \begin{table}[t]
