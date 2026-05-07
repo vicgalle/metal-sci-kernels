@@ -3,3 +3,4 @@ pyobjc-framework-Metal>=10.0
 pyobjc-framework-Cocoa>=10.0
 claude-agent-sdk
 google-genai
+openai>=1.50
