@@ -1,0 +1,245 @@
+I’m applying SIMDgroup neighbor reuse for the large power-of-two lattices: each lane loads its own spin, then obtains horizontal neighbors via `simd_shuffle_up/down`, with safe fallback at SIMD/row boundaries. A guarded `xor16` vertical reuse path also saves one vertical load on common 16-wide 2D threadgroup layouts. This should reduce global byte-load pressure versus the incumbent while preserving the exact RNG and acceptance logic.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+inline uint mix32(uint x) {
+    x = (x ^ (x >> 16)) * 0x85EBCA6Bu;
+    x = (x ^ (x >> 13)) * 0xC2B2AE35u;
+    return x ^ (x >> 16);
+}
+
+inline uint rng_from_base(uint rng_base, uint site_idx) {
+    return mix32(rng_base ^ site_idx);
+}
+
+inline void update_active_indexed(device       char  *spins,
+                                  device const float *p_accept,
+                                  uint site_idx,
+                                  uint left_idx,
+                                  uint right_idx,
+                                  uint up_idx,
+                                  uint down_idx,
+                                  uint rng_base) {
+    const char s = spins[site_idx];
+
+    const uint idx =
+        ((spins[left_idx]  == s) ? 1u : 0u) +
+        ((spins[right_idx] == s) ? 1u : 0u) +
+        ((spins[up_idx]    == s) ? 1u : 0u) +
+        ((spins[down_idx]  == s) ? 1u : 0u);
+
+    const float pa = p_accept[idx];
+
+    const uint bits = rng_from_base(rng_base, site_idx);
+    const float u = float(bits >> 8) * (1.0f / 16777216.0f);
+
+    if (u < pa) {
+        spins[site_idx] = (char)(-((int)s));
+    }
+}
+
+inline void update_pred_indexed(device       char  *spins,
+                                device const float *p_accept,
+                                uint site_idx,
+                                uint left_idx,
+                                uint right_idx,
+                                uint up_idx,
+                                uint down_idx,
+                                uint active_bit,
+                                uint rng_base) {
+    const char s = spins[site_idx];
+
+    const uint idx =
+        ((spins[left_idx]  == s) ? 1u : 0u) +
+        ((spins[right_idx] == s) ? 1u : 0u) +
+        ((spins[up_idx]    == s) ? 1u : 0u) +
+        ((spins[down_idx]  == s) ? 1u : 0u);
+
+    const float pa = p_accept[idx];
+
+    const uint bits = rng_from_base(rng_base, site_idx);
+    const float u = float(bits >> 8) * (1.0f / 16777216.0f);
+    const uint accept_bit = (u < pa) ? 1u : 0u;
+
+    if ((active_bit & accept_bit) != 0u) {
+        spins[site_idx] = (char)(-((int)s));
+    }
+}
+
+inline int2 load_vertical_xor16_pow2(device char *spins,
+                                     uint site_idx,
+                                     uint nx,
+                                     uint mask_t,
+                                     int s) {
+    const uint up_idx   = (site_idx - nx) & mask_t;
+    const uint down_idx = (site_idx + nx) & mask_t;
+
+    const int  pair_s   = simd_shuffle_xor(s, ushort(16));
+    const uint pair_idx = simd_shuffle_xor(site_idx, ushort(16));
+
+    int u;
+    int d;
+
+    if (pair_idx + nx == site_idx) {
+        u = pair_s;
+        d = (int)spins[down_idx];
+    } else if (site_idx + nx == pair_idx) {
+        u = (int)spins[up_idx];
+        d = pair_s;
+    } else {
+        u = (int)spins[up_idx];
+        d = (int)spins[down_idx];
+    }
+
+    return int2(u, d);
+}
+
+inline void update_pred_shuffled_pow2(device       char  *spins,
+                                      device const float *p_accept,
+                                      uint site_idx,
+                                      uint row_base,
+                                      uint i,
+                                      uint nx,
+                                      uint mask_x,
+                                      uint mask_t,
+                                      uint active_bit,
+                                      uint rng_base) {
+    const uint left_idx  = row_base | ((i - 1u) & mask_x);
+    const uint right_idx = row_base | ((i + 1u) & mask_x);
+
+    const int s = (int)spins[site_idx];
+
+    int l = simd_shuffle_up(s, ushort(1));
+    const uint l_site = simd_shuffle_up(site_idx, ushort(1));
+    if (l_site != left_idx) {
+        l = (int)spins[left_idx];
+    }
+
+    int r = simd_shuffle_down(s, ushort(1));
+    const uint r_site = simd_shuffle_down(site_idx, ushort(1));
+    if (r_site != right_idx) {
+        r = (int)spins[right_idx];
+    }
+
+    const int2 vd = load_vertical_xor16_pow2(spins, site_idx, nx, mask_t, s);
+    const int u_spin = vd.x;
+    const int d_spin = vd.y;
+
+    const uint idx =
+        ((l      == s) ? 1u : 0u) +
+        ((r      == s) ? 1u : 0u) +
+        ((u_spin == s) ? 1u : 0u) +
+        ((d_spin == s) ? 1u : 0u);
+
+    const float pa = p_accept[idx];
+
+    const uint bits = rng_from_base(rng_base, site_idx);
+    const float u = float(bits >> 8) * (1.0f / 16777216.0f);
+    const uint accept_bit = (u < pa) ? 1u : 0u;
+
+    if ((active_bit & accept_bit) != 0u) {
+        spins[site_idx] = (char)(-s);
+    }
+}
+
+kernel void ising_step(device       char  *spins    [[buffer(0)]],
+                       device const float *p_accept [[buffer(1)]],
+                       constant uint  &NX           [[buffer(2)]],
+                       constant uint  &NY           [[buffer(3)]],
+                       constant uint  &step_idx     [[buffer(4)]],
+                       constant uint  &seed         [[buffer(5)]],
+                       uint2 gid [[thread_position_in_grid]]) {
+    const uint nx = NX;
+    const uint ny = NY;
+    const uint i = gid.x;
+    const uint j = gid.y;
+
+    if (i >= nx || j >= ny) return;
+
+    const uint parity = (i ^ j ^ step_idx) & 1u;
+    const uint rng_base = mix32(seed + step_idx * 0x9E3779B9u);
+
+    if (nx == 256u && ny == 256u) {
+        if (parity != 0u) return;
+
+        const uint site_idx = (j << 8) | i;
+        const uint row_base = j << 8;
+
+        const uint left_idx  = row_base | ((i - 1u) & 255u);
+        const uint right_idx = row_base | ((i + 1u) & 255u);
+        const uint up_idx    = (site_idx - 256u) & 65535u;
+        const uint down_idx  = (site_idx + 256u) & 65535u;
+
+        update_active_indexed(spins, p_accept,
+                              site_idx, left_idx, right_idx, up_idx, down_idx,
+                              rng_base);
+        return;
+    }
+
+    if (nx == 1024u && ny == 1024u) {
+        const uint site_idx = (j << 10) | i;
+        const uint row_base = j << 10;
+        const uint active_bit = 1u ^ parity;
+
+        update_pred_shuffled_pow2(spins, p_accept,
+                                  site_idx, row_base, i,
+                                  1024u, 1023u, 1048575u,
+                                  active_bit, rng_base);
+        return;
+    }
+
+    if (nx == 2048u && ny == 2048u) {
+        const uint site_idx = (j << 11) | i;
+        const uint row_base = j << 11;
+        const uint active_bit = 1u ^ parity;
+
+        update_pred_shuffled_pow2(spins, p_accept,
+                                  site_idx, row_base, i,
+                                  2048u, 2047u, 4194303u,
+                                  active_bit, rng_base);
+        return;
+    }
+
+    const uint site_idx = j * nx + i;
+    const uint total = nx * ny;
+    const bool small_lattice = (total <= 262144u);
+
+    if (small_lattice && parity != 0u) return;
+
+    uint left_idx;
+    uint right_idx;
+    uint up_idx;
+    uint down_idx;
+
+    const uint pow2_test = (nx & (nx - 1u)) | (ny & (ny - 1u));
+
+    if (pow2_test == 0u) {
+        const uint mask_x = nx - 1u;
+        const uint mask_t = total - 1u;
+        const uint row_base = site_idx & ~mask_x;
+
+        left_idx  = row_base | ((i - 1u) & mask_x);
+        right_idx = row_base | ((i + 1u) & mask_x);
+        up_idx    = (site_idx - nx) & mask_t;
+        down_idx  = (site_idx + nx) & mask_t;
+    } else {
+        left_idx  = (i == 0u)      ? (site_idx + nx - 1u)    : (site_idx - 1u);
+        right_idx = (i + 1u == nx) ? (site_idx + 1u - nx)    : (site_idx + 1u);
+        up_idx    = (j == 0u)      ? (site_idx + total - nx) : (site_idx - nx);
+        down_idx  = (j + 1u == ny) ? (site_idx + nx - total) : (site_idx + nx);
+    }
+
+    if (small_lattice) {
+        update_active_indexed(spins, p_accept,
+                              site_idx, left_idx, right_idx, up_idx, down_idx,
+                              rng_base);
+    } else {
+        const uint active_bit = 1u ^ parity;
+        update_pred_indexed(spins, p_accept,
+                            site_idx, left_idx, right_idx, up_idx, down_idx,
+                            active_bit, rng_base);
+    }
+}
+```

@@ -1,0 +1,132 @@
+{
+  "task": "fft3d",
+  "model": "gpt-5.5",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.15065668929082848,
+  "best_score": 0.4441971777242571,
+  "improvement": 2.948406604546954,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.15065668929082848,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/00_seed.metal",
+      "elapsed_s": 0.28829097747802734,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:109:50: error: cannot combine with previous 'type-name' declaration specifier\ninline float2 reg_stage(float2 x, uint tid, uint half, uint step128) {\n                                                 ^\nprogram_source:110:49: error: expected '(' for function-style cast or type construction\n    float2 y = shuffle_xor_float2(x, ushort(half));\n                                            ~~~~^\nprogram_source:111:27: error: expected ')'\n    uint kk = tid & (half - 1u);\n                          ^\nprogram_source:111:21: note: to match this '('\n    uint kk = tid & (half - 1u);\n                    ^\nprogram_source:111:32: error: expected expression\n    uint kk = tid & (half - 1u);\n                               ^\nprogram_source:112:27: error: expected '(' for function-style cast or type construction\n    bool lo = ((tid & half) == 0u);\n                      ~~~~^\nprogram_source:133:14: error: cannot combine with previous 'type-name' declaration specifier\n        uint half = m >> 1u;\n             ^\nprogram_source:133:19: error: expected unqualified-id\n        uint half = m >> 1u;\n                  ^\nprogram_source:136:35: error: expected ')'\n            uint kk = tid & (half - 1u);\n                                  ^\nprogram_source:136:29: note: to match this '('\n            uint kk = tid & (half - 1u);\n                            ^\nprogram_source:136:40: error: expected expression\n            uint kk = tid & (half - 1u);\n                                       ^\nprogram_source:148:40: error: expected '(' for function-style cast or type construction\n            float2 v = buf[base + half + kk];\n                                  ~~~~ ^\nprogram_source:152:29: error: expected '(' for function-style cast or type construction\n            buf[base + half + kk] = u - t;\n                       ~~~~ ^\n\" UserInfo={NSLocalizedDescription=program_source:109:50: error: cannot combine with previous 'type-name' declaration specifier\ninline float2 reg_stage(float2 x, uint tid, uint half, uint step128) {\n                                                 ^\nprogram_source:110:49: error: expected '(' for function-style cast or type construction\n    float2 y = shuffle_xor_float2(x, ushort(half));\n                                            ~~~~^\nprogram_source:111:27: error: expected ')'\n    uint kk = tid & (half - 1u);\n                          ^\nprogram_source:111:21: note: to match this '('\n    uint kk = tid & (half - 1u);\n                    ^\nprogram_source:111:32: error: expected expression\n    uint kk = tid & (half - 1u);\n                               ^\nprogram_source:112:27: error: expected '(' for function-style cast or type construction\n    bool lo = ((tid & half) == 0u);\n                      ~~~~^\nprogram_source:133:14: error: cannot combine with previous 'type-name' declaration specifier\n        uint half = m >> 1u;\n             ^\nprogram_source:133:19: error: expected unqualified-id\n        uint half = m >> 1u;\n                  ^\nprogram_source:136:35: error: expected ')'\n            uint kk = tid & (half - 1u);\n                                  ^\nprogram_source:136:29: note: to match this '('\n            uint kk = tid & (half - 1u);\n                            ^\nprogram_source:136:40: error: expected expression\n            uint kk = tid & (half - 1u);\n                                       ^\nprogram_source:148:40: error: expected '(' for function-style cast or type construction\n            float2 v = buf[base + half + kk];\n                                  ~~~~ ^\nprogram_source:152:29: error: expected '(' for function-style cast or type construction\n            buf[base + half + kk] = u - t;\n                       ~~~~ ^\n}",
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/01_candidate.metal",
+      "elapsed_s": 1058.881886959076,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2294201441180084,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/02_candidate.metal",
+      "elapsed_s": 392.0073952674866,
+      "is_new_best": true
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3644396895993623,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/03_candidate.metal",
+      "elapsed_s": 247.35128045082092,
+      "is_new_best": true
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3605152630611077,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/04_candidate.metal",
+      "elapsed_s": 1053.366468667984,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.35172079898512837,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/05_candidate.metal",
+      "elapsed_s": 284.33916115760803,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2857143287920968,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/06_candidate.metal",
+      "elapsed_s": 443.35326981544495,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.36747446187015487,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/07_candidate.metal",
+      "elapsed_s": 428.94851207733154,
+      "is_new_best": true
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2955645082914602,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/08_candidate.metal",
+      "elapsed_s": 409.2964618206024,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4441582249586596,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/09_candidate.metal",
+      "elapsed_s": 469.18353033065796,
+      "is_new_best": true
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4441971777242571,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111/10_candidate.metal",
+      "elapsed_s": 397.06717014312744,
+      "is_new_best": true
+    }
+  ]
+}

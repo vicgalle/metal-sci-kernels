@@ -1,0 +1,93 @@
+
+=== Metal kernel evolution: task=ising ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/ising_gemini-3.1-pro-preview_20260507_142434
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0900  (9.0s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 215.3s; evaluating...
+  score = 0.0548 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.73 ms,     3.5 GB/s (effective, 2 B/site/sweep) (1.8%)
+        1024x1024_50:    5.68 ms,    18.5 GB/s (effective, 2 B/site/sweep) (9.2%)
+        2048x2048_25:   10.33 ms,    20.3 GB/s (effective, 2 B/site/sweep) (10.1%)
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 213.0s; evaluating...
+  score = 0.0332 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.72 ms,     3.5 GB/s (effective, 2 B/site/sweep) (1.8%)
+        1024x1024_50:   11.78 ms,     8.9 GB/s (effective, 2 B/site/sweep) (4.5%)
+        2048x2048_25:   22.58 ms,     9.3 GB/s (effective, 2 B/site/sweep) (4.6%)
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 172.6s; evaluating...
+  score = 0.0585 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.70 ms,     3.5 GB/s (effective, 2 B/site/sweep) (1.8%)
+        1024x1024_50:    5.18 ms,    20.3 GB/s (effective, 2 B/site/sweep) (10.1%)
+        2048x2048_25:    9.37 ms,    22.4 GB/s (effective, 2 B/site/sweep) (11.2%)
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 178.5s; evaluating...
+  score = 0.0765 (seed = 0.0900, best = 0.0900)
+         256x256_100:    1.80 ms,     7.3 GB/s (effective, 2 B/site/sweep) (3.6%)
+        1024x1024_50:    4.99 ms,    21.0 GB/s (effective, 2 B/site/sweep) (10.5%)
+        2048x2048_25:    8.97 ms,    23.4 GB/s (effective, 2 B/site/sweep) (11.7%)
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 209.4s; evaluating...
+  score = 0.0806 (seed = 0.0900, best = 0.0900)
+         256x256_100:    1.86 ms,     7.0 GB/s (effective, 2 B/site/sweep) (3.5%)
+        1024x1024_50:    4.56 ms,    23.0 GB/s (effective, 2 B/site/sweep) (11.5%)
+        2048x2048_25:    8.10 ms,    25.9 GB/s (effective, 2 B/site/sweep) (12.9%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 158.8s; evaluating...
+  score = 0.0650 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.49 ms,     3.8 GB/s (effective, 2 B/site/sweep) (1.9%)
+        1024x1024_50:    4.61 ms,    22.7 GB/s (effective, 2 B/site/sweep) (11.4%)
+        2048x2048_25:    8.15 ms,    25.7 GB/s (effective, 2 B/site/sweep) (12.9%)
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 214.2s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:63:29: error: C-style cast from 'const device float *' to 'const constant float *' converts between mismatching address spaces
+    constant float *p_acc = (constant float *)p_accept;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+" UserInfo={NSLocalizedDescription=program_source:63:29: error: C-style cast from 'const device float *' to 'const constant float *' converts between mismatching address spaces
+    constant float *p_acc = (constant float *)p_accept;
+                            ^~~~~~~~~~~~~~~~~~~~~~~~~~
+}
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 77.7s; evaluating...
+  score = 0.0657 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.45 ms,     3.8 GB/s (effective, 2 B/site/sweep) (1.9%)
+        1024x1024_50:    4.57 ms,    22.9 GB/s (effective, 2 B/site/sweep) (11.5%)
+        2048x2048_25:    8.04 ms,    26.1 GB/s (effective, 2 B/site/sweep) (13.0%)
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 206.6s; evaluating...
+  score = 0.0423 (seed = 0.0900, best = 0.0900)
+         256x256_100:    3.79 ms,     3.5 GB/s (effective, 2 B/site/sweep) (1.7%)
+        1024x1024_50:    8.21 ms,    12.8 GB/s (effective, 2 B/site/sweep) (6.4%)
+        2048x2048_25:   15.34 ms,    13.7 GB/s (effective, 2 B/site/sweep) (6.8%)
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 176.8s; evaluating...
+  score = 0.0775 (seed = 0.0900, best = 0.0900)
+         256x256_100:    1.89 ms,     6.9 GB/s (effective, 2 B/site/sweep) (3.5%)
+        1024x1024_50:    4.80 ms,    21.8 GB/s (effective, 2 B/site/sweep) (10.9%)
+        2048x2048_25:    8.55 ms,    24.5 GB/s (effective, 2 B/site/sweep) (12.3%)
+
+=== done. seed=0.0900, best=0.0900, output=results/ising_gemini-3.1-pro-preview_20260507_142434 ===

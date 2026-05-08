@@ -1,0 +1,95 @@
+
+=== Metal kernel evolution: task=saxpy ===
+  model: claude-opus-4-7
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/saxpy_claude-opus-4-7_20260507_110312
+
+[seed] Evaluating seed kernel...
+  seed score: 0.8173  (1.7s)
+
+--- iteration 1/10 ---
+  [llm] Claude cost: $0.4831
+  generated in 11.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:8:57: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  uint i [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]] {
+                                                        ^
+" UserInfo={NSLocalizedDescription=program_source:8:57: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  uint i [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]] {
+                                                        ^
+}
+
+--- iteration 2/10 ---
+  [llm] Claude cost: $0.0981
+  generated in 9.7s; evaluating...
+  score = 0.7753 (seed = 0.8173, best = 0.8173)
+                  1M:    0.07 ms,   179.1 GB/s (89.5%)
+                 16M:    1.73 ms,   116.2 GB/s (58.1%)
+                 64M:    4.50 ms,   179.1 GB/s (89.6%)
+
+--- iteration 3/10 ---
+  [llm] Claude cost: $0.1050
+  generated in 11.3s; evaluating...
+  score = 0.7745 (seed = 0.8173, best = 0.8173)
+                  1M:    0.10 ms,   120.5 GB/s (60.3%)
+                 16M:    1.19 ms,   169.2 GB/s (84.6%)
+                 64M:    4.42 ms,   182.3 GB/s (91.2%)
+
+--- iteration 4/10 ---
+  [llm] Claude cost: $0.1110
+  generated in 11.4s; evaluating...
+  score = 0.8123 (seed = 0.8173, best = 0.8173)
+                  1M:    0.09 ms,   145.0 GB/s (72.5%)
+                 16M:    1.26 ms,   159.3 GB/s (79.6%)
+                 64M:    4.34 ms,   185.6 GB/s (92.8%)
+
+--- iteration 5/10 ---
+  [llm] Claude cost: $0.1331
+  generated in 15.8s; evaluating...
+  score = 0.7938 (seed = 0.8173, best = 0.8173)
+                  1M:    0.09 ms,   143.3 GB/s (71.6%)
+                 16M:    1.27 ms,   159.1 GB/s (79.5%)
+                 64M:    4.59 ms,   175.5 GB/s (87.8%)
+
+--- iteration 6/10 ---
+  [llm] Claude cost: $0.1213
+  generated in 11.2s; evaluating...
+  score = 0.8340 (seed = 0.8173, best = 0.8173)
+                  1M:    0.09 ms,   144.5 GB/s (72.3%)
+                 16M:    1.16 ms,   173.3 GB/s (86.7%)
+                 64M:    4.35 ms,   185.2 GB/s (92.6%)
+  NEW INCUMBENT
+
+--- iteration 7/10 ---
+  [llm] Claude cost: $0.1034
+  generated in 12.4s; evaluating...
+  score = 0.8068 (seed = 0.8173, best = 0.8340)
+                  1M:    0.09 ms,   144.7 GB/s (72.4%)
+                 16M:    1.26 ms,   159.6 GB/s (79.8%)
+                 64M:    4.43 ms,   181.8 GB/s (90.9%)
+
+--- iteration 8/10 ---
+  [llm] Claude cost: $0.1049
+  generated in 11.1s; evaluating...
+  score = 0.8139 (seed = 0.8173, best = 0.8340)
+                  1M:    0.09 ms,   144.7 GB/s (72.3%)
+                 16M:    1.26 ms,   159.6 GB/s (79.8%)
+                 64M:    4.31 ms,   186.8 GB/s (93.4%)
+
+--- iteration 9/10 ---
+  [llm] Claude cost: $0.1057
+  generated in 20.8s; evaluating...
+  score = 0.8120 (seed = 0.8173, best = 0.8340)
+                  1M:    0.09 ms,   144.1 GB/s (72.0%)
+                 16M:    1.26 ms,   159.3 GB/s (79.7%)
+                 64M:    4.32 ms,   186.5 GB/s (93.3%)
+
+--- iteration 10/10 ---
+  [llm] Claude cost: $0.1587
+  generated in 16.7s; evaluating...
+  score = 1.0218 (seed = 0.8173, best = 0.8340)
+                  1M:    0.05 ms,   274.3 GB/s (137.1%)
+                 16M:    1.21 ms,   166.9 GB/s (83.4%)
+                 64M:    4.32 ms,   186.5 GB/s (93.2%)
+  NEW INCUMBENT
+
+=== done. seed=0.8173, best=1.0218, output=results/saxpy_claude-opus-4-7_20260507_110312 ===

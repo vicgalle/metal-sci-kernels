@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:35:22: error: lambda expressions are not supported in Metal\n    auto load_curr = [&](int gi, int gj) -> float {\n                     ^\n\" UserInfo={NSLocalizedDescription=program_source:35:22: error: lambda expressions are not supported in Metal\n    auto load_curr = [&](int gi, int gj) -> float {\n                     ^\n}",
+  "sizes": []
+}

@@ -1,0 +1,77 @@
+{
+  "task": "lbm",
+  "model": "gemini-3.1-pro-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 5,
+  "seed_score": 0.38612320114978643,
+  "best_score": 0.4061717278202275,
+  "improvement": 1.0519226159182902,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.38612320114978643,
+      "fail_reason": null,
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/00_seed.metal",
+      "elapsed_s": 0.3825850486755371,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4061717278202275,
+      "fail_reason": null,
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/01_candidate.metal",
+      "elapsed_s": 185.37580013275146,
+      "is_new_best": true
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3740188819322388,
+      "fail_reason": null,
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/02_candidate.metal",
+      "elapsed_s": 157.02586698532104,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.38199258214230564,
+      "fail_reason": null,
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/03_candidate.metal",
+      "elapsed_s": 201.20592880249023,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3789352580140142,
+      "fail_reason": null,
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/04_candidate.metal",
+      "elapsed_s": 184.03411293029785,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": false,
+      "score": null,
+      "fail_reason": "correctness failed at size 64x64_50: max_abs_f=4.524e-01",
+      "source_path": "results/lbm_gemini-3.1-pro-preview_20260506_103309/05_candidate.metal",
+      "elapsed_s": 272.63306188583374,
+      "is_new_best": false
+    }
+  ]
+}

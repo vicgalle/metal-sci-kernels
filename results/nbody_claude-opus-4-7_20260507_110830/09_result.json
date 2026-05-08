@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size 256_10: max_abs_pos=1.069e-02",
+  "sizes": [
+    {
+      "label": "256_10",
+      "correct": false,
+      "error_value": 0.010685741901397705,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.00032470833366460283,
+      "achieved": 40.36607207481982,
+      "achieved_unit": "GFLOPS",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.008970238238848849
+    }
+  ]
+}

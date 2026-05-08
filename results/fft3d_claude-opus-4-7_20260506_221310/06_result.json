@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:25:10: error: cannot combine with previous 'type-name' declaration specifier\n    uint half = N >> 1u;\n         ^\nprogram_source:25:15: error: expected unqualified-id\n    uint half = N >> 1u;\n              ^\nprogram_source:28:21: error: expected '(' for function-style cast or type construction\n        if (i < half) {\n                ~~~~^\nprogram_source:33:34: error: expected '(' for function-style cast or type construction\n            uint in1 = in0 + half;\n                             ~~~~^\n\" UserInfo={NSLocalizedDescription=program_source:25:10: error: cannot combine with previous 'type-name' declaration specifier\n    uint half = N >> 1u;\n         ^\nprogram_source:25:15: error: expected unqualified-id\n    uint half = N >> 1u;\n              ^\nprogram_source:28:21: error: expected '(' for function-style cast or type construction\n        if (i < half) {\n                ~~~~^\nprogram_source:33:34: error: expected '(' for function-style cast or type construction\n            uint in1 = in0 + half;\n                             ~~~~^\n}",
+  "sizes": []
+}

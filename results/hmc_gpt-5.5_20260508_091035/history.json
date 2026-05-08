@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.008809128380504386,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/00_seed.metal",
+    "elapsed_s": 6.660789966583252,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:330:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                     uint3 tpg3     [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(32)]] {\n                                                                   ^\nprogram_source:318:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements\nkernel void hmc_step(device const float *q_in        [[buffer(0)]],\n            ^\nprogram_source:328:27: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here\n                     uint chain_idx [[thread_position_in_grid]],\n                     ~~~~~^~~~~~~~~\nprogram_source:330:28: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here\n                     uint3 tpg3     [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(32)]] {\n                     ~~~~~~^~~~\n\" UserInfo={NSLocalizedDescription=program_source:330:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                     uint3 tpg3     [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(32)]] {\n                                                                   ^\nprogram_source:318:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements\nkernel void hmc_step(device const float *q_in        [[buffer(0)]],\n            ^\nprogram_source:328:27: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here\n                     uint chain_idx [[thread_position_in_grid]],\n                     ~~~~~^~~~~~~~~\nprogram_source:330:28: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here\n                     uint3 tpg3     [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(32)]] {\n                     ~~~~~~^~~~\n}",
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/01_candidate.metal",
+    "elapsed_s": 432.27027702331543,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05854090261728891,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/02_candidate.metal",
+    "elapsed_s": 275.38288378715515,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:376:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:299:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\nprogram_source:412:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                     [[max_total_threads_per_threadgroup(32)]] {\n                       ^\n\" UserInfo={NSLocalizedDescription=program_source:376:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:299:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\nprogram_source:412:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                     [[max_total_threads_per_threadgroup(32)]] {\n                       ^\n}",
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/03_candidate.metal",
+    "elapsed_s": 228.68881273269653,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.027658441989953843,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/04_candidate.metal",
+    "elapsed_s": 409.32153487205505,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:524:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:447:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n\" UserInfo={NSLocalizedDescription=program_source:524:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:447:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n}",
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/05_candidate.metal",
+    "elapsed_s": 391.85448813438416,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06336697071045806,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/06_candidate.metal",
+    "elapsed_s": 226.40419721603394,
+    "is_new_best": true
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05851770228950946,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/07_candidate.metal",
+    "elapsed_s": 173.45651197433472,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05368866187129603,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/08_candidate.metal",
+    "elapsed_s": 296.2288451194763,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:393:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:316:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n\" UserInfo={NSLocalizedDescription=program_source:393:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:316:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n}",
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/09_candidate.metal",
+    "elapsed_s": 185.91010999679565,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.061644572687887034,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/hmc_gpt-5.5_20260508_091035/10_candidate.metal",
+    "elapsed_s": 251.39939141273499,
+    "is_new_best": false
+  }
+]

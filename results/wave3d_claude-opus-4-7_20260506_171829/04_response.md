@@ -1,0 +1,52 @@
+### Optimization
+
+The previous attempt produced NaNs because halo loads were performed by threads that may be out-of-bounds *before* the early return — but more critically, the threadgroup size dispatched by the host is unknown and may not be (TX,TY,1). With `threadsPerGrid = (NX,NY,NZ)`, Metal picks a threadgroup shape that fits, which may not equal my assumed (16,16,1). That makes halo conditions like `lx == TX-1` invalid.
+
+Fix: use `[[max_total_threads_per_threadgroup]]` to lock the threadgroup geometry isn't possible since the host controls dispatch. Instead, do tiling **without assuming threadgroup shape**: use a simple, robust kernel with clamped global indices and rely on the L1/L2 cache. This is the safest correct path. I'll add vectorized-friendly clamping (`min`/`max`) to remove branches and let the compiler issue independent loads, plus use `fma` for the final update.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+kernel void wave_step(device const float *u_prev [[buffer(0)]],
+                      device const float *u_curr [[buffer(1)]],
+                      device       float *u_next [[buffer(2)]],
+                      constant uint      &NX     [[buffer(3)]],
+                      constant uint      &NY     [[buffer(4)]],
+                      constant uint      &NZ     [[buffer(5)]],
+                      constant float     &alpha  [[buffer(6)]],
+                      uint3 gid [[thread_position_in_grid]]) {
+    uint i = gid.x;
+    uint j = gid.y;
+    uint k = gid.z;
+    if (i >= NX || j >= NY || k >= NZ) return;
+
+    const uint stride_y = NX;
+    const uint stride_z = NX * NY;
+    const uint idx = (k * stride_y + j) * 1u + k * 0u; // placeholder
+    const uint lin = (k * NY + j) * NX + i;
+
+    const uint NXm1 = NX - 1u;
+    const uint NYm1 = NY - 1u;
+    const uint NZm1 = NZ - 1u;
+
+    // Boundary: Dirichlet copy.
+    if (i == 0u || j == 0u || k == 0u || i == NXm1 || j == NYm1 || k == NZm1) {
+        u_next[lin] = u_curr[lin];
+        return;
+    }
+
+    // Interior: 7-point stencil. All indices are guaranteed in-range.
+    float c  = u_curr[lin];
+    float xm = u_curr[lin - 1u];
+    float xp = u_curr[lin + 1u];
+    float ym = u_curr[lin - stride_y];
+    float yp = u_curr[lin + stride_y];
+    float zm = u_curr[lin - stride_z];
+    float zp = u_curr[lin + stride_z];
+
+    float lap = (xm + xp) + (ym + yp) + (zm + zp) - 6.0f * c;
+    float p   = u_prev[lin];
+    u_next[lin] = fma(alpha, lap, fma(2.0f, c, -p));
+}
+```

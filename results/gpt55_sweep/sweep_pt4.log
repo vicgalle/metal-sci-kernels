@@ -1,0 +1,526 @@
+=== SWEEP RESUME3 START Fri May  8 15:31:11 CEST 2026 ===
+=== START fft3d (10 iters) Fri May  8 15:31:11 CEST 2026 ===
+
+=== Metal kernel evolution: task=fft3d ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111
+
+[seed] Evaluating seed kernel...
+  seed score: 0.1507  (0.3s)
+
+--- iteration 1/10 ---
+  [llm] OpenAI tokens: in=3082, out=17661
+  generated in 1058.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:109:50: error: cannot combine with previous 'type-name' declaration specifier
+inline float2 reg_stage(float2 x, uint tid, uint half, uint step128) {
+                                                 ^
+program_source:110:49: error: expected '(' for function-style cast or type construction
+    float2 y = shuffle_xor_float2(x, ushort(half));
+                                            ~~~~^
+program_source:111:27: error: expected ')'
+    uint kk = tid & (half - 1u);
+                          ^
+program_source:111:21: note: to match this '('
+    uint kk = tid & (half - 1u);
+                    ^
+program_source:111:32: error: expected expression
+    uint kk = tid & (half - 1u);
+                               ^
+program_source:112:27: error: expected '(' for function-style cast or type construction
+    bool lo = ((tid & half) == 0u);
+                      ~~~~^
+program_source:133:14: error: cannot combine with previous 'type-name' declaration specifier
+        uint half = m >> 1u;
+             ^
+program_source:133:19: error: expected unqualified-id
+        uint half = m >> 1u;
+                  ^
+program_source:136:35: error: expected ')'
+            uint kk = tid & (half - 1u);
+                                  ^
+program_source:136:29: note: to match this '('
+            uint kk = tid & (half - 1u);
+                            ^
+program_source:136:40: error: expected expression
+            uint kk = tid & (half - 1u);
+                                       ^
+program_source:148:40: error: expected '(' for function-style cast or type construction
+            float2 v = buf[base + half + kk];
+                                  ~~~~ ^
+program_source:152:29: error: expected '(' for function-style cast or type construction
+            buf[base + half + kk] = u - t;
+                       ~~~~ ^
+" UserInfo={NSLocalizedDescription=program_source:109:50: error: cannot combine with previous 'type-name' declaration specifier
+inline float2 reg_stage(float2 x, uint tid, uint half, uint step128) {
+                                                 ^
+program_source:110:49: error: expected '(' for function-style cast or type construction
+    float2 y = shuffle_xor_float2(x, ushort(half));
+                                            ~~~~^
+program_source:111:27: error: expected ')'
+    uint kk = tid & (half - 1u);
+                          ^
+program_source:111:21: note: to match this '('
+    uint kk = tid & (half - 1u);
+                    ^
+program_source:111:32: error: expected expression
+    uint kk = tid & (half - 1u);
+                               ^
+program_source:112:27: error: expected '(' for function-style cast or type construction
+    bool lo = ((tid & half) == 0u);
+                      ~~~~^
+program_source:133:14: error: cannot combine with previous 'type-name' declaration specifier
+        uint half = m >> 1u;
+             ^
+program_source:133:19: error: expected unqualified-id
+        uint half = m >> 1u;
+                  ^
+program_source:136:35: error: expected ')'
+            uint kk = tid & (half - 1u);
+                                  ^
+program_source:136:29: note: to match this '('
+            uint kk = tid & (half - 1u);
+                            ^
+program_source:136:40: error: expected expression
+            uint kk = tid & (half - 1u);
+                                       ^
+program_source:148:40: error: expected '(' for function-style cast or type construction
+            float2 v = buf[base + half + kk];
+                                  ~~~~ ^
+program_source:152:29: error: expected '(' for function-style cast or type construction
+            buf[base + half + kk] = u - t;
+                       ~~~~ ^
+}
+
+--- iteration 2/10 ---
+  [llm] OpenAI tokens: in=6739, out=17869
+  generated in 391.5s; evaluating...
+  score = 0.2294 (seed = 0.1507, best = 0.1507)
+              32cube:    0.12 ms,    25.6 GB/s (effective, 96 B/cell across 3 passes) (12.8%)
+              64cube:    0.41 ms,    60.7 GB/s (effective, 96 B/cell across 3 passes) (30.3%)
+             128cube:    3.24 ms,    62.2 GB/s (effective, 96 B/cell across 3 passes) (31.1%)
+  NEW INCUMBENT
+
+--- iteration 3/10 ---
+  [llm] OpenAI tokens: in=4671, out=11993
+  generated in 247.0s; evaluating...
+  score = 0.3644 (seed = 0.1507, best = 0.2294)
+              32cube:    0.08 ms,    41.7 GB/s (effective, 96 B/cell across 3 passes) (20.8%)
+              64cube:    0.35 ms,    72.6 GB/s (effective, 96 B/cell across 3 passes) (36.3%)
+             128cube:    1.57 ms,   128.0 GB/s (effective, 96 B/cell across 3 passes) (64.0%)
+  NEW INCUMBENT
+
+--- iteration 4/10 ---
+  [llm] OpenAI tokens: in=5231, out=23985
+  generated in 1053.1s; evaluating...
+  score = 0.3605 (seed = 0.1507, best = 0.3644)
+              32cube:    0.08 ms,    41.0 GB/s (effective, 96 B/cell across 3 passes) (20.5%)
+              64cube:    0.36 ms,    69.9 GB/s (effective, 96 B/cell across 3 passes) (35.0%)
+             128cube:    1.54 ms,   130.9 GB/s (effective, 96 B/cell across 3 passes) (65.5%)
+
+--- iteration 5/10 ---
+  [llm] OpenAI tokens: in=9587, out=15866
+  generated in 283.9s; evaluating...
+  score = 0.3517 (seed = 0.1507, best = 0.3644)
+              32cube:    0.08 ms,    40.5 GB/s (effective, 96 B/cell across 3 passes) (20.3%)
+              64cube:    0.37 ms,    68.6 GB/s (effective, 96 B/cell across 3 passes) (34.3%)
+             128cube:    1.61 ms,   125.1 GB/s (effective, 96 B/cell across 3 passes) (62.6%)
+
+--- iteration 6/10 ---
+  [llm] OpenAI tokens: in=9823, out=17799
+  generated in 443.0s; evaluating...
+  score = 0.2857 (seed = 0.1507, best = 0.3644)
+              32cube:    0.08 ms,    40.9 GB/s (effective, 96 B/cell across 3 passes) (20.4%)
+              64cube:    0.35 ms,    71.7 GB/s (effective, 96 B/cell across 3 passes) (35.8%)
+             128cube:    3.16 ms,    63.7 GB/s (effective, 96 B/cell across 3 passes) (31.8%)
+
+--- iteration 7/10 ---
+  [llm] OpenAI tokens: in=23068, out=7055
+  generated in 428.4s; evaluating...
+  score = 0.3675 (seed = 0.1507, best = 0.3644)
+              32cube:    0.07 ms,    44.6 GB/s (effective, 96 B/cell across 3 passes) (22.3%)
+              64cube:    0.33 ms,    77.4 GB/s (effective, 96 B/cell across 3 passes) (38.7%)
+             128cube:    1.75 ms,   114.9 GB/s (effective, 96 B/cell across 3 passes) (57.5%)
+  NEW INCUMBENT
+
+--- iteration 8/10 ---
+  [llm] OpenAI tokens: in=6085, out=20941
+  generated in 409.0s; evaluating...
+  score = 0.2956 (seed = 0.1507, best = 0.3675)
+              32cube:    0.07 ms,    46.4 GB/s (effective, 96 B/cell across 3 passes) (23.2%)
+              64cube:    0.33 ms,    76.9 GB/s (effective, 96 B/cell across 3 passes) (38.5%)
+             128cube:    3.48 ms,    57.8 GB/s (effective, 96 B/cell across 3 passes) (28.9%)
+
+--- iteration 9/10 ---
+  [llm] OpenAI tokens: in=10633, out=17603
+  generated in 468.9s; evaluating...
+  score = 0.4442 (seed = 0.1507, best = 0.3675)
+              32cube:    0.07 ms,    42.7 GB/s (effective, 96 B/cell across 3 passes) (21.3%)
+              64cube:    0.27 ms,    92.4 GB/s (effective, 96 B/cell across 3 passes) (46.2%)
+             128cube:    1.13 ms,   177.7 GB/s (effective, 96 B/cell across 3 passes) (88.8%)
+  NEW INCUMBENT
+
+--- iteration 10/10 ---
+  [llm] OpenAI tokens: in=6192, out=18372
+  generated in 396.8s; evaluating...
+  score = 0.4442 (seed = 0.1507, best = 0.4442)
+              32cube:    0.08 ms,    40.4 GB/s (effective, 96 B/cell across 3 passes) (20.2%)
+              64cube:    0.28 ms,    88.3 GB/s (effective, 96 B/cell across 3 passes) (44.2%)
+             128cube:    1.02 ms,   196.7 GB/s (effective, 96 B/cell across 3 passes) (98.3%)
+  NEW INCUMBENT
+
+=== done. seed=0.1507, best=0.4442, output=results/gpt55_sweep/fft3d_gpt-5.5_20260508_153111 ===
+=== END fft3d Fri May  8 16:57:36 CEST 2026 ===
+=== START wave3d (15 iters) Fri May  8 16:57:36 CEST 2026 ===
+
+=== Metal kernel evolution: task=wave3d ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/wave3d_gpt-5.5_20260508_165736
+
+[seed] Evaluating seed kernel...
+  seed score: 0.6808  (1.2s)
+
+--- iteration 1/15 ---
+  [llm] OpenAI tokens: in=2112, out=18181
+  generated in 462.3s; evaluating...
+  score = 0.3234 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.31 ms,    40.8 GB/s (effective, 12 B/cell) (20.4%)
+      160x160x160_20:   12.05 ms,    81.6 GB/s (effective, 12 B/cell) (40.8%)
+      192x192x192_15:   15.68 ms,    81.2 GB/s (effective, 12 B/cell) (40.6%)
+
+--- iteration 2/15 ---
+  [llm] OpenAI tokens: in=3404, out=15121
+  generated in 354.2s; evaluating...
+  score = 0.4887 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.18 ms,    43.3 GB/s (effective, 12 B/cell) (21.6%)
+      160x160x160_20:    6.66 ms,   147.7 GB/s (effective, 12 B/cell) (73.8%)
+      192x192x192_15:    8.72 ms,   146.1 GB/s (effective, 12 B/cell) (73.1%)
+
+--- iteration 3/15 ---
+  [llm] OpenAI tokens: in=2847, out=18035
+  generated in 375.8s; evaluating...
+  score = 0.4264 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.07 ms,    45.6 GB/s (effective, 12 B/cell) (22.8%)
+      160x160x160_20:    8.44 ms,   116.4 GB/s (effective, 12 B/cell) (58.2%)
+      192x192x192_15:   10.90 ms,   116.8 GB/s (effective, 12 B/cell) (58.4%)
+
+--- iteration 4/15 ---
+  [llm] OpenAI tokens: in=3210, out=12459
+  generated in 260.0s; evaluating...
+  score = 0.4894 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.18 ms,    43.3 GB/s (effective, 12 B/cell) (21.6%)
+      160x160x160_20:    6.62 ms,   148.4 GB/s (effective, 12 B/cell) (74.2%)
+      192x192x192_15:    8.72 ms,   146.0 GB/s (effective, 12 B/cell) (73.0%)
+
+--- iteration 5/15 ---
+  [llm] OpenAI tokens: in=2831, out=20970
+  generated in 410.9s; evaluating...
+  score = 0.2753 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.15 ms,    43.8 GB/s (effective, 12 B/cell) (21.9%)
+      160x160x160_20:   15.93 ms,    61.7 GB/s (effective, 12 B/cell) (30.8%)
+      192x192x192_15:   20.63 ms,    61.8 GB/s (effective, 12 B/cell) (30.9%)
+
+--- iteration 6/15 ---
+  [llm] OpenAI tokens: in=3577, out=18039
+  generated in 960.0s; evaluating...
+  score = 0.5213 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    1.76 ms,    53.6 GB/s (effective, 12 B/cell) (26.8%)
+      160x160x160_20:    6.91 ms,   142.4 GB/s (effective, 12 B/cell) (71.2%)
+      192x192x192_15:    8.59 ms,   148.4 GB/s (effective, 12 B/cell) (74.2%)
+
+--- iteration 7/15 ---
+  [llm] OpenAI tokens: in=3288, out=12412
+  generated in 313.1s; evaluating...
+  score = 0.5252 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    1.64 ms,    57.7 GB/s (effective, 12 B/cell) (28.8%)
+      160x160x160_20:    7.27 ms,   135.3 GB/s (effective, 12 B/cell) (67.6%)
+      192x192x192_15:    8.57 ms,   148.6 GB/s (effective, 12 B/cell) (74.3%)
+
+--- iteration 8/15 ---
+  [llm] OpenAI tokens: in=2890, out=18263
+  generated in 452.2s; evaluating...
+  score = 0.4811 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    1.93 ms,    48.9 GB/s (effective, 12 B/cell) (24.5%)
+      160x160x160_20:    7.21 ms,   136.3 GB/s (effective, 12 B/cell) (68.2%)
+      192x192x192_15:    9.54 ms,   133.6 GB/s (effective, 12 B/cell) (66.8%)
+
+--- iteration 9/15 ---
+  [llm] OpenAI tokens: in=3009, out=16247
+  generated in 422.0s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:15:25: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                      [[max_total_threads_per_threadgroup(1024)]]
+                        ^
+" UserInfo={NSLocalizedDescription=program_source:15:25: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                      [[max_total_threads_per_threadgroup(1024)]]
+                        ^
+}
+
+--- iteration 10/15 ---
+  [llm] OpenAI tokens: in=3499, out=18207
+  generated in 451.0s; evaluating...
+  score = 0.3671 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.17 ms,    43.5 GB/s (effective, 12 B/cell) (21.7%)
+      160x160x160_20:   10.27 ms,    95.7 GB/s (effective, 12 B/cell) (47.9%)
+      192x192x192_15:   13.40 ms,    95.1 GB/s (effective, 12 B/cell) (47.5%)
+
+--- iteration 11/15 ---
+  [llm] OpenAI tokens: in=4495, out=18858
+  generated in 441.2s; evaluating...
+  score = 0.4871 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.16 ms,    43.6 GB/s (effective, 12 B/cell) (21.8%)
+      160x160x160_20:    6.88 ms,   142.8 GB/s (effective, 12 B/cell) (71.4%)
+      192x192x192_15:    8.58 ms,   148.4 GB/s (effective, 12 B/cell) (74.2%)
+
+--- iteration 12/15 ---
+  [llm] OpenAI tokens: in=3644, out=20356
+  generated in 549.5s; evaluating...
+  score = 0.5272 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    1.09 ms,    86.6 GB/s (effective, 12 B/cell) (43.3%)
+      160x160x160_20:    8.06 ms,   121.9 GB/s (effective, 12 B/cell) (60.9%)
+      192x192x192_15:   11.47 ms,   111.0 GB/s (effective, 12 B/cell) (55.5%)
+
+--- iteration 13/15 ---
+  [llm] OpenAI tokens: in=3012, out=9383
+  generated in 819.2s; evaluating...
+  score = 0.4914 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.15 ms,    43.9 GB/s (effective, 12 B/cell) (22.0%)
+      160x160x160_20:    6.65 ms,   147.8 GB/s (effective, 12 B/cell) (73.9%)
+      192x192x192_15:    8.72 ms,   146.1 GB/s (effective, 12 B/cell) (73.1%)
+
+--- iteration 14/15 ---
+  [llm] OpenAI tokens: in=2926, out=19915
+  generated in 461.5s; evaluating...
+  score = 0.6407 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    1.00 ms,    94.3 GB/s (effective, 12 B/cell) (47.1%)
+      160x160x160_20:    6.53 ms,   150.5 GB/s (effective, 12 B/cell) (75.3%)
+      192x192x192_15:    8.59 ms,   148.3 GB/s (effective, 12 B/cell) (74.1%)
+
+--- iteration 15/15 ---
+  [llm] OpenAI tokens: in=3608, out=19172
+  generated in 413.8s; evaluating...
+  score = 0.4733 (seed = 0.6808, best = 0.6808)
+         64x64x64_30:    2.21 ms,    42.8 GB/s (effective, 12 B/cell) (21.4%)
+      160x160x160_20:    7.25 ms,   135.6 GB/s (effective, 12 B/cell) (67.8%)
+      192x192x192_15:    8.71 ms,   146.2 GB/s (effective, 12 B/cell) (73.1%)
+
+=== done. seed=0.6808, best=0.6808, output=results/gpt55_sweep/wave3d_gpt-5.5_20260508_165736 ===
+=== END wave3d Fri May  8 18:57:04 CEST 2026 ===
+=== START lbm (25 iters) Fri May  8 18:57:04 CEST 2026 ===
+
+=== Metal kernel evolution: task=lbm ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/lbm_gpt-5.5_20260508_185704
+
+[seed] Evaluating seed kernel...
+  seed score: 0.3932  (0.4s)
+
+--- iteration 1/25 ---
+  [llm] OpenAI tokens: in=2566, out=10200
+  generated in 178.5s; evaluating...
+  score = 0.3582 (seed = 0.3932, best = 0.3932)
+            64x64_50:    0.49 ms,    30.3 GB/s (effective, 72 B/cell) (15.2%)
+         128x128_100:    1.99 ms,    59.2 GB/s (effective, 72 B/cell) (29.6%)
+         256x256_100:    2.31 ms,   204.7 GB/s (effective, 72 B/cell) (102.4%)
+
+--- iteration 2/25 ---
+  [llm] OpenAI tokens: in=4067, out=14560
+  generated in 275.4s; evaluating...
+  score = 0.5179 (seed = 0.3932, best = 0.3932)
+            64x64_50:    0.22 ms,    68.1 GB/s (effective, 72 B/cell) (34.1%)
+         128x128_100:    1.19 ms,    99.0 GB/s (effective, 72 B/cell) (49.5%)
+         256x256_100:    2.86 ms,   164.8 GB/s (effective, 72 B/cell) (82.4%)
+  NEW INCUMBENT
+
+--- iteration 3/25 ---
+  [llm] OpenAI tokens: in=2525, out=15743
+  generated in 276.4s; evaluating...
+  score = 0.3454 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.48 ms,    30.5 GB/s (effective, 72 B/cell) (15.2%)
+         128x128_100:    2.13 ms,    55.3 GB/s (effective, 72 B/cell) (27.7%)
+         256x256_100:    2.41 ms,   195.7 GB/s (effective, 72 B/cell) (97.8%)
+
+--- iteration 4/25 ---
+  [llm] OpenAI tokens: in=4378, out=7837
+  generated in 139.4s; evaluating...
+  score = 0.3346 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.49 ms,    30.1 GB/s (effective, 72 B/cell) (15.1%)
+         128x128_100:    1.99 ms,    59.3 GB/s (effective, 72 B/cell) (29.7%)
+         256x256_100:    2.81 ms,   167.6 GB/s (effective, 72 B/cell) (83.8%)
+
+--- iteration 5/25 ---
+  [llm] OpenAI tokens: in=4801, out=17756
+  generated in 307.6s; evaluating...
+  score = 0.3497 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.52 ms,    28.5 GB/s (effective, 72 B/cell) (14.2%)
+         128x128_100:    2.05 ms,    57.6 GB/s (effective, 72 B/cell) (28.8%)
+         256x256_100:    2.27 ms,   208.3 GB/s (effective, 72 B/cell) (104.1%)
+
+--- iteration 6/25 ---
+  [llm] OpenAI tokens: in=3857, out=12946
+  generated in 206.3s; evaluating...
+  score = 0.3602 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.49 ms,    30.3 GB/s (effective, 72 B/cell) (15.1%)
+         128x128_100:    2.04 ms,    57.7 GB/s (effective, 72 B/cell) (28.9%)
+         256x256_100:    2.20 ms,   214.1 GB/s (effective, 72 B/cell) (107.0%)
+
+--- iteration 7/25 ---
+  [llm] OpenAI tokens: in=6197, out=6874
+  generated in 115.8s; evaluating...
+  score = 0.3516 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.50 ms,    29.5 GB/s (effective, 72 B/cell) (14.7%)
+         128x128_100:    2.06 ms,    57.2 GB/s (effective, 72 B/cell) (28.6%)
+         256x256_100:    2.29 ms,   206.3 GB/s (effective, 72 B/cell) (103.1%)
+
+--- iteration 8/25 ---
+  [llm] OpenAI tokens: in=4932, out=15414
+  generated in 261.3s; evaluating...
+  score = 0.3518 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.50 ms,    29.4 GB/s (effective, 72 B/cell) (14.7%)
+         128x128_100:    2.07 ms,    57.0 GB/s (effective, 72 B/cell) (28.5%)
+         256x256_100:    2.27 ms,   208.1 GB/s (effective, 72 B/cell) (104.0%)
+
+--- iteration 9/25 ---
+  [llm] OpenAI tokens: in=5184, out=7000
+  generated in 132.4s; evaluating...
+  score = 0.3094 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.50 ms,    29.4 GB/s (effective, 72 B/cell) (14.7%)
+         128x128_100:    2.01 ms,    58.6 GB/s (effective, 72 B/cell) (29.3%)
+         256x256_100:    3.44 ms,   137.3 GB/s (effective, 72 B/cell) (68.6%)
+
+--- iteration 10/25 ---
+  [llm] OpenAI tokens: in=5059, out=13562
+  generated in 244.0s; evaluating...
+  score = 0.3711 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.47 ms,    31.1 GB/s (effective, 72 B/cell) (15.6%)
+         128x128_100:    1.99 ms,    59.4 GB/s (effective, 72 B/cell) (29.7%)
+         256x256_100:    2.13 ms,   221.2 GB/s (effective, 72 B/cell) (110.6%)
+
+--- iteration 11/25 ---
+  [llm] OpenAI tokens: in=3903, out=20837
+  generated in 382.1s; evaluating...
+  score = 0.4179 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.29 ms,    50.9 GB/s (effective, 72 B/cell) (25.5%)
+         128x128_100:    2.08 ms,    56.6 GB/s (effective, 72 B/cell) (28.3%)
+         256x256_100:    2.33 ms,   202.6 GB/s (effective, 72 B/cell) (101.3%)
+
+--- iteration 12/25 ---
+  [llm] OpenAI tokens: in=5452, out=9381
+  generated in 156.6s; evaluating...
+  score = 0.3433 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.50 ms,    29.6 GB/s (effective, 72 B/cell) (14.8%)
+         128x128_100:    2.12 ms,    55.7 GB/s (effective, 72 B/cell) (27.9%)
+         256x256_100:    2.40 ms,   196.4 GB/s (effective, 72 B/cell) (98.2%)
+
+--- iteration 13/25 ---
+  [llm] OpenAI tokens: in=5886, out=7881
+  generated in 137.4s; evaluating...
+  score = 0.5221 (seed = 0.3932, best = 0.5179)
+            64x64_50:    0.26 ms,    57.0 GB/s (effective, 72 B/cell) (28.5%)
+         128x128_100:    1.20 ms,    98.4 GB/s (effective, 72 B/cell) (49.2%)
+         256x256_100:    2.32 ms,   203.1 GB/s (effective, 72 B/cell) (101.5%)
+  NEW INCUMBENT
+
+--- iteration 14/25 ---
+  [llm] OpenAI tokens: in=4107, out=16098
+  generated in 276.3s; evaluating...
+  score = 0.3450 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.51 ms,    28.9 GB/s (effective, 72 B/cell) (14.5%)
+         128x128_100:    2.04 ms,    57.9 GB/s (effective, 72 B/cell) (28.9%)
+         256x256_100:    2.41 ms,   196.1 GB/s (effective, 72 B/cell) (98.1%)
+
+--- iteration 15/25 ---
+  [llm] OpenAI tokens: in=6813, out=11543
+  generated in 216.5s; evaluating...
+  score = 0.3382 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.54 ms,    27.5 GB/s (effective, 72 B/cell) (13.8%)
+         128x128_100:    2.07 ms,    57.1 GB/s (effective, 72 B/cell) (28.5%)
+         256x256_100:    2.40 ms,   197.0 GB/s (effective, 72 B/cell) (98.5%)
+
+--- iteration 16/25 ---
+  [llm] OpenAI tokens: in=6391, out=12245
+  generated in 209.7s; evaluating...
+  score = 0.3478 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.51 ms,    29.1 GB/s (effective, 72 B/cell) (14.6%)
+         128x128_100:    2.04 ms,    57.7 GB/s (effective, 72 B/cell) (28.9%)
+         256x256_100:    2.36 ms,   200.1 GB/s (effective, 72 B/cell) (100.1%)
+
+--- iteration 17/25 ---
+  [llm] OpenAI tokens: in=7283, out=15144
+  generated in 281.1s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:106:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                     [[max_total_threads_per_threadgroup(256)]] {
+                       ^
+" UserInfo={NSLocalizedDescription=program_source:106:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                     [[max_total_threads_per_threadgroup(256)]] {
+                       ^
+}
+
+--- iteration 18/25 ---
+  [llm] OpenAI tokens: in=6308, out=2735
+  generated in 29.8s; evaluating...
+  score = 0.3423 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.54 ms,    27.1 GB/s (effective, 72 B/cell) (13.5%)
+         128x128_100:    1.99 ms,    59.4 GB/s (effective, 72 B/cell) (29.7%)
+         256x256_100:    2.37 ms,   199.4 GB/s (effective, 72 B/cell) (99.7%)
+
+--- iteration 19/25 ---
+  [llm] OpenAI tokens: in=6365, out=15020
+  generated in 272.4s; evaluating...
+  score = 0.3140 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.53 ms,    27.8 GB/s (effective, 72 B/cell) (13.9%)
+         128x128_100:    2.08 ms,    56.6 GB/s (effective, 72 B/cell) (28.3%)
+         256x256_100:    3.00 ms,   157.4 GB/s (effective, 72 B/cell) (78.7%)
+
+--- iteration 20/25 ---
+  [llm] OpenAI tokens: in=7279, out=17471
+  generated in 330.0s; evaluating...
+  score = 0.3368 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.52 ms,    28.2 GB/s (effective, 72 B/cell) (14.1%)
+         128x128_100:    2.10 ms,    56.3 GB/s (effective, 72 B/cell) (28.1%)
+         256x256_100:    2.45 ms,   192.4 GB/s (effective, 72 B/cell) (96.2%)
+
+--- iteration 21/25 ---
+  [llm] OpenAI tokens: in=6904, out=9289
+  generated in 152.2s; evaluating...
+  score = 0.4288 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.51 ms,    29.1 GB/s (effective, 72 B/cell) (14.5%)
+         128x128_100:    1.07 ms,   110.0 GB/s (effective, 72 B/cell) (55.0%)
+         256x256_100:    2.39 ms,   197.2 GB/s (effective, 72 B/cell) (98.6%)
+
+--- iteration 22/25 ---
+  [llm] OpenAI tokens: in=7279, out=8911
+  generated in 138.2s; evaluating...
+  score = 0.3178 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.52 ms,    28.5 GB/s (effective, 72 B/cell) (14.3%)
+         128x128_100:    2.13 ms,    55.4 GB/s (effective, 72 B/cell) (27.7%)
+         256x256_100:    2.90 ms,   162.5 GB/s (effective, 72 B/cell) (81.2%)
+
+--- iteration 23/25 ---
+  [llm] OpenAI tokens: in=7402, out=16789
+  generated in 296.6s; evaluating...
+  score = 0.3287 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.49 ms,    30.1 GB/s (effective, 72 B/cell) (15.1%)
+         128x128_100:    2.07 ms,    57.1 GB/s (effective, 72 B/cell) (28.5%)
+         256x256_100:    2.86 ms,   165.1 GB/s (effective, 72 B/cell) (82.5%)
+
+--- iteration 24/25 ---
+  [llm] OpenAI tokens: in=6983, out=14182
+  generated in 246.9s; evaluating...
+  score = 0.4943 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.22 ms,    65.9 GB/s (effective, 72 B/cell) (32.9%)
+         128x128_100:    1.19 ms,    98.7 GB/s (effective, 72 B/cell) (49.4%)
+         256x256_100:    3.18 ms,   148.6 GB/s (effective, 72 B/cell) (74.3%)
+
+--- iteration 25/25 ---
+  [llm] OpenAI tokens: in=7504, out=16556
+  generated in 292.2s; evaluating...
+  score = 0.3494 (seed = 0.3932, best = 0.5221)
+            64x64_50:    0.51 ms,    29.0 GB/s (effective, 72 B/cell) (14.5%)
+         128x128_100:    2.13 ms,    55.4 GB/s (effective, 72 B/cell) (27.7%)
+         256x256_100:    2.22 ms,   212.8 GB/s (effective, 72 B/cell) (106.4%)
+
+=== done. seed=0.3932, best=0.5221, output=results/gpt55_sweep/lbm_gpt-5.5_20260508_185704 ===
+=== END lbm Fri May  8 20:29:50 CEST 2026 ===
+=== SWEEP RESUME3 DONE Fri May  8 20:29:50 CEST 2026 ===
