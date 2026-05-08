@@ -349,7 +349,9 @@ with the type of optimisation lever: ``tune the same algorithm
 tighter'' (BW saturation, BGK fold, leapfrog ILP) favours Opus,
 while ``find a different algorithm'' (simdgroup-tree reduction,
 twiddle caching, neighbour-list reorganisation) favours Gemini (see
-App.~\ref{app:code} for code-level diffs on lbm and fft3d). GPT-5.5
+App.~\ref{app:code} for code-level diffs on lbm and fft3d, plus
+GPT-5.5's FFT3D direct-DFT fallback and HMC defensive
+enumeration). GPT-5.5
 sits closer to Gemini in temperament --- it explores aggressive
 restructurings, which on fft3d pays off in-distribution but, as the
 held-out column makes visible, at the cost of a sharp overfit
@@ -364,7 +366,8 @@ Across all three sweeps, Gemini had \emph{zero} correctness failures
 across its 95 fresh-run candidates; Opus had 13 across 110 candidates
 (notably wave3d 10/15: multi-step leapfrog amplifies any sign or
 indexing error into NaN); GPT-5.5 had 2 across 120 candidates,
-the lowest correctness-failure rate of the three.
+the second-lowest correctness-failure rate of the three after
+Gemini.
 
 \paragraph{Held-out generalisation is sharper than in-distribution
 --- and the three models overfit asymmetrically.}
@@ -429,8 +432,9 @@ attribute placement error on its first saxpy iteration.
 \texttt{uint half = N >> 1u;}; C++ lambdas are unsupported. The
 three sweeps differ in volume rather than kind: $12{/}110$ compile
 fails for Opus, $22{/}95$ for Gemini, $12{/}120$ for GPT-5.5 ---
-GPT-5.5 has the lowest compile-fail rate (10\%) and the lowest
-correctness-fail rate (2/120) of the three. Wall time scales the
+GPT-5.5 has the lowest compile-fail rate (10\%) and the
+second-lowest correctness-fail rate (2/120) of the three; Gemini
+keeps its perfect $0/95$ correctness record. Wall time scales the
 opposite way: Opus 0.6\,min/iter, Gemini 3.5\,min/iter, GPT-5.5
 6.6\,min/iter (\texttt{reasoning\_effort=high}); GPT-5.5's wider
 exploration and longer reasoning context costs roughly $2\times$
