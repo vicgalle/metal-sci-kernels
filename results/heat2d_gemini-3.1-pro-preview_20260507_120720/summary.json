@@ -1,0 +1,132 @@
+{
+  "task": "heat2d",
+  "model": "gemini-3.1-pro-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.4503535203778002,
+  "best_score": 0.464510396100762,
+  "improvement": 1.031435028444067,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4503535203778002,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/00_seed.metal",
+      "elapsed_s": 0.31658220291137695,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3597485724594344,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/01_candidate.metal",
+      "elapsed_s": 275.7708568572998,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4015504678097701,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/02_candidate.metal",
+      "elapsed_s": 209.6947340965271,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.39531045899529954,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/03_candidate.metal",
+      "elapsed_s": 128.6644287109375,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.41408714517370904,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/04_candidate.metal",
+      "elapsed_s": 116.91663312911987,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.25366881587902923,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/05_candidate.metal",
+      "elapsed_s": 189.90287852287292,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.32506451943771747,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/06_candidate.metal",
+      "elapsed_s": 118.71328926086426,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:53: error: expected ')'\nkernel void heat_step(device const float * restrict u_in  [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void heat_step(device const float * restrict u_in  [[buffer(0)]],\n                     ^\nprogram_source:11:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:12:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:14:14: error: use of undeclared identifier 'NX'\n    if (i >= NX || j >= NY) return;\n             ^\nprogram_source:14:25: error: use of undeclared identifier 'NY'\n    if (i >= NX || j >= NY) return;\n                        ^\nprogram_source:18:20: error: use of undeclared identifier 'NX'\n    uint idx = j * NX + i;\n                   ^\nprogram_source:19:15: error: use of undeclared identifier 'u_in'\n    float c = u_in[idx];\n              ^\nprogram_source:30:34: error: use of undeclared identifier 'NX'\n    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {\n                                 ^\nprogram_source:30:49: error: use of undeclared identifier 'NY'\n    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {\n                                                ^\nprogram_source:31:9: error: use of undeclared identifier 'u_out'\n        u_out[idx] = c;\n        ^\nprogram_source:38:9: error: use of undeclared identifier 'lane'\n    if (lane > 0 && y_l == j) {\n        ^\nprogram_source:41:13: error: use of undeclared identifier 'u_in'\n        l = u_in[idx - 1];\n            ^\nprogram_source:47:9: error: use of undeclared identifier 'lane'\n    if (lane < 31 && y_r == j) {\n        ^\nprogram_source:50:13: error: use of undeclared identifier 'u_in'\n        r = u_in[idx + 1];\n            ^\nprogram_source:54:15: error: use of undeclared identifier 'u_in'\n    float d = u_in[idx - NX];\n              ^\nprogram_source:54:26: error: use of undeclared identifier 'NX'\n    float d = u_in[idx - NX];\n                         ^\nprogram_source:55:15: error: use of undeclared identifier 'u_in'\n    float u = u_in[idx + NX];\n              ^\nprogram_source:55:26: error: use of undeclared identifier 'NX'\n    float u = u_in[idx + NX];\n                         ^\nprogram_source:57:5: error: use of undeclared identifier 'u_out'\n    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);\n    ^\nprogram_source:57:22: error: use of undeclared identifier 'alpha'\n    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);\n                     ^\n\" UserInfo={NSLocalizedDescription=program_source:4:53: error: expected ')'\nkernel void heat_step(device const float * restrict u_in  [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void heat_step(device const float * restrict u_in  [[buffer(0)]],\n                     ^\nprogram_source:11:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:12:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:14:14: error: use of undeclared identifier 'NX'\n    if (i >= NX || j >= NY) return;\n             ^\nprogram_source:14:25: error: use of undeclared identifier 'NY'\n    if (i >= NX || j >= NY) return;\n                        ^\nprogram_source:18:20: error: use of undeclared identifier 'NX'\n    uint idx = j * NX + i;\n                   ^\nprogram_source:19:15: error: use of undeclared identifier 'u_in'\n    float c = u_in[idx];\n              ^\nprogram_source:30:34: error: use of undeclared identifier 'NX'\n    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {\n                                 ^\nprogram_source:30:49: error: use of undeclared identifier 'NY'\n    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {\n                                                ^\nprogram_source:31:9: error: use of undeclared identifier 'u_out'\n        u_out[idx] = c;\n        ^\nprogram_source:38:9: error: use of undeclared identifier 'lane'\n    if (lane > 0 && y_l == j) {\n        ^\nprogram_source:41:13: error: use of undeclared identifier 'u_in'\n        l = u_in[idx - 1];\n            ^\nprogram_source:47:9: error: use of undeclared identifier 'lane'\n    if (lane < 31 && y_r == j) {\n        ^\nprogram_source:50:13: error: use of undeclared identifier 'u_in'\n        r = u_in[idx + 1];\n            ^\nprogram_source:54:15: error: use of undeclared identifier 'u_in'\n    float d = u_in[idx - NX];\n              ^\nprogram_source:54:26: error: use of undeclared identifier 'NX'\n    float d = u_in[idx - NX];\n                         ^\nprogram_source:55:15: error: use of undeclared identifier 'u_in'\n    float u = u_in[idx + NX];\n              ^\nprogram_source:55:26: error: use of undeclared identifier 'NX'\n    float u = u_in[idx + NX];\n                         ^\nprogram_source:57:5: error: use of undeclared identifier 'u_out'\n    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);\n    ^\nprogram_source:57:22: error: use of undeclared identifier 'alpha'\n    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);\n                     ^\n}",
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/07_candidate.metal",
+      "elapsed_s": 258.8345057964325,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3709370073735379,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/08_candidate.metal",
+      "elapsed_s": 84.66164660453796,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:26:17: error: use of undeclared identifier 'simd_lane_id'\n    uint lane = simd_lane_id;\n                ^\nprogram_source:27:18: error: use of undeclared identifier 'simd_execution_width'\n    uint width = simd_execution_width;\n                 ^\n\" UserInfo={NSLocalizedDescription=program_source:26:17: error: use of undeclared identifier 'simd_lane_id'\n    uint lane = simd_lane_id;\n                ^\nprogram_source:27:18: error: use of undeclared identifier 'simd_execution_width'\n    uint width = simd_execution_width;\n                 ^\n}",
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/09_candidate.metal",
+      "elapsed_s": 248.60178899765015,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.464510396100762,
+      "fail_reason": null,
+      "source_path": "results/heat2d_gemini-3.1-pro-preview_20260507_120720/10_candidate.metal",
+      "elapsed_s": 121.88630414009094,
+      "is_new_best": true
+    }
+  ]
+}

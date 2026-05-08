@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size 64x64_50: max_abs_f=4.524e-01",
+  "sizes": [
+    {
+      "label": "64x64_50",
+      "correct": false,
+      "error_value": 0.45243534445762634,
+      "error_kind": "max_abs_f",
+      "gpu_seconds": 0.0008971666661636846,
+      "achieved": 16.43574216043123,
+      "achieved_unit": "GB/s (effective, 72 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.08217871080215615
+    }
+  ]
+}

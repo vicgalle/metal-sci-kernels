@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:524:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:447:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n\" UserInfo={NSLocalizedDescription=program_source:524:9: error: no matching function for call to 'drift_dynamic'\n        drift_dynamic(q, p, eps);\n        ^~~~~~~~~~~~~\nprogram_source:447:13: note: candidate function not viable: requires 4 arguments, but 3 were provided\ninline void drift_dynamic(thread float *q, thread const float *p, uint d, float eps) {\n            ^\n}",
+  "sizes": []
+}

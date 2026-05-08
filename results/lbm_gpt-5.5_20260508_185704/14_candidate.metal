@@ -1,0 +1,185 @@
+#include <metal_stdlib>
+using namespace metal;
+
+#define LBM_COLLIDE_STORE_OMEGA(FOUT_, N_, IDX_, OMEGA_, F0_, F1_, F2_, F3_, F4_, F5_, F6_, F7_, F8_) do { \
+    const float rho = ((((F0_) + (F1_)) + ((F2_) + (F3_))) + (((F4_) + (F5_)) + ((F6_) + (F7_)))) + (F8_); \
+    const float mx = (((((F1_) - (F3_)) + (F5_)) - (F6_)) - (F7_)) + (F8_); \
+    const float my = (((((F2_) - (F4_)) + (F5_)) + (F6_)) - (F7_)) - (F8_); \
+    const float inv_rho = 1.0f / rho; \
+    const float mx2 = mx * mx; \
+    const float my2 = my * my; \
+    const float base = fma(-1.5f, (mx2 + my2) * inv_rho, rho); \
+    const float q45 = 4.5f * inv_rho; \
+    const float omega_lbm = (OMEGA_); \
+    device float *pout = (FOUT_); \
+    pout[(IDX_)] = fma(omega_lbm, (4.0f / 9.0f) * base - (F0_), (F0_)); \
+    const float tx = 3.0f * mx; \
+    const float ty = 3.0f * my; \
+    const float ex = fma(q45, mx2, base); \
+    const float ey = fma(q45, my2, base); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 9.0f) * (ex + tx) - (F1_), (F1_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 9.0f) * (ey + ty) - (F2_), (F2_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 9.0f) * (ex - tx) - (F3_), (F3_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 9.0f) * (ey - ty) - (F4_), (F4_)); \
+    const float mp = mx + my; \
+    const float mm = mx - my; \
+    const float mp2 = mp * mp; \
+    const float mm2 = mm * mm; \
+    const float ep = fma(q45, mp2, base); \
+    const float em = fma(q45, mm2, base); \
+    const float tp = 3.0f * mp; \
+    const float tm = 3.0f * mm; \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 36.0f) * (ep + tp) - (F5_), (F5_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 36.0f) * (em - tm) - (F6_), (F6_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 36.0f) * (ep - tp) - (F7_), (F7_)); \
+    pout += (N_); \
+    pout[(IDX_)] = fma(omega_lbm, (1.0f / 36.0f) * (em + tm) - (F8_), (F8_)); \
+} while (0)
+
+#define LBM_POWER2_FULL_CASE(SZ_, SHIFT_, NVAL_) \
+    if (NX == (SZ_) && NY == (SZ_)) { \
+        const uint row = j << (SHIFT_); \
+        const uint idx = row + i; \
+        float f0, f1, f2, f3, f4, f5, f6, f7, f8; \
+        if ((i - 1u < ((SZ_) - 2u)) && (j - 1u < ((SZ_) - 2u))) { \
+            const uint idxm = idx - (SZ_); \
+            const uint idxp = idx + (SZ_); \
+            device const float *pin = f_in; \
+            f0 = pin[idx]; \
+            pin += (NVAL_); \
+            f1 = pin[idx - 1u]; \
+            pin += (NVAL_); \
+            f2 = pin[idxm]; \
+            pin += (NVAL_); \
+            f3 = pin[idx + 1u]; \
+            pin += (NVAL_); \
+            f4 = pin[idxp]; \
+            pin += (NVAL_); \
+            f5 = pin[idxm - 1u]; \
+            pin += (NVAL_); \
+            f6 = pin[idxm + 1u]; \
+            pin += (NVAL_); \
+            f7 = pin[idxp + 1u]; \
+            pin += (NVAL_); \
+            f8 = pin[idxp - 1u]; \
+        } else { \
+            const uint mask = (SZ_) - 1u; \
+            const uint im = (i - 1u) & mask; \
+            const uint ip = (i + 1u) & mask; \
+            const uint rowm = ((j - 1u) & mask) << (SHIFT_); \
+            const uint rowp = ((j + 1u) & mask) << (SHIFT_); \
+            device const float *pin = f_in; \
+            f0 = pin[idx]; \
+            pin += (NVAL_); \
+            f1 = pin[row + im]; \
+            pin += (NVAL_); \
+            f2 = pin[rowm + i]; \
+            pin += (NVAL_); \
+            f3 = pin[row + ip]; \
+            pin += (NVAL_); \
+            f4 = pin[rowp + i]; \
+            pin += (NVAL_); \
+            f5 = pin[rowm + im]; \
+            pin += (NVAL_); \
+            f6 = pin[rowm + ip]; \
+            pin += (NVAL_); \
+            f7 = pin[rowp + ip]; \
+            pin += (NVAL_); \
+            f8 = pin[rowp + im]; \
+        } \
+        LBM_COLLIDE_STORE_OMEGA(f_out, (NVAL_), idx, omega, f0, f1, f2, f3, f4, f5, f6, f7, f8); \
+        return; \
+    }
+
+#define LBM_POWER2_YFAST_CASE(SZ_, SHIFT_, NVAL_) \
+    if (NX == (SZ_) && NY == (SZ_)) { \
+        const uint row = j << (SHIFT_); \
+        const uint idx = row + i; \
+        const uint mask = (SZ_) - 1u; \
+        const uint im = (i - 1u) & mask; \
+        const uint ip = (i + 1u) & mask; \
+        uint rowm; \
+        uint rowp; \
+        if (j - 1u < ((SZ_) - 2u)) { \
+            rowm = row - (SZ_); \
+            rowp = row + (SZ_); \
+        } else { \
+            rowm = ((j - 1u) & mask) << (SHIFT_); \
+            rowp = ((j + 1u) & mask) << (SHIFT_); \
+        } \
+        device const float *pin = f_in; \
+        const float f0 = pin[idx]; \
+        pin += (NVAL_); \
+        const float f1 = pin[row + im]; \
+        pin += (NVAL_); \
+        const float f2 = pin[rowm + i]; \
+        pin += (NVAL_); \
+        const float f3 = pin[row + ip]; \
+        pin += (NVAL_); \
+        const float f4 = pin[rowp + i]; \
+        pin += (NVAL_); \
+        const float f5 = pin[rowm + im]; \
+        pin += (NVAL_); \
+        const float f6 = pin[rowm + ip]; \
+        pin += (NVAL_); \
+        const float f7 = pin[rowp + ip]; \
+        pin += (NVAL_); \
+        const float f8 = pin[rowp + im]; \
+        LBM_COLLIDE_STORE_OMEGA(f_out, (NVAL_), idx, omega, f0, f1, f2, f3, f4, f5, f6, f7, f8); \
+        return; \
+    }
+
+kernel void lbm_step(device const float *f_in   [[buffer(0)]],
+                     device       float *f_out  [[buffer(1)]],
+                     constant uint        &NX   [[buffer(2)]],
+                     constant uint        &NY   [[buffer(3)]],
+                     constant float       &tau  [[buffer(4)]],
+                     uint2 gid [[thread_position_in_grid]]) {
+    const uint i = gid.x;
+    const uint j = gid.y;
+    if (i >= NX || j >= NY) return;
+
+    const float omega = 1.0f / tau;
+
+    LBM_POWER2_FULL_CASE(256u, 8, 65536u)
+    LBM_POWER2_YFAST_CASE(128u, 7, 16384u)
+    LBM_POWER2_YFAST_CASE(64u, 6, 4096u)
+
+    const uint N   = NX * NY;
+    const uint row = j * NX;
+    const uint idx = row + i;
+
+    const uint im   = (i == 0u) ? (NX - 1u) : (i - 1u);
+    const uint ip   = (i + 1u == NX) ? 0u : (i + 1u);
+    const uint rowm = (j == 0u) ? (N - NX) : (row - NX);
+    const uint rowp = (j + 1u == NY) ? 0u : (row + NX);
+
+    device const float *pin = f_in;
+
+    const float f0 = pin[idx];
+    pin += N;
+    const float f1 = pin[row + im];
+    pin += N;
+    const float f2 = pin[rowm + i];
+    pin += N;
+    const float f3 = pin[row + ip];
+    pin += N;
+    const float f4 = pin[rowp + i];
+    pin += N;
+    const float f5 = pin[rowm + im];
+    pin += N;
+    const float f6 = pin[rowm + ip];
+    pin += N;
+    const float f7 = pin[rowp + ip];
+    pin += N;
+    const float f8 = pin[rowp + im];
+
+    LBM_COLLIDE_STORE_OMEGA(f_out, N, idx, omega, f0, f1, f2, f3, f4, f5, f6, f7, f8);
+}

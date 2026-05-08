@@ -1,0 +1,282 @@
+[
+  {
+    "task": "saxpy",
+    "held": "4M",
+    "seed_frac": 0.7937180691332918,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.9273449654155178,
+        "achieved": 185.46899308310356,
+        "fail": null,
+        "dir": "saxpy_claude-opus-4-7_20260507_110312"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.7801340383228067,
+        "achieved": 156.02680766456135,
+        "fail": null,
+        "dir": "saxpy_gemini-3.1-pro-preview_20260507_114809"
+      },
+      "gpt-5.5": {
+        "frac": 0.78053730390075,
+        "achieved": 156.10746078015,
+        "fail": null,
+        "dir": "saxpy_gpt-5.5_20260507_212443"
+      }
+    }
+  },
+  {
+    "task": "heat2d",
+    "held": "768x768_75",
+    "seed_frac": 0.9729390001437589,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 8 B/cell)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.8391425887234344,
+        "achieved": 167.82851774468688,
+        "fail": null,
+        "dir": "heat2d_claude-opus-4-7_20260507_110544"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.9788143334218625,
+        "achieved": 195.7628666843725,
+        "fail": null,
+        "dir": "heat2d_gemini-3.1-pro-preview_20260507_120720"
+      },
+      "gpt-5.5": {
+        "frac": 0.7972016025866655,
+        "achieved": 159.4403205173331,
+        "fail": null,
+        "dir": "heat2d_gpt-5.5_20260507_230150"
+      }
+    }
+  },
+  {
+    "task": "nbody",
+    "held": "512_10",
+    "seed_frac": 0.013208638202548667,
+    "ceiling": 4500.0,
+    "ceiling_unit": "GFLOPS",
+    "achieved_unit": "GFLOPS",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.01641252944037183,
+        "achieved": 73.85638248167324,
+        "fail": null,
+        "dir": "nbody_claude-opus-4-7_20260507_110830"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.01985163917874336,
+        "achieved": 89.33237630434513,
+        "fail": null,
+        "dir": "nbody_gemini-3.1-pro-preview_20260507_123634"
+      },
+      "gpt-5.5": {
+        "frac": 0.01813772698166883,
+        "achieved": 81.61977141750972,
+        "fail": null,
+        "dir": "nbody_gpt-5.5_20260507_220230"
+      }
+    }
+  },
+  {
+    "task": "lbm",
+    "held": "192x192_75",
+    "seed_frac": 0.8065050158306138,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 72 B/cell)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.7856431214819838,
+        "achieved": 157.12862429639677,
+        "fail": null,
+        "dir": "lbm_claude-opus-4-7_20260506_112341"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.9315916045924061,
+        "achieved": 186.31832091848122,
+        "fail": null,
+        "dir": "lbm_gemini-3.1-pro-preview_20260507_145623"
+      },
+      "gpt-5.5": {
+        "frac": 0.8155083968001144,
+        "achieved": 163.1016793600229,
+        "fail": null,
+        "dir": "lbm_gpt-5.5_20260508_185704"
+      }
+    }
+  },
+  {
+    "task": "gradshaf",
+    "held": "129x129_35",
+    "seed_frac": 0.026535043811475926,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 12 B/cell)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.054397872837997,
+        "achieved": 10.8795745675994,
+        "fail": null,
+        "dir": "gradshaf_claude-opus-4-7_20260506_204437"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.07717920409340348,
+        "achieved": 15.435840818680695,
+        "fail": null,
+        "dir": "gradshaf_gemini-3.1-pro-preview_20260507_130735"
+      },
+      "gpt-5.5": {
+        "frac": 0.04946369458740695,
+        "achieved": 9.89273891748139,
+        "fail": null,
+        "dir": "gradshaf_gpt-5.5_20260508_121534"
+      }
+    }
+  },
+  {
+    "task": "fft3d",
+    "held": "256cube",
+    "seed_frac": 0.37281120072187435,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 96 B/cell across 3 passes)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.4173130435154895,
+        "achieved": 83.4626087030979,
+        "fail": null,
+        "dir": "fft3d_claude-opus-4-7_20260506_221310"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.448810543135095,
+        "achieved": 89.762108627019,
+        "fail": null,
+        "dir": "fft3d_gemini-3.1-pro-preview_20260506_222508"
+      },
+      "gpt-5.5": {
+        "frac": 0.08508918344036596,
+        "achieved": 17.017836688073192,
+        "fail": null,
+        "dir": "fft3d_gpt-5.5_20260508_153111"
+      }
+    }
+  },
+  {
+    "task": "hmc",
+    "held": "d24_K2048",
+    "seed_frac": 0.005519745411964223,
+    "ceiling": 4500.0,
+    "ceiling_unit": "GFLOPS",
+    "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": null,
+        "achieved": null,
+        "fail": "correctness: correctness failed at size d24_K2048: max(mean/tol, cov_fro/tol, accept_excess)=1.022e+01",
+        "dir": "hmc_claude-opus-4-7_20260506_182733"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.09736868619746177,
+        "achieved": 438.1590878885779,
+        "fail": null,
+        "dir": "hmc_gemini-3.1-pro-preview_20260507_134205"
+      },
+      "gpt-5.5": {
+        "frac": 0.10243811866401291,
+        "achieved": 460.97153398805807,
+        "fail": null,
+        "dir": "hmc_gpt-5.5_20260508_091035"
+      }
+    }
+  },
+  {
+    "task": "ising",
+    "held": "1536x1536_40",
+    "seed_frac": 0.11849587130017378,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 2 B/site/sweep)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.1118934166734055,
+        "achieved": 22.3786833346811,
+        "fail": null,
+        "dir": "ising_claude-opus-4-7_20260506_182243"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.11698051853465215,
+        "achieved": 23.39610370693043,
+        "fail": null,
+        "dir": "ising_gemini-3.1-pro-preview_20260507_142434"
+      },
+      "gpt-5.5": {
+        "frac": 0.10452418716018762,
+        "achieved": 20.904837432037525,
+        "fail": null,
+        "dir": "ising_gpt-5.5_20260508_095833"
+      }
+    }
+  },
+  {
+    "task": "lj",
+    "held": "N2744_M6_steps12",
+    "seed_frac": 0.0025241580885971126,
+    "ceiling": 4500.0,
+    "ceiling_unit": "GFLOPS",
+    "achieved_unit": "GFLOPS (useful pairs only)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.0031335381718729837,
+        "achieved": 14.100921773428427,
+        "fail": null,
+        "dir": "lj_claude-opus-4-7_20260506_142036"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.004720112034492685,
+        "achieved": 21.24050415521708,
+        "fail": null,
+        "dir": "lj_gemini-3.1-pro-preview_20260506_153705"
+      },
+      "gpt-5.5": {
+        "frac": 0.0033870509249853066,
+        "achieved": 15.241729162433879,
+        "fail": null,
+        "dir": "lj_gpt-5.5_20260508_110713"
+      }
+    }
+  },
+  {
+    "task": "wave3d",
+    "held": "128x128x128_20",
+    "seed_frac": 0.9686458960528392,
+    "ceiling": 200.0,
+    "ceiling_unit": "GB/s",
+    "achieved_unit": "GB/s (effective, 12 B/cell)",
+    "models": {
+      "claude-opus-4-7": {
+        "frac": 0.970061636432785,
+        "achieved": 194.012327286557,
+        "fail": null,
+        "dir": "wave3d_claude-opus-4-7_20260506_171829"
+      },
+      "gemini-3.1-pro-preview": {
+        "frac": 0.870043398354989,
+        "achieved": 174.0086796709978,
+        "fail": null,
+        "dir": "wave3d_gemini-3.1-pro-preview_20260506_172623"
+      },
+      "gpt-5.5": {
+        "frac": 0.9606574929268938,
+        "achieved": 192.13149858537878,
+        "fail": null,
+        "dir": "wave3d_gpt-5.5_20260508_165736"
+      }
+    }
+  }
+]

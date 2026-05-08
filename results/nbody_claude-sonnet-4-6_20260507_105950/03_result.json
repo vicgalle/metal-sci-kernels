@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size 256_10: max_abs_pos=nan",
+  "sizes": [
+    {
+      "label": "256_10",
+      "correct": false,
+      "error_value": NaN,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0004996666664283111,
+      "achieved": 26.231887937796895,
+      "achieved_unit": "GFLOPS",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.005829308430621532
+    }
+  ]
+}

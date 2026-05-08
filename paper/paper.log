@@ -531,45 +531,79 @@ File: pgflibraryarrows.meta.code.tex 2021/05/15 v3.1.9a (3.1.9a)
 \pgfarrowlinewidth=\dimen285
 ) (tikzlibrarycalc.code.tex
 File: tikzlibrarycalc.code.tex 2021/05/15 v3.1.9a (3.1.9a)
+) (algorithm.sty
+Invalid UTF-8 byte or sequence at line 11 replaced by U+FFFD.
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count311
+\float@exts=\toks39
+\float@box=\box65
+\@float@everytoks=\toks40
+\@floatcapt=\box66
+) (ifthen.sty
+Package: ifthen 2020/11/24 v1.1c Standard LaTeX ifthen package (DPC)
 )
-(l3backend-xetex.def
+\@float@every@algorithm=\toks41
+\c@algorithm=\count312
+) (algpseudocode.sty
+Package: algpseudocode 
+ (algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count313
+\c@ALG@rem=\count314
+\c@ALG@nested=\count315
+\ALG@tlm=\skip55
+\ALG@thistlm=\skip56
+\c@ALG@Lnr=\count316
+\c@ALG@blocknr=\count317
+\c@ALG@storecount=\count318
+\c@ALG@tmpcounter=\count319
+\ALG@tmplength=\skip57
+)
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
-\c__kernel_sys_dvipdfmx_version_int=\count311
-\l__color_backend_stack_int=\count312
-\g__color_backend_stack_int=\count313
-\g__graphics_track_int=\count314
-\l__pdf_internal_box=\box65
-\g__pdf_backend_object_int=\count315
-\g__pdf_backend_annotation_int=\count316
-\g__pdf_backend_link_int=\count317
+\c__kernel_sys_dvipdfmx_version_int=\count320
+\l__color_backend_stack_int=\count321
+\g__color_backend_stack_int=\count322
+\g__graphics_track_int=\count323
+\l__pdf_internal_box=\box67
+\g__pdf_backend_object_int=\count324
+\g__pdf_backend_annotation_int=\count325
+\g__pdf_backend_link_int=\count326
 ) (paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 3
-6.
+8.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -637,7 +671,7 @@ LaTeX Font Info:    ... okay on input line 36.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package hyperref Info: Link coloring OFF on input line 36.
+Package hyperref Info: Link coloring OFF on input line 38.
 (nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
  (refcount.sty
@@ -645,20 +679,20 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 ) (gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count318
+\c@section@level=\count327
 )
-LaTeX Info: Redefining \ref on input line 36.
-LaTeX Info: Redefining \pageref on input line 36.
-LaTeX Info: Redefining \nameref on input line 36.
+LaTeX Info: Redefining \ref on input line 38.
+LaTeX Info: Redefining \pageref on input line 38.
+LaTeX Info: Redefining \nameref on input line 38.
  (paper.out) (paper.out)
 \@outlinefile=\write4
 \openout4 = `paper.out'.
 
-LaTeX Info: Redefining \microtypecontext on input line 36.
-Package microtype Info: Applying patch `item' on input line 36.
-Package microtype Info: Applying patch `toc' on input line 36.
-Package microtype Info: Applying patch `eqnum' on input line 36.
-Package microtype Info: Applying patch `footnote' on input line 36.
+LaTeX Info: Redefining \microtypecontext on input line 38.
+Package microtype Info: Applying patch `item' on input line 38.
+Package microtype Info: Applying patch `toc' on input line 38.
+Package microtype Info: Applying patch `eqnum' on input line 38.
+Package microtype Info: Applying patch `footnote' on input line 38.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: No adjustment of tracking.
@@ -671,22 +705,22 @@ File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 38.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 40.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 38.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 40.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 3
-8.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
+0.
 
 (t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
@@ -696,22 +730,30 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3407) in paragraph at lines 78--88
-[]\T1/ptm/m/n/10 We tar-get Ap-ple Sil-i-con's Metal com-pute pipeline. It is u
-n-der-rep-re-sented in CUDA-
+Underfull \hbox (badness 1231) in paragraph at lines 67--77
+[]\T1/ptm/m/n/10 We tar-get the Ap-ple Sil-i-con's Metal com-pute pipeline. It 
+is un-der-rep-re-sented in CUDA-
  []
 
 [1
 
 
-] [2] [3] [4]
-Underfull \hbox (badness 5203) in paragraph at lines 383--396
+] [2] [3]
+Underfull \hbox (badness 1275) in paragraph at lines 246--258
+ []\T1/ptm/b/n/10 Notation.[] \T1/ptm/m/n/10 A task $\OMS/cmsy/m/n/10 T[]\OT1/c
+mr/m/n/10 (\OML/cmm/m/it/10 ^^[[];  \OT1/cmr/m/n/10 ^^F[]\OML/cmm/m/it/10 ;  ^^
+[[];  c[]\OT1/cmr/m/n/10 )$ \T1/ptm/m/n/10 pack-ages a naive cor-rect seed ker-
+nel $\OML/cmm/m/it/10 ^^[[]$ \T1/ptm/m/n/10 (Metal
+ []
+
+[4]
+Underfull \hbox (badness 5203) in paragraph at lines 402--415
  []\T1/ptm/b/n/10 Recurring Metal-grammar fail-ures.[] \T1/ptm/m/n/10 Compile-e
 rror pat-terns are sim-i-lar across mod-els.
  []
 
-LaTeX Font Info:    Trying to load font information for T1+phv on input line 43
-7.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 45
+6.
 (t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
@@ -720,27 +762,31 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 437.
- [5]
-Underfull \hbox (badness 3612) in paragraph at lines 491--493
-[]\T1/ptm/m/n/8 Novikov, A. et al. (2025) Al-phaE-volve: A cod-ing agent for sc
-i-en-tific and al-go-rith-mic dis-cov-ery.
- []
-
-[6]
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 613--618
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 456.
+ [5] (paper.bbl [6])
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 560.
+ [7]
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 664--669
  [][] 
  []
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 622.
-
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 681--687
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 673.
+[8]
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 732--738
  [][] 
  []
 
-[7] [8] (paper.aux)
+[9]
+Underfull \vbox (badness 4441) has occurred while \output is active []
+
+ [10]
+File: figs/convergence.png Graphic file (type bmp)
+<figs/convergence.png>
+
+[11] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
-(rerunfilecheck)             Checksum: 29B081250872B7A61745D5055A16850E;3789.
+(rerunfilecheck)             Checksum: 83720AA60132D90AB61A3DD5A2068044;4313.
  )
-Output written on paper.xdv (8 pages, 67696 bytes).
+Output written on paper.xdv (11 pages, 90064 bytes).

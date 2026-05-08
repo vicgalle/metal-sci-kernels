@@ -1,0 +1,94 @@
+{
+  "compile_ok": true,
+  "score": 0.06702669099451565,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "d8_K16384",
+      "correct": true,
+      "error_value": 0.062457902550997806,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.0093455416681536,
+      "achieved": 462.8277475600368,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.10285061056889706,
+      "extra": {
+        "d": 8,
+        "K": 16384,
+        "L": 10,
+        "T": 200,
+        "eps": 0.2,
+        "accept_rate": 0.9915374755859375,
+        "mean_err_norm": 0.006997889768863682,
+        "cov_fro_err": 0.01873737076529934,
+        "tol_mean": 0.15,
+        "tol_cov": 0.3,
+        "acc_window": [
+          0.45,
+          0.999
+        ],
+        "rng_seed": 3405692655
+      }
+    },
+    {
+      "label": "d16_K4096",
+      "correct": true,
+      "error_value": 0.2147903256318047,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.012706895835435716,
+      "achieved": 351.7424914695336,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0781649981043408,
+      "extra": {
+        "d": 16,
+        "K": 4096,
+        "L": 10,
+        "T": 200,
+        "eps": 0.2,
+        "accept_rate": 0.98774658203125,
+        "mean_err_norm": 0.032218548844770704,
+        "cov_fro_err": 0.05745307827823516,
+        "tol_mean": 0.15,
+        "tol_cov": 0.3,
+        "acc_window": [
+          0.45,
+          0.999
+        ],
+        "rng_seed": 3405692655
+      }
+    },
+    {
+      "label": "d32_K1024",
+      "correct": true,
+      "error_value": 0.597835971814226,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.02694489583154791,
+      "achieved": 168.5530657974377,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.03745623684387505,
+      "extra": {
+        "d": 32,
+        "K": 1024,
+        "L": 10,
+        "T": 200,
+        "eps": 0.2,
+        "accept_rate": 0.9822705078125,
+        "mean_err_norm": 0.059796791443587245,
+        "cov_fro_err": 0.17935079154426778,
+        "tol_mean": 0.15,
+        "tol_cov": 0.3,
+        "acc_window": [
+          0.45,
+          0.999
+        ],
+        "rng_seed": 3405692655
+      }
+    }
+  ]
+}

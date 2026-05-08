@@ -1,0 +1,44 @@
+{
+  "compile_ok": true,
+  "correct": true,
+  "score": 0.48881450123883946,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "64x64_50",
+      "correct": true,
+      "error_value": 2.384185791015625e-07,
+      "error_kind": "max_abs_f",
+      "gpu_seconds": 0.00025258333334932104,
+      "achieved": 58.379148792081764,
+      "achieved_unit": "GB/s (effective, 72 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.29189574396040885
+    },
+    {
+      "label": "128x128_100",
+      "correct": true,
+      "error_value": 2.384185791015625e-07,
+      "error_kind": "max_abs_f",
+      "gpu_seconds": 0.0016344166670023696,
+      "achieved": 72.1754754351321,
+      "achieved_unit": "GB/s (effective, 72 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.3608773771756605
+    },
+    {
+      "label": "256x256_100",
+      "correct": true,
+      "error_value": 8.344650268554688e-07,
+      "error_kind": "max_abs_f",
+      "gpu_seconds": 0.0021278333333611954,
+      "achieved": 221.75571394712372,
+      "achieved_unit": "GB/s (effective, 72 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 1.1087785697356187
+    }
+  ]
+}

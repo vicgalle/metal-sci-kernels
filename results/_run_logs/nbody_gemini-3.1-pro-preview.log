@@ -1,0 +1,96 @@
+
+=== Metal kernel evolution: task=nbody ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/nbody_gemini-3.1-pro-preview_20260507_123634
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0204  (1.6s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 173.4s; evaluating...
+  score = 0.0321 (seed = 0.0204, best = 0.0204)
+              256_10:    0.39 ms,    33.4 GFLOPS (0.7%)
+             1024_10:    1.40 ms,   149.9 GFLOPS (3.3%)
+             2048_10:    1.40 ms,   600.7 GFLOPS (13.3%)
+  NEW INCUMBENT
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 224.6s; evaluating...
+  score = 0.0338 (seed = 0.0204, best = 0.0321)
+              256_10:    0.38 ms,    34.4 GFLOPS (0.8%)
+             1024_10:    1.35 ms,   154.8 GFLOPS (3.4%)
+             2048_10:    1.27 ms,   661.7 GFLOPS (14.7%)
+  NEW INCUMBENT
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 270.6s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:15:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       uint tg_size [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(256)]]
+                                                                   ^
+" UserInfo={NSLocalizedDescription=program_source:15:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       uint tg_size [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(256)]]
+                                                                   ^
+}
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 119.3s; evaluating...
+  score = 0.0408 (seed = 0.0204, best = 0.0338)
+              256_10:    0.39 ms,    33.2 GFLOPS (0.7%)
+             1024_10:    0.72 ms,   289.5 GFLOPS (6.4%)
+             2048_10:    1.30 ms,   643.9 GFLOPS (14.3%)
+  NEW INCUMBENT
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 152.3s; evaluating...
+  score = 0.0233 (seed = 0.0204, best = 0.0408)
+              256_10:    0.49 ms,    27.0 GFLOPS (0.6%)
+             1024_10:    1.70 ms,   123.1 GFLOPS (2.7%)
+             2048_10:    2.43 ms,   344.7 GFLOPS (7.7%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 192.0s; evaluating...
+  score = 0.0309 (seed = 0.0204, best = 0.0408)
+              256_10:    0.42 ms,    31.0 GFLOPS (0.7%)
+             1024_10:    1.49 ms,   140.7 GFLOPS (3.1%)
+             2048_10:    1.35 ms,   619.6 GFLOPS (13.8%)
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 142.0s; evaluating...
+  score = 0.0075 (seed = 0.0204, best = 0.0408)
+              256_10:    1.48 ms,     8.9 GFLOPS (0.2%)
+             1024_10:    5.76 ms,    36.4 GFLOPS (0.8%)
+             2048_10:    6.96 ms,   120.6 GFLOPS (2.7%)
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 113.5s; evaluating...
+  score = 0.0145 (seed = 0.0204, best = 0.0408)
+              256_10:    1.33 ms,     9.8 GFLOPS (0.2%)
+             1024_10:    2.03 ms,   103.5 GFLOPS (2.3%)
+             2048_10:    3.04 ms,   275.6 GFLOPS (6.1%)
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 232.3s; evaluating...
+  score = 0.0208 (seed = 0.0204, best = 0.0408)
+              256_10:    0.90 ms,    14.5 GFLOPS (0.3%)
+             1024_10:    1.56 ms,   134.7 GFLOPS (3.0%)
+             2048_10:    2.00 ms,   419.9 GFLOPS (9.3%)
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 224.7s; evaluating...
+  score = 0.0174 (seed = 0.0204, best = 0.0408)
+              256_10:    0.67 ms,    19.7 GFLOPS (0.4%)
+             1024_10:    2.45 ms,    85.4 GFLOPS (1.9%)
+             2048_10:    2.93 ms,   286.7 GFLOPS (6.4%)
+
+=== done. seed=0.0204, best=0.0408, output=results/nbody_gemini-3.1-pro-preview_20260507_123634 ===
