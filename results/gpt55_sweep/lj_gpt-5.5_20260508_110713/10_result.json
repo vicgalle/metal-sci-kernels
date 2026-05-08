@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size N1728_M5_steps20: max_abs_pos=1.885e-03",
+  "sizes": [
+    {
+      "label": "N1728_M5_steps20",
+      "correct": false,
+      "error_value": 0.0018851757049560547,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0021019375017203856,
+      "achieved": 11.056846352937686,
+      "achieved_unit": "GFLOPS (useful pairs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0024570769673194857
+    }
+  ]
+}

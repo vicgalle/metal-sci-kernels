@@ -1,0 +1,132 @@
+{
+  "task": "fft3d",
+  "model": "gemini-3.1-pro-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.2365849334564696,
+  "best_score": 0.2815647200963898,
+  "improvement": 1.1901210951296533,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2365849334564696,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/00_seed.metal",
+      "elapsed_s": 0.25780296325683594,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:90:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\nprogram_source:115:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\nprogram_source:140:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\n\" UserInfo={NSLocalizedDescription=program_source:90:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\nprogram_source:115:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\nprogram_source:140:62: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                    uint3 gid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]]\n                                                             ^\n}",
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/01_candidate.metal",
+      "elapsed_s": 252.3261501789093,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2202371411899508,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/02_candidate.metal",
+      "elapsed_s": 214.2903289794922,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1610986371750679,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/03_candidate.metal",
+      "elapsed_s": 205.68568992614746,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.15556101155007207,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/04_candidate.metal",
+      "elapsed_s": 221.21729516983032,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1708311951653751,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/05_candidate.metal",
+      "elapsed_s": 277.2132375240326,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1834333851880671,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/06_candidate.metal",
+      "elapsed_s": 188.19973039627075,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:33:14: error: use of undeclared identifier 'sincospi'; did you mean 'sincos'?\n        s_ = sincospi(angle_pi, c);\n             ^~~~~~~~\n             sincos\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:4811:18: note: 'sincos' declared here\nMETAL_FUNC float sincos(float x, thread float &cosval)\n                 ^\nprogram_source:58:14: error: use of undeclared identifier 'sincospi'; did you mean 'sincos'?\n        s_ = sincospi(angle_pi, c);\n             ^~~~~~~~\n             sincos\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:4811:18: note: 'sincos' declared here\nMETAL_FUNC float sincos(float x, thread float &cosval)\n                 ^\n\" UserInfo={NSLocalizedDescription=program_source:33:14: error: use of undeclared identifier 'sincospi'; did you mean 'sincos'?\n        s_ = sincospi(angle_pi, c);\n             ^~~~~~~~\n             sincos\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:4811:18: note: 'sincos' declared here\nMETAL_FUNC float sincos(float x, thread float &cosval)\n                 ^\nprogram_source:58:14: error: use of undeclared identifier 'sincospi'; did you mean 'sincos'?\n        s_ = sincospi(angle_pi, c);\n             ^~~~~~~~\n             sincos\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:4811:18: note: 'sincos' declared here\nMETAL_FUNC float sincos(float x, thread float &cosval)\n                 ^\n}",
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/07_candidate.metal",
+      "elapsed_s": 242.437518119812,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.18195666934753865,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/08_candidate.metal",
+      "elapsed_s": 185.31548500061035,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.27811385545578327,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/09_candidate.metal",
+      "elapsed_s": 245.67653441429138,
+      "is_new_best": true
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2815647200963898,
+      "fail_reason": null,
+      "source_path": "results/fft3d_gemini-3.1-pro-preview_20260506_222508/10_candidate.metal",
+      "elapsed_s": 254.03386521339417,
+      "is_new_best": true
+    }
+  ]
+}

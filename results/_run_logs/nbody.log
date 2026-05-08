@@ -1,0 +1,79 @@
+
+=== Metal kernel evolution: task=nbody ===
+  model: claude-opus-4-7
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/nbody_claude-opus-4-7_20260507_110830
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0194  (1.5s)
+
+--- iteration 1/10 ---
+  [llm] Claude cost: $0.1732
+  generated in 23.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:17:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       uint  tgs [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(TILE)]]
+                                                                ^
+" UserInfo={NSLocalizedDescription=program_source:17:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       uint  tgs [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(TILE)]]
+                                                                ^
+}
+
+--- iteration 2/10 ---
+  [llm] Claude cost: $0.2180
+  generated in 17.6s; evaluating...
+  score = 0.0550 (seed = 0.0194, best = 0.0194)
+              256_10:    0.18 ms,    72.3 GFLOPS (1.6%)
+             1024_10:    0.69 ms,   303.8 GFLOPS (6.8%)
+             2048_10:    1.21 ms,   691.3 GFLOPS (15.4%)
+  NEW INCUMBENT
+
+--- iteration 3/10 ---
+  [llm] Claude cost: $0.2331
+  generated in 21.9s; evaluating...
+  incorrect: correctness failed at size 256_10: max_abs_pos=nan
+
+--- iteration 4/10 ---
+  [llm] Claude cost: $0.2681
+  generated in 33.8s; evaluating...
+  score = 0.0361 (seed = 0.0194, best = 0.0550)
+              256_10:    0.40 ms,    32.4 GFLOPS (0.7%)
+             1024_10:    1.15 ms,   182.0 GFLOPS (4.0%)
+             2048_10:    1.15 ms,   729.9 GFLOPS (16.2%)
+
+--- iteration 5/10 ---
+  [llm] Claude cost: $0.2346
+  generated in 16.8s; evaluating...
+  incorrect: correctness failed at size 256_10: max_abs_pos=nan
+
+--- iteration 6/10 ---
+  [llm] Claude cost: $0.2319
+  generated in 20.6s; evaluating...
+  score = 0.0044 (seed = 0.0194, best = 0.0550)
+              256_10:    1.70 ms,     7.7 GFLOPS (0.2%)
+             1024_10:    9.62 ms,    21.8 GFLOPS (0.5%)
+             2048_10:   18.51 ms,    45.3 GFLOPS (1.0%)
+
+--- iteration 7/10 ---
+  [llm] Claude cost: $0.2694
+  generated in 23.5s; evaluating...
+  incorrect: correctness failed at size 256_10: max_abs_pos=nan
+
+--- iteration 8/10 ---
+  [llm] Claude cost: $0.2528
+  generated in 18.1s; evaluating...
+  incorrect: correctness failed at size 256_10: max_abs_pos=1.067e-02
+
+--- iteration 9/10 ---
+  [llm] Claude cost: $0.2305
+  generated in 18.4s; evaluating...
+  incorrect: correctness failed at size 256_10: max_abs_pos=1.069e-02
+
+--- iteration 10/10 ---
+  [llm] Claude cost: $0.2618
+  generated in 19.9s; evaluating...
+  score = 0.0354 (seed = 0.0194, best = 0.0550)
+              256_10:    0.32 ms,    41.3 GFLOPS (0.9%)
+             1024_10:    1.15 ms,   182.0 GFLOPS (4.0%)
+             2048_10:    1.55 ms,   539.6 GFLOPS (12.0%)
+
+=== done. seed=0.0194, best=0.0550, output=results/nbody_claude-opus-4-7_20260507_110830 ===

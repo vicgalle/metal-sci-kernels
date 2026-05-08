@@ -1,0 +1,3 @@
+**Considering threadgroup width**
+
+I see that the spec mentions a guard. If my benchmark indicates N multiples of threadgroup width, there shouldn't be an issue. However, the correctness tests may require padding, which I must keep in mind. I’m also wondering if a branchless approach would be useful, but storing out-of-bounds (OOB) seems impossible. I could implement an early return using an `if` statement like `if (i >= N) return; y[i] = mad(a,x[i],y[i]);`. That feels like a similar approach.

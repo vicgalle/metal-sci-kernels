@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.022728115803763656,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/00_seed.metal",
+    "elapsed_s": 0.3710451126098633,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.017566168356858373,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/01_candidate.metal",
+    "elapsed_s": 1045.2054560184479,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.017298549336246485,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/02_candidate.metal",
+    "elapsed_s": 177.23361802101135,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.026146912077090325,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/03_candidate.metal",
+    "elapsed_s": 468.40273809432983,
+    "is_new_best": true
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.035105332615358927,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/04_candidate.metal",
+    "elapsed_s": 570.0117812156677,
+    "is_new_best": true
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.039672840488318165,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/05_candidate.metal",
+    "elapsed_s": 461.0904996395111,
+    "is_new_best": true
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.043932040409169495,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/06_candidate.metal",
+    "elapsed_s": 470.2114918231964,
+    "is_new_best": true
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.039467091845384765,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/07_candidate.metal",
+    "elapsed_s": 1019.9828300476074,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.03823760465761779,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/gradshaf_gpt-5.5_20260508_121534/08_candidate.metal",
+    "elapsed_s": 1656.6481981277466,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "skipped",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "LLM call failed: Request timed out.",
+    "source_path": "",
+    "elapsed_s": 1801.771966934204,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "skipped",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "LLM call failed: Request timed out.",
+    "source_path": "",
+    "elapsed_s": 1538.5579068660736,
+    "is_new_best": false
+  }
+]

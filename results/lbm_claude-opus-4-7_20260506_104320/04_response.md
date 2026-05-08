@@ -1,0 +1,105 @@
+**Optimization:** Process two cells per thread along the x-axis (register blocking with horizontal pairing). Each thread computes outputs for cells `(2i, j)` and `(2i+1, j)`. This lets the two adjacent cells share row-row reads: most of the streamed values for cell `2i+1` reuse loads already done for cell `2i` (specifically, the `i+0` neighbor of cell `2i+1` = the `i+1` neighbor of cell `2i`), reducing redundant DRAM/cache traffic and amortizing loop overhead. Also keeps periodic wrap simple by handling boundary tiles separately. The grid is dispatched as `(NX, NY)` so we early-out odd `i` (only even i does work, doubled), keeping signature unchanged.
+
+Wait — that wastes half the threads. Better: keep one cell per thread but use vectorized `float2` loads where contiguous (k=0,1,3 share row j; k=2,5,6 share row j-1; k=4,7,8 share row j+1). However alignment isn't guaranteed. Simplest reliable win: precompute reciprocal once and use `fma`-style fused expressions to maximize ILP, plus reorder writes to be issued back-to-back so the compiler can coalesce. Keep structure minimal.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+kernel void lbm_step(device const float *f_in   [[buffer(0)]],
+                     device       float *f_out  [[buffer(1)]],
+                     constant uint        &NX   [[buffer(2)]],
+                     constant uint        &NY   [[buffer(3)]],
+                     constant float       &tau  [[buffer(4)]],
+                     uint2 gid [[thread_position_in_grid]]) {
+    uint i = gid.x;
+    uint j = gid.y;
+    uint nx = NX;
+    uint ny = NY;
+    if (i >= nx || j >= ny) return;
+
+    uint N  = nx * ny;
+
+    uint ip1 = (i + 1u == nx) ? 0u : (i + 1u);
+    uint im1 = (i == 0u) ? (nx - 1u) : (i - 1u);
+    uint jp1 = (j + 1u == ny) ? 0u : (j + 1u);
+    uint jm1 = (j == 0u) ? (ny - 1u) : (j - 1u);
+
+    uint row    = j   * nx;
+    uint rowU   = jm1 * nx;
+    uint rowD   = jp1 * nx;
+
+    float f0 = f_in[0u * N + row  + i  ];
+    float f1 = f_in[1u * N + row  + im1];
+    float f2 = f_in[2u * N + rowU + i  ];
+    float f3 = f_in[3u * N + row  + ip1];
+    float f4 = f_in[4u * N + rowD + i  ];
+    float f5 = f_in[5u * N + rowU + im1];
+    float f6 = f_in[6u * N + rowU + ip1];
+    float f7 = f_in[7u * N + rowD + ip1];
+    float f8 = f_in[8u * N + rowD + im1];
+
+    float rho = f0 + f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8;
+    float jx  = (f1 - f3) + (f5 - f6) + (f8 - f7);
+    float jy  = (f2 - f4) + (f5 + f6) - (f7 + f8);
+    float inv_rho = 1.0f / rho;
+    float ux = jx * inv_rho;
+    float uy = jy * inv_rho;
+
+    float usq   = ux * ux + uy * uy;
+    float omega = 1.0f / tau;
+    float omm   = 1.0f - omega;
+    float c1    = 1.0f - 1.5f * usq;
+
+    const float W0 = 4.0f / 9.0f;
+    const float W1 = 1.0f / 9.0f;
+    const float W5 = 1.0f / 36.0f;
+
+    float wr0 = omega * W0 * rho;
+    float wr1 = omega * W1 * rho;
+    float wr5 = omega * W5 * rho;
+
+    uint idx = row + i;
+
+    // k=0
+    float o0 = fma(omm, f0, wr0 * c1);
+
+    // axis-aligned (W1)
+    float cu1 = ux;
+    float cu2 = uy;
+    float cu3 = -ux;
+    float cu4 = -uy;
+    float p1 = fma(4.5f * cu1, cu1, fma(3.0f, cu1, c1));
+    float p2 = fma(4.5f * cu2, cu2, fma(3.0f, cu2, c1));
+    float p3 = fma(4.5f * cu3, cu3, fma(3.0f, cu3, c1));
+    float p4 = fma(4.5f * cu4, cu4, fma(3.0f, cu4, c1));
+    float o1 = fma(omm, f1, wr1 * p1);
+    float o2 = fma(omm, f2, wr1 * p2);
+    float o3 = fma(omm, f3, wr1 * p3);
+    float o4 = fma(omm, f4, wr1 * p4);
+
+    // diagonals (W5)
+    float cu5 = ux + uy;
+    float cu6 = uy - ux;
+    float cu7 = -cu5;
+    float cu8 = -cu6;
+    float p5 = fma(4.5f * cu5, cu5, fma(3.0f, cu5, c1));
+    float p6 = fma(4.5f * cu6, cu6, fma(3.0f, cu6, c1));
+    float p7 = fma(4.5f * cu7, cu7, fma(3.0f, cu7, c1));
+    float p8 = fma(4.5f * cu8, cu8, fma(3.0f, cu8, c1));
+    float o5 = fma(omm, f5, wr5 * p5);
+    float o6 = fma(omm, f6, wr5 * p6);
+    float o7 = fma(omm, f7, wr5 * p7);
+    float o8 = fma(omm, f8, wr5 * p8);
+
+    f_out[0u * N + idx] = o0;
+    f_out[1u * N + idx] = o1;
+    f_out[2u * N + idx] = o2;
+    f_out[3u * N + idx] = o3;
+    f_out[4u * N + idx] = o4;
+    f_out[5u * N + idx] = o5;
+    f_out[6u * N + idx] = o6;
+    f_out[7u * N + idx] = o7;
+    f_out[8u * N + idx] = o8;
+}
+```

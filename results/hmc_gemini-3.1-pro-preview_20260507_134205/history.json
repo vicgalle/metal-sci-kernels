@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.008135524682384003,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/00_seed.metal",
+    "elapsed_s": 7.070665121078491,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.023622290244432038,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/01_candidate.metal",
+    "elapsed_s": 197.66040229797363,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.030339903447087622,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/02_candidate.metal",
+    "elapsed_s": 252.0837380886078,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'\n                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);\n                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided\nsimdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)\n^\n\" UserInfo={NSLocalizedDescription=program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'\n                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);\n                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided\nsimdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)\n^\n}",
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/03_candidate.metal",
+    "elapsed_s": 256.22124123573303,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:43:20: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                 [[max_total_threads_per_threadgroup(64)]]\n                   ^\n\" UserInfo={NSLocalizedDescription=program_source:43:20: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                 [[max_total_threads_per_threadgroup(64)]]\n                   ^\n}",
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/04_candidate.metal",
+    "elapsed_s": 266.2222549915314,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.00686007131718383,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/05_candidate.metal",
+    "elapsed_s": 287.0842709541321,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.034084391906103566,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/06_candidate.metal",
+    "elapsed_s": 237.83279371261597,
+    "is_new_best": true
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.03202151274908618,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/07_candidate.metal",
+    "elapsed_s": 273.08146595954895,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.04646230219205438,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/08_candidate.metal",
+    "elapsed_s": 254.287504196167,
+    "is_new_best": true
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0870428494203685,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/09_candidate.metal",
+    "elapsed_s": 280.6408362388611,
+    "is_new_best": true
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.033368820749535795,
+    "fail_reason": null,
+    "source_path": "results/hmc_gemini-3.1-pro-preview_20260507_134205/10_candidate.metal",
+    "elapsed_s": 236.0763828754425,
+    "is_new_best": false
+  }
+]

@@ -1,0 +1,187 @@
+{
+  "task": "wave3d",
+  "model": "gemini-3.1-pro-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 15,
+  "seed_score": 0.654462703643454,
+  "best_score": 0.654462703643454,
+  "improvement": 1.0,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.654462703643454,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/00_seed.metal",
+      "elapsed_s": 1.0873711109161377,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.44915440221425,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/01_candidate.metal",
+      "elapsed_s": 255.34568047523499,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.6189023155076829,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/02_candidate.metal",
+      "elapsed_s": 135.42246890068054,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.5100645157467696,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/03_candidate.metal",
+      "elapsed_s": 232.1683588027954,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.45893779639517784,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/04_candidate.metal",
+      "elapsed_s": 196.47684907913208,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4970554266013785,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/05_candidate.metal",
+      "elapsed_s": 157.18303894996643,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:17:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:18:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:19:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:21:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:22:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:23:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:31:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:33:15: error: use of undeclared identifier 'tpos'\n    uint tx = tpos.x;\n              ^\nprogram_source:38:21: error: use of undeclared identifier 'lane'\n    if ((tx == 0 || lane == 0) && i > 0) {\n                    ^\nprogram_source:39:14: error: use of undeclared identifier 'u_curr'\n        xm = u_curr[idx - 1];\n             ^\nprogram_source:44:16: error: use of undeclared identifier 'tsize'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n               ^\nprogram_source:44:31: error: use of undeclared identifier 'lane'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n                              ^\nprogram_source:44:39: error: use of undeclared identifier 'simdW'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n                                      ^\nprogram_source:45:14: error: use of undeclared identifier 'u_curr'\n        xp = u_curr[idx + 1];\n             ^\nprogram_source:52:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:60:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:62:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:63:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:64:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:65:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:68:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:70:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, fma(2.0f, c, -p));\n    ^\n\" UserInfo={NSLocalizedDescription=program_source:4:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:17:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:18:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:19:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:21:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:22:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:23:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:31:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:33:15: error: use of undeclared identifier 'tpos'\n    uint tx = tpos.x;\n              ^\nprogram_source:38:21: error: use of undeclared identifier 'lane'\n    if ((tx == 0 || lane == 0) && i > 0) {\n                    ^\nprogram_source:39:14: error: use of undeclared identifier 'u_curr'\n        xm = u_curr[idx - 1];\n             ^\nprogram_source:44:16: error: use of undeclared identifier 'tsize'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n               ^\nprogram_source:44:31: error: use of undeclared identifier 'lane'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n                              ^\nprogram_source:44:39: error: use of undeclared identifier 'simdW'\n    if ((tx == tsize.x - 1 || lane == simdW - 1) && i < nx - 1) {\n                                      ^\nprogram_source:45:14: error: use of undeclared identifier 'u_curr'\n        xp = u_curr[idx + 1];\n             ^\nprogram_source:52:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:60:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:62:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:63:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:64:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:65:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:68:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:70:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, fma(2.0f, c, -p));\n    ^\n}",
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/06_candidate.metal",
+      "elapsed_s": 239.2922339439392,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.5207238902306126,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/07_candidate.metal",
+      "elapsed_s": 152.1902847290039,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.5571989022634825,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/08_candidate.metal",
+      "elapsed_s": 201.95360803604126,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:5:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:5:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:13:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:14:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:15:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'NX'\n    if (i >= NX || j >= NY || k >= NZ) return;\n             ^\nprogram_source:17:25: error: use of undeclared identifier 'NY'\n    if (i >= NX || j >= NY || k >= NZ) return;\n                        ^\nprogram_source:17:36: error: use of undeclared identifier 'NZ'\n    if (i >= NX || j >= NY || k >= NZ) return;\n                                   ^\nprogram_source:19:21: error: use of undeclared identifier 'NY'\n    uint idx = (k * NY + j) * NX + i;\n                    ^\nprogram_source:19:31: error: use of undeclared identifier 'NX'\n    uint idx = (k * NY + j) * NX + i;\n                              ^\nprogram_source:24:47: error: use of undeclared identifier 'NX'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                              ^\nprogram_source:24:63: error: use of undeclared identifier 'NY'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                                              ^\nprogram_source:24:79: error: use of undeclared identifier 'NZ'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                                                              ^\nprogram_source:25:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = u_curr[idx];\n        ^\nprogram_source:25:23: error: use of undeclared identifier 'u_curr'\n        u_next[idx] = u_curr[idx];\n                      ^\nprogram_source:29:21: error: use of undeclared identifier 'NX'\n    uint stride_y = NX;\n                    ^\nprogram_source:30:21: error: use of undeclared identifier 'NX'\n    uint stride_z = NX * NY;\n                    ^\nprogram_source:30:26: error: use of undeclared identifier 'NY'\n    uint stride_z = NX * NY;\n                         ^\nprogram_source:33:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:34:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:38:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1u];\n               ^\nprogram_source:39:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1u];\n               ^\nprogram_source:40:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:42:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:53:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:56:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, fma(c_coeff, c, -p));\n    ^\n\" UserInfo={NSLocalizedDescription=program_source:5:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:5:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:13:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:14:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:15:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'NX'\n    if (i >= NX || j >= NY || k >= NZ) return;\n             ^\nprogram_source:17:25: error: use of undeclared identifier 'NY'\n    if (i >= NX || j >= NY || k >= NZ) return;\n                        ^\nprogram_source:17:36: error: use of undeclared identifier 'NZ'\n    if (i >= NX || j >= NY || k >= NZ) return;\n                                   ^\nprogram_source:19:21: error: use of undeclared identifier 'NY'\n    uint idx = (k * NY + j) * NX + i;\n                    ^\nprogram_source:19:31: error: use of undeclared identifier 'NX'\n    uint idx = (k * NY + j) * NX + i;\n                              ^\nprogram_source:24:47: error: use of undeclared identifier 'NX'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                              ^\nprogram_source:24:63: error: use of undeclared identifier 'NY'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                                              ^\nprogram_source:24:79: error: use of undeclared identifier 'NZ'\n    if (i == 0u || j == 0u || k == 0u || i == NX - 1u || j == NY - 1u || k == NZ - 1u) {\n                                                                              ^\nprogram_source:25:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = u_curr[idx];\n        ^\nprogram_source:25:23: error: use of undeclared identifier 'u_curr'\n        u_next[idx] = u_curr[idx];\n                      ^\nprogram_source:29:21: error: use of undeclared identifier 'NX'\n    uint stride_y = NX;\n                    ^\nprogram_source:30:21: error: use of undeclared identifier 'NX'\n    uint stride_z = NX * NY;\n                    ^\nprogram_source:30:26: error: use of undeclared identifier 'NY'\n    uint stride_z = NX * NY;\n                         ^\nprogram_source:33:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:34:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:38:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1u];\n               ^\nprogram_source:39:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1u];\n               ^\nprogram_source:40:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:42:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:53:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:56:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, fma(c_coeff, c, -p));\n    ^\n}",
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/09_candidate.metal",
+      "elapsed_s": 123.69488072395325,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.6087236602559447,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/10_candidate.metal",
+      "elapsed_s": 94.27497696876526,
+      "is_new_best": false
+    },
+    {
+      "iteration": 11,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4575445419635709,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/11_candidate.metal",
+      "elapsed_s": 273.48212575912476,
+      "is_new_best": false
+    },
+    {
+      "iteration": 12,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:52: error: expected ')'\nkernel void wave_step(device const float* restrict u_prev [[buffer(0)]],\n                                                   ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float* restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:12:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:13:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:14:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:16:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:18:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:30:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:34:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:40:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:44:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:47:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1];\n               ^\nprogram_source:48:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1];\n               ^\nprogram_source:50:16: error: use of undeclared identifier 'u_prev'\n    float p  = u_prev[idx];\n               ^\nprogram_source:61:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:64:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap_sum, fma(c_coeff, c, -p));\n    ^\n\" UserInfo={NSLocalizedDescription=program_source:4:52: error: expected ')'\nkernel void wave_step(device const float* restrict u_prev [[buffer(0)]],\n                                                   ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float* restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:12:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:13:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:14:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:16:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:18:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:30:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:34:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:40:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:44:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:47:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1];\n               ^\nprogram_source:48:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1];\n               ^\nprogram_source:50:16: error: use of undeclared identifier 'u_prev'\n    float p  = u_prev[idx];\n               ^\nprogram_source:61:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:64:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap_sum, fma(c_coeff, c, -p));\n    ^\n}",
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/12_candidate.metal",
+      "elapsed_s": 142.07579684257507,
+      "is_new_best": false
+    },
+    {
+      "iteration": 13,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.5880478815771694,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/13_candidate.metal",
+      "elapsed_s": 102.40801787376404,
+      "is_new_best": false
+    },
+    {
+      "iteration": 14,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:12:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:13:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:14:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:16:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:18:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:28:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:36:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1u];\n               ^\nprogram_source:42:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1u];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:44:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:45:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:46:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:49:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:51:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:58:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, base);\n    ^\n\" UserInfo={NSLocalizedDescription=program_source:4:53: error: expected ')'\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                                                    ^\nprogram_source:4:22: note: to match this '('\nkernel void wave_step(device const float * restrict u_prev [[buffer(0)]],\n                     ^\nprogram_source:12:15: error: use of undeclared identifier 'NX'\n    uint nx = NX;\n              ^\nprogram_source:13:15: error: use of undeclared identifier 'NY'\n    uint ny = NY;\n              ^\nprogram_source:14:15: error: use of undeclared identifier 'NZ'\n    uint nz = NZ;\n              ^\nprogram_source:16:14: error: use of undeclared identifier 'gid'\n    uint i = gid.x;\n             ^\nprogram_source:17:14: error: use of undeclared identifier 'gid'\n    uint j = gid.y;\n             ^\nprogram_source:18:14: error: use of undeclared identifier 'gid'\n    uint k = gid.z;\n             ^\nprogram_source:28:15: error: use of undeclared identifier 'u_curr'\n    float c = u_curr[idx];\n              ^\nprogram_source:36:9: error: use of undeclared identifier 'u_next'\n        u_next[idx] = c;\n        ^\nprogram_source:41:16: error: use of undeclared identifier 'u_curr'\n    float xm = u_curr[idx - 1u];\n               ^\nprogram_source:42:16: error: use of undeclared identifier 'u_curr'\n    float xp = u_curr[idx + 1u];\n               ^\nprogram_source:43:16: error: use of undeclared identifier 'u_curr'\n    float ym = u_curr[idx - stride_y];\n               ^\nprogram_source:44:16: error: use of undeclared identifier 'u_curr'\n    float yp = u_curr[idx + stride_y];\n               ^\nprogram_source:45:16: error: use of undeclared identifier 'u_curr'\n    float zm = u_curr[idx - stride_z];\n               ^\nprogram_source:46:16: error: use of undeclared identifier 'u_curr'\n    float zp = u_curr[idx + stride_z];\n               ^\nprogram_source:49:15: error: use of undeclared identifier 'u_prev'\n    float p = u_prev[idx];\n              ^\nprogram_source:51:15: error: use of undeclared identifier 'alpha'\n    float a = alpha;\n              ^\nprogram_source:58:5: error: use of undeclared identifier 'u_next'\n    u_next[idx] = fma(a, lap, base);\n    ^\n}",
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/14_candidate.metal",
+      "elapsed_s": 204.09103083610535,
+      "is_new_best": false
+    },
+    {
+      "iteration": 15,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.5022173158206991,
+      "fail_reason": null,
+      "source_path": "results/wave3d_gemini-3.1-pro-preview_20260506_172623/15_candidate.metal",
+      "elapsed_s": 86.90726208686829,
+      "is_new_best": false
+    }
+  ]
+}

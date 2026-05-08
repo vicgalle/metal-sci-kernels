@@ -1,0 +1,92 @@
+[
+  {
+    "task": "saxpy",
+    "held": "4M",
+    "seed_frac": 0.9853654897410574,
+    "opus_frac": 0.7811935268708222,
+    "opus_err": null,
+    "gem_frac": 1.045942979622543,
+    "gem_err": null
+  },
+  {
+    "task": "heat2d",
+    "held": "768x768_75",
+    "seed_frac": 0.9903645710323871,
+    "opus_frac": 0.7934184913648346,
+    "opus_err": null,
+    "gem_frac": 0.8413120296131477,
+    "gem_err": null
+  },
+  {
+    "task": "nbody",
+    "held": "512_10",
+    "seed_frac": 0.007464303319918293,
+    "opus_frac": 0.016501151788636332,
+    "opus_err": null,
+    "gem_frac": 0.01620282578041134,
+    "gem_err": null
+  },
+  {
+    "task": "lbm",
+    "held": "192x192_75",
+    "seed_frac": 1.0712530597917742,
+    "opus_frac": 0.43708653782277396,
+    "opus_err": null,
+    "gem_frac": 0.5390410133212991,
+    "gem_err": null
+  },
+  {
+    "task": "gradshaf",
+    "held": "129x129_35",
+    "seed_frac": 0.025963329059702632,
+    "opus_frac": 0.055218012990418085,
+    "opus_err": null,
+    "gem_frac": 0.08600793729062176,
+    "gem_err": null
+  },
+  {
+    "task": "fft3d",
+    "held": "256cube",
+    "seed_frac": 0.3910923317271538,
+    "opus_frac": 0.4006437053729935,
+    "opus_err": null,
+    "gem_frac": 0.4506681162303884,
+    "gem_err": null
+  },
+  {
+    "task": "hmc",
+    "held": "d24_K2048",
+    "seed_frac": 0.005533544686704558,
+    "opus_frac": null,
+    "opus_err": "correctness failed at size d24_K2048: max(mean/tol, cov_fro/tol, accept_excess)=1.022e+01",
+    "gem_frac": 0.09848395467011606,
+    "gem_err": null
+  },
+  {
+    "task": "ising",
+    "held": "1536x1536_40",
+    "seed_frac": 0.11843019367067159,
+    "opus_frac": 0.11208334330043161,
+    "opus_err": null,
+    "gem_frac": 0.11742446396341759,
+    "gem_err": null
+  },
+  {
+    "task": "lj",
+    "held": "N2744_M6_steps12",
+    "seed_frac": 0.0021770260978272483,
+    "opus_frac": 0.002526671378311608,
+    "opus_err": null,
+    "gem_frac": 0.004768562534611948,
+    "gem_err": null
+  },
+  {
+    "task": "wave3d",
+    "held": "128x128x128_20",
+    "seed_frac": 0.9698824956557046,
+    "opus_frac": 0.9917728955724229,
+    "opus_err": null,
+    "gem_frac": 0.9806299231212731,
+    "gem_err": null
+  }
+]

@@ -1,0 +1,338 @@
+=== SWEEP START Thu May  7 21:24:42 CEST 2026 ===
+=== START saxpy (10 iters) Thu May  7 21:24:42 CEST 2026 ===
+
+=== Metal kernel evolution: task=saxpy ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/saxpy_gpt-5.5_20260507_212443
+
+[seed] Evaluating seed kernel...
+  seed score: 0.8030  (2.2s)
+
+--- iteration 1/10 ---
+  [llm] OpenAI tokens: in=1118, out=7401
+  generated in 164.9s; evaluating...
+  score = 0.8114 (seed = 0.8030, best = 0.8030)
+                  1M:    0.09 ms,   143.9 GB/s (72.0%)
+                 16M:    1.25 ms,   160.5 GB/s (80.3%)
+                 64M:    4.35 ms,   185.0 GB/s (92.5%)
+  NEW INCUMBENT
+
+--- iteration 2/10 ---
+  [llm] OpenAI tokens: in=1077, out=724
+  generated in 21.5s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  [[max_total_threads_per_threadgroup(1024)]]
+                    ^
+" UserInfo={NSLocalizedDescription=program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  [[max_total_threads_per_threadgroup(1024)]]
+                    ^
+}
+
+--- iteration 3/10 ---
+  [llm] OpenAI tokens: in=1333, out=8000
+  generated in 158.3s; evaluating...
+  score = 0.8006 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   144.0 GB/s (72.0%)
+                 16M:    1.26 ms,   159.7 GB/s (79.8%)
+                 64M:    4.51 ms,   178.6 GB/s (89.3%)
+
+--- iteration 4/10 ---
+  [llm] OpenAI tokens: in=1384, out=5368
+  generated in 113.0s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  [[max_total_threads_per_threadgroup(256)]]
+                    ^
+" UserInfo={NSLocalizedDescription=program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                  [[max_total_threads_per_threadgroup(256)]]
+                    ^
+}
+
+--- iteration 5/10 ---
+  [llm] OpenAI tokens: in=1368, out=9039
+  generated in 176.3s; evaluating...
+  score = 0.8018 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   144.5 GB/s (72.2%)
+                 16M:    1.26 ms,   159.4 GB/s (79.7%)
+                 64M:    4.50 ms,   179.1 GB/s (89.5%)
+
+--- iteration 6/10 ---
+  [llm] OpenAI tokens: in=1434, out=13994
+  generated in 269.8s; evaluating...
+  score = 0.8103 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   142.7 GB/s (71.4%)
+                 16M:    1.24 ms,   163.0 GB/s (81.5%)
+                 64M:    4.40 ms,   183.0 GB/s (91.5%)
+
+--- iteration 7/10 ---
+  [llm] OpenAI tokens: in=1689, out=7988
+  generated in 160.7s; evaluating...
+  score = 0.7992 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   142.8 GB/s (71.4%)
+                 16M:    1.24 ms,   162.0 GB/s (81.0%)
+                 64M:    4.56 ms,   176.5 GB/s (88.3%)
+
+--- iteration 8/10 ---
+  [llm] OpenAI tokens: in=1720, out=16313
+  generated in 328.0s; evaluating...
+  score = 0.7777 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   143.5 GB/s (71.7%)
+                 16M:    1.33 ms,   151.7 GB/s (75.8%)
+                 64M:    4.66 ms,   172.9 GB/s (86.5%)
+
+--- iteration 9/10 ---
+  [llm] OpenAI tokens: in=1774, out=23599
+  generated in 467.7s; evaluating...
+  score = 0.7968 (seed = 0.8030, best = 0.8114)
+                  1M:    0.09 ms,   142.0 GB/s (71.0%)
+                 16M:    1.26 ms,   159.7 GB/s (79.9%)
+                 64M:    4.51 ms,   178.5 GB/s (89.2%)
+
+--- iteration 10/10 ---
+  [llm] OpenAI tokens: in=1774, out=19578
+  generated in 383.4s; evaluating...
+  score = 0.6766 (seed = 0.8030, best = 0.8114)
+                  1M:    0.12 ms,   109.1 GB/s (54.5%)
+                 16M:    1.61 ms,   124.9 GB/s (62.5%)
+                 64M:    4.43 ms,   181.8 GB/s (90.9%)
+
+=== done. seed=0.8030, best=0.8114, output=results/gpt55_sweep/saxpy_gpt-5.5_20260507_212443 ===
+=== END saxpy Thu May  7 22:02:30 CEST 2026 ===
+=== START nbody (10 iters) Thu May  7 22:02:30 CEST 2026 ===
+
+=== Metal kernel evolution: task=nbody ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/nbody_gpt-5.5_20260507_220230
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0203  (1.5s)
+
+--- iteration 1/10 ---
+  [llm] OpenAI tokens: in=1700, out=30142
+  generated in 566.9s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:26:26: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       [[max_total_threads_per_threadgroup(64)]] {
+                         ^
+program_source:14:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements
+kernel void nbody_step(device const float4 *pos_in  [[buffer(0)]],
+            ^
+program_source:23:29: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here
+                       uint i [[thread_position_in_grid]],
+                       ~~~~~^
+program_source:25:30: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here
+                       uint3 tptg [[threads_per_threadgroup]])
+                       ~~~~~~^~~~
+" UserInfo={NSLocalizedDescription=program_source:26:26: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       [[max_total_threads_per_threadgroup(64)]] {
+                         ^
+program_source:14:13: error: expecting input declarations with either all scalar types or all vector types with the same number of elements
+kernel void nbody_step(device const float4 *pos_in  [[buffer(0)]],
+            ^
+program_source:23:29: note: declaration with attribute 'thread_position_in_grid' of type 'uint' (aka 'unsigned int') here
+                       uint i [[thread_position_in_grid]],
+                       ~~~~~^
+program_source:25:30: note: declaration with attribute 'threads_per_threadgroup' of type 'uint3' (vector of 3 'unsigned int' values) here
+                       uint3 tptg [[threads_per_threadgroup]])
+                       ~~~~~~^~~~
+}
+
+--- iteration 2/10 ---
+  [llm] OpenAI tokens: in=3715, out=13987
+  generated in 255.9s; evaluating...
+  score = 0.0411 (seed = 0.0203, best = 0.0203)
+              256_10:    0.41 ms,    32.0 GFLOPS (0.7%)
+             1024_10:    0.75 ms,   280.0 GFLOPS (6.2%)
+             2048_10:    1.19 ms,   705.5 GFLOPS (15.7%)
+  NEW INCUMBENT
+
+--- iteration 3/10 ---
+  [llm] OpenAI tokens: in=3090, out=25995
+  generated in 511.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:45:26: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       [[max_total_threads_per_threadgroup(32)]]
+                         ^
+" UserInfo={NSLocalizedDescription=program_source:45:26: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                       [[max_total_threads_per_threadgroup(32)]]
+                         ^
+}
+
+--- iteration 4/10 ---
+  [llm] OpenAI tokens: in=5306, out=21370
+  generated in 366.9s; evaluating...
+  score = 0.0336 (seed = 0.0203, best = 0.0411)
+              256_10:    0.44 ms,    29.7 GFLOPS (0.7%)
+             1024_10:    1.20 ms,   175.4 GFLOPS (3.9%)
+             2048_10:    1.27 ms,   660.1 GFLOPS (14.7%)
+
+--- iteration 5/10 ---
+  [llm] OpenAI tokens: in=6225, out=21731
+  generated in 394.9s; evaluating...
+  score = 0.0389 (seed = 0.0203, best = 0.0411)
+              256_10:    0.41 ms,    32.1 GFLOPS (0.7%)
+             1024_10:    1.14 ms,   184.1 GFLOPS (4.1%)
+             2048_10:    0.93 ms,   906.5 GFLOPS (20.1%)
+
+--- iteration 6/10 ---
+  [llm] OpenAI tokens: in=6470, out=16556
+  generated in 282.0s; evaluating...
+  score = 0.0389 (seed = 0.0203, best = 0.0411)
+              256_10:    0.38 ms,    34.4 GFLOPS (0.8%)
+             1024_10:    1.09 ms,   191.5 GFLOPS (4.3%)
+             2048_10:    1.03 ms,   812.0 GFLOPS (18.0%)
+
+--- iteration 7/10 ---
+  [llm] OpenAI tokens: in=7856, out=17042
+  generated in 300.5s; evaluating...
+  score = 0.0393 (seed = 0.0203, best = 0.0411)
+              256_10:    0.36 ms,    35.9 GFLOPS (0.8%)
+             1024_10:    1.08 ms,   193.3 GFLOPS (4.3%)
+             2048_10:    1.05 ms,   798.1 GFLOPS (17.7%)
+
+--- iteration 8/10 ---
+  [llm] OpenAI tokens: in=7589, out=14918
+  generated in 246.5s; evaluating...
+  score = 0.0445 (seed = 0.0203, best = 0.0411)
+              256_10:    0.38 ms,    34.9 GFLOPS (0.8%)
+             1024_10:    0.67 ms,   312.3 GFLOPS (6.9%)
+             2048_10:    1.14 ms,   737.0 GFLOPS (16.4%)
+  NEW INCUMBENT
+
+--- iteration 9/10 ---
+  [llm] OpenAI tokens: in=5613, out=17437
+  generated in 288.4s; evaluating...
+  score = 0.0373 (seed = 0.0203, best = 0.0445)
+              256_10:    0.39 ms,    33.2 GFLOPS (0.7%)
+             1024_10:    1.10 ms,   191.1 GFLOPS (4.2%)
+             2048_10:    1.12 ms,   747.6 GFLOPS (16.6%)
+
+--- iteration 10/10 ---
+  [llm] OpenAI tokens: in=10204, out=20771
+  generated in 331.9s; evaluating...
+  incorrect: correctness failed at size 1024_10: max_abs_pos=5.718e-01
+
+=== done. seed=0.0203, best=0.0445, output=results/gpt55_sweep/nbody_gpt-5.5_20260507_220230 ===
+=== END nbody Thu May  7 23:01:49 CEST 2026 ===
+=== START heat2d (10 iters) Thu May  7 23:01:49 CEST 2026 ===
+
+=== Metal kernel evolution: task=heat2d ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150
+
+[seed] Evaluating seed kernel...
+  seed score: 0.6883  (0.3s)
+
+--- iteration 1/10 ---
+  [llm] OpenAI tokens: in=1576, out=14146
+  generated in 274.8s; evaluating...
+  score = 0.3647 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.88 ms,    29.7 GB/s (effective, 8 B/cell) (14.9%)
+         512x512_100:    2.09 ms,   100.1 GB/s (effective, 8 B/cell) (50.1%)
+        1024x1024_50:    3.22 ms,   130.4 GB/s (effective, 8 B/cell) (65.2%)
+
+--- iteration 2/10 ---
+  [llm] OpenAI tokens: in=10652, out=4052
+  generated in 244.7s; evaluating...
+  score = 0.3463 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.75 ms,    35.0 GB/s (effective, 8 B/cell) (17.5%)
+         512x512_100:    3.40 ms,    61.7 GB/s (effective, 8 B/cell) (30.8%)
+        1024x1024_50:    2.72 ms,   154.1 GB/s (effective, 8 B/cell) (77.1%)
+
+--- iteration 3/10 ---
+  [llm] OpenAI tokens: in=2137, out=14953
+  generated in 288.9s; evaluating...
+  score = 0.2961 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.72 ms,    36.2 GB/s (effective, 8 B/cell) (18.1%)
+         512x512_100:    2.97 ms,    70.7 GB/s (effective, 8 B/cell) (35.4%)
+        1024x1024_50:    5.17 ms,    81.2 GB/s (effective, 8 B/cell) (40.6%)
+
+--- iteration 4/10 ---
+  [llm] OpenAI tokens: in=2682, out=15375
+  generated in 300.7s; evaluating...
+  score = 0.3901 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.79 ms,    33.3 GB/s (effective, 8 B/cell) (16.7%)
+         512x512_100:    1.89 ms,   110.9 GB/s (effective, 8 B/cell) (55.4%)
+        1024x1024_50:    3.27 ms,   128.5 GB/s (effective, 8 B/cell) (64.2%)
+
+--- iteration 5/10 ---
+  [llm] OpenAI tokens: in=2111, out=19348
+  generated in 382.0s; evaluating...
+  score = 0.3071 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.76 ms,    34.7 GB/s (effective, 8 B/cell) (17.4%)
+         512x512_100:    3.43 ms,    61.1 GB/s (effective, 8 B/cell) (30.5%)
+        1024x1024_50:    3.84 ms,   109.2 GB/s (effective, 8 B/cell) (54.6%)
+
+--- iteration 6/10 ---
+  [llm] OpenAI tokens: in=2481, out=16963
+  generated in 328.0s; evaluating...
+  score = 0.4194 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.72 ms,    36.6 GB/s (effective, 8 B/cell) (18.3%)
+         512x512_100:    1.97 ms,   106.6 GB/s (effective, 8 B/cell) (53.3%)
+        1024x1024_50:    2.77 ms,   151.5 GB/s (effective, 8 B/cell) (75.7%)
+
+--- iteration 7/10 ---
+  [llm] OpenAI tokens: in=2197, out=24879
+  generated in 472.2s; evaluating...
+  score = 0.4274 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.77 ms,    34.2 GB/s (effective, 8 B/cell) (17.1%)
+         512x512_100:    1.87 ms,   112.3 GB/s (effective, 8 B/cell) (56.2%)
+        1024x1024_50:    2.58 ms,   162.5 GB/s (effective, 8 B/cell) (81.3%)
+
+--- iteration 8/10 ---
+  [llm] OpenAI tokens: in=2516, out=13360
+  generated in 266.2s; evaluating...
+  score = 0.4426 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.72 ms,    36.2 GB/s (effective, 8 B/cell) (18.1%)
+         512x512_100:    1.82 ms,   115.1 GB/s (effective, 8 B/cell) (57.6%)
+        1024x1024_50:    2.52 ms,   166.3 GB/s (effective, 8 B/cell) (83.1%)
+
+--- iteration 9/10 ---
+  [llm] OpenAI tokens: in=2258, out=17864
+  generated in 369.2s; evaluating...
+  score = 0.2897 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.64 ms,    41.3 GB/s (effective, 8 B/cell) (20.6%)
+         512x512_100:    3.72 ms,    56.4 GB/s (effective, 8 B/cell) (28.2%)
+        1024x1024_50:    5.02 ms,    83.6 GB/s (effective, 8 B/cell) (41.8%)
+
+--- iteration 10/10 ---
+  [llm] OpenAI tokens: in=2618, out=15529
+  generated in 307.2s; evaluating...
+  score = 0.4459 (seed = 0.6883, best = 0.6883)
+          256x256_50:    0.40 ms,    65.2 GB/s (effective, 8 B/cell) (32.6%)
+         512x512_100:    2.69 ms,    78.1 GB/s (effective, 8 B/cell) (39.0%)
+        1024x1024_50:    3.01 ms,   139.4 GB/s (effective, 8 B/cell) (69.7%)
+
+=== done. seed=0.6883, best=0.6883, output=results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150 ===
+=== END heat2d Thu May  7 23:55:47 CEST 2026 ===
+=== START hmc (10 iters) Thu May  7 23:55:47 CEST 2026 ===
+
+=== Metal kernel evolution: task=hmc ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/hmc_gpt-5.5_20260507_235548
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0088  (6.6s)
+
+--- iteration 1/10 ---
+  [llm] OpenAI tokens: in=3712, out=19810
+  generated in 389.8s; evaluating...
+  score = 0.0820 (seed = 0.0088, best = 0.0088)
+           d8_K16384:    5.11 ms,   846.5 GFLOPS (mat-vec FMAs only) (18.8%)
+           d16_K4096:   13.70 ms,   326.3 GFLOPS (mat-vec FMAs only) (7.3%)
+           d32_K1024:   24.95 ms,   182.0 GFLOPS (mat-vec FMAs only) (4.0%)
+  NEW INCUMBENT
+
+--- iteration 2/10 ---
+  LLM call failed: Connection error.
+
+--- iteration 3/10 ---
+  [llm] OpenAI tokens: in=4404, out=18057
+  generated in 21726.0s; evaluating...
+  score = 0.0638 (seed = 0.0088, best = 0.0820)
+           d8_K16384:    4.29 ms,  1009.4 GFLOPS (mat-vec FMAs only) (22.4%)
+           d16_K4096:   42.88 ms,   104.2 GFLOPS (mat-vec FMAs only) (2.3%)
+           d32_K1024:   20.21 ms,   224.7 GFLOPS (mat-vec FMAs only) (5.0%)
+
+--- iteration 4/10 ---

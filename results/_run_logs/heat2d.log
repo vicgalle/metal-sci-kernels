@@ -1,0 +1,99 @@
+
+=== Metal kernel evolution: task=heat2d ===
+  model: claude-opus-4-7
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/heat2d_claude-opus-4-7_20260507_110544
+
+[seed] Evaluating seed kernel...
+  seed score: 0.6087  (0.3s)
+
+--- iteration 1/10 ---
+  [llm] Claude cost: $0.1720
+  generated in 18.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:14:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(TS*TS)]]
+  ^
+" UserInfo={NSLocalizedDescription=program_source:14:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(TS*TS)]]
+  ^
+}
+
+--- iteration 2/10 ---
+  [llm] Claude cost: $0.1829
+  generated in 13.9s; evaluating...
+  score = 0.3241 (seed = 0.6087, best = 0.6087)
+          256x256_50:    1.04 ms,    25.3 GB/s (effective, 8 B/cell) (12.7%)
+         512x512_100:    2.70 ms,    77.6 GB/s (effective, 8 B/cell) (38.8%)
+        1024x1024_50:    3.02 ms,   138.7 GB/s (effective, 8 B/cell) (69.3%)
+
+--- iteration 3/10 ---
+  [llm] Claude cost: $0.1602
+  generated in 14.2s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:10:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(256)]]
+  ^
+" UserInfo={NSLocalizedDescription=program_source:10:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(256)]]
+  ^
+}
+
+--- iteration 4/10 ---
+  [llm] Claude cost: $0.2337
+  generated in 21.5s; evaluating...
+  score = 0.2478 (seed = 0.6087, best = 0.6087)
+          256x256_50:    1.31 ms,    20.1 GB/s (effective, 8 B/cell) (10.0%)
+         512x512_100:    3.41 ms,    61.5 GB/s (effective, 8 B/cell) (30.8%)
+        1024x1024_50:    4.26 ms,    98.5 GB/s (effective, 8 B/cell) (49.2%)
+
+--- iteration 5/10 ---
+  [llm] Claude cost: $0.1655
+  generated in 13.4s; evaluating...
+  score = 0.4299 (seed = 0.6087, best = 0.6087)
+          256x256_50:    0.79 ms,    33.2 GB/s (effective, 8 B/cell) (16.6%)
+         512x512_100:    1.85 ms,   113.6 GB/s (effective, 8 B/cell) (56.8%)
+        1024x1024_50:    2.49 ms,   168.3 GB/s (effective, 8 B/cell) (84.2%)
+
+--- iteration 6/10 ---
+  [llm] Claude cost: $0.1853
+  generated in 19.6s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:16:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(256)]]
+  ^
+" UserInfo={NSLocalizedDescription=program_source:16:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+[[max_total_threads_per_threadgroup(256)]]
+  ^
+}
+
+--- iteration 7/10 ---
+  [llm] Claude cost: $0.1832
+  generated in 14.6s; evaluating...
+  score = 0.4385 (seed = 0.6087, best = 0.6087)
+          256x256_50:    0.43 ms,    61.6 GB/s (effective, 8 B/cell) (30.8%)
+         512x512_100:    2.78 ms,    75.6 GB/s (effective, 8 B/cell) (37.8%)
+        1024x1024_50:    2.89 ms,   145.0 GB/s (effective, 8 B/cell) (72.5%)
+
+--- iteration 8/10 ---
+  [llm] Claude cost: $0.1525
+  generated in 13.8s; evaluating...
+  score = 0.4204 (seed = 0.6087, best = 0.6087)
+          256x256_50:    0.79 ms,    33.0 GB/s (effective, 8 B/cell) (16.5%)
+         512x512_100:    1.87 ms,   112.4 GB/s (effective, 8 B/cell) (56.2%)
+        1024x1024_50:    2.62 ms,   160.2 GB/s (effective, 8 B/cell) (80.1%)
+
+--- iteration 9/10 ---
+  [llm] Claude cost: $0.1792
+  generated in 19.0s; evaluating...
+  score = 0.3090 (seed = 0.6087, best = 0.6087)
+          256x256_50:    1.09 ms,    24.0 GB/s (effective, 8 B/cell) (12.0%)
+         512x512_100:    2.56 ms,    81.8 GB/s (effective, 8 B/cell) (40.9%)
+        1024x1024_50:    3.49 ms,   120.1 GB/s (effective, 8 B/cell) (60.1%)
+
+--- iteration 10/10 ---
+  [llm] Claude cost: $0.1581
+  generated in 14.8s; evaluating...
+  score = 0.4406 (seed = 0.6087, best = 0.6087)
+          256x256_50:    0.72 ms,    36.3 GB/s (effective, 8 B/cell) (18.1%)
+         512x512_100:    1.77 ms,   118.3 GB/s (effective, 8 B/cell) (59.2%)
+        1024x1024_50:    2.63 ms,   159.4 GB/s (effective, 8 B/cell) (79.7%)
+
+=== done. seed=0.6087, best=0.6087, output=results/heat2d_claude-opus-4-7_20260507_110544 ===

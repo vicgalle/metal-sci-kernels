@@ -1,0 +1,6 @@
+[start] 2026-05-07T10:54:02+02:00
+[task] saxpy -> results/_run_logs/saxpy.log  (start 2026-05-07T10:54:02+02:00)
+[done] saxpy rc=0 elapsed=172s
+[task] heat2d -> results/_run_logs/heat2d.log  (start 2026-05-07T10:56:54+02:00)
+[done] heat2d rc=0 elapsed=176s
+[task] nbody -> results/_run_logs/nbody.log  (start 2026-05-07T10:59:50+02:00)

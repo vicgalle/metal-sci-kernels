@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size 256x256_100: spin_disagreements=6.401e+04",
+  "sizes": [
+    {
+      "label": "256x256_100",
+      "correct": false,
+      "error_value": 64012.0,
+      "error_kind": "spin_disagreements",
+      "gpu_seconds": 0.0038461041658592876,
+      "achieved": 3.4079160196306386,
+      "achieved_unit": "GB/s (effective, 2 B/site/sweep)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.017039580098153193
+    }
+  ]
+}
