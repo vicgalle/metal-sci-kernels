@@ -10,6 +10,7 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -82,150 +83,110 @@ fitness function, and multi-size generalization gate; (ii) a runtime-compiled ha
 \section{Benchmark tasks}
 \label{sec:tasks}
 
-Each task ships (a) a Metal source describing the problem, (b) a
-correct seed kernel, (c) a CPU reference with task-specific tolerance, (d) three in-distribution sizes plus one held-out size, and (e) a roofline ceiling in either GFLOPS (compute-bound) or GB/s (bandwidth-bound). Tasks are grouped by optimization regime.
+\textsc{Metal-Sci} packages 10 tasks into six \emph{optimisation
+regimes} (R1--R6, Table~\ref{tab:tasks}). The choice of regimes is
+the benchmark's central design decision: each regime stresses a
+structurally distinct dimension of the GPU/memory hierarchy, and its
+canonical recipe~\cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high}
+does not transfer to its neighbours. A halo-blocking move that wins
+R1 is useless on R2 (register tiling), R4 (atomic contention), or R6
+(intra-simdgroup butterflies). For an LLM, this is the structural
+reason recall alone cannot solve the suite: there is no template that
+wins everywhere, so the model has to actually \emph{recognise the
+regime} from the seed and reach for the right lever.
 
-\subsection{Regular stencils (regime R1)}
+Each task ships (a)~a Metal seed kernel, (b)~a CPU reference with
+task-specific tolerance, (c)~three in-distribution training sizes
+plus one held-out size, and (d)~a per-size roofline ceiling in
+GFLOPS (compute-bound) or GB/s (bandwidth-bound). Per-task equations,
+ceilings, and verification details are deferred to App.~\ref{app:tasks};
+the prose below names the lever each regime tests.
 
-\paragraph{heat2d.} Two-dimensional heat equation, 5-point stencil on
-$(N_x{\times}N_y)$ grid with Dirichlet boundaries. Per timestep, per
-interior cell:
-\begin{equation}
-u^{n+1}_{i,j} \;=\; u^n_{i,j} + \alpha\!\left(u^n_{i-1,j}+u^n_{i+1,j}
-   + u^n_{i,j-1}+u^n_{i,j+1} - 4\,u^n_{i,j}\right).
-\end{equation}
-Bandwidth-bound at 8\,B/cell. This task tests halo handling and temporal blocking.
+\begin{table}[t]
+\caption{The 10 \textsc{Metal-Sci} tasks. ``Optimisation lever''
+names the dominant move an LLM must reach for in that regime;
+``Train sizes'' / ``Held-out'' are passed to the harness verbatim.
+$N_x{\times}N_y$ grids written as $N^2$ when square; cube edges as
+$N^3$. \texttt{saxpy} is a bandwidth smoke-test outside the regime
+structure, included to validate the harness.}
+\label{tab:tasks}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l l l l l}
+\toprule
+Regime & Task & Optimisation lever & Train sizes & Held-out \\
+\midrule
+\multirow{2}{*}{R1 stencil}      & heat2d   & halo, temporal blocking                       & $\{256,512,1024\}^2$ & $768^2$ \\
+                                 & wave3d   & 2.5D blocking, register pressure              & $\{64,160,192\}^3$   & $128^3$ \\
+\multirow{2}{*}{R2 compute}      & nbody    & register tiling, threadgroup cooperative load & $N{\in}\{256,1024,2048\}$ & $512$ \\
+                                 & hmc      & per-thread state vs.\ register file           & $(d{,}K){\in}\{(8{,}16K){,}(16{,}4K){,}(32{,}1K)\}$ & $(24{,}2K)$ \\
+\multirow{2}{*}{R3 multi-field}  & lbm      & SoA layout, BGK algebraic fold                & $\{64,128,256\}^2$   & $192^2$ \\
+                                 & ising    & checkerboard MC, byte-exact verify            & $\{256,1024,2048\}^2$ & $1536^2$ \\
+R4 atomics                       & lj       & cell-list scatter, atomic contention          & $N{\in}\{1.7,4.1,10.6\}{\rm K}$ & $2744$ \\
+R5 multi-kernel                  & gradshaf & in-kernel reduction $+$ var-coef stencil      & $\{65,257,513\}^2$   & $129^2$ \\
+R6 butterfly                     & fft3d    & TG bank conflicts, mixed-radix, \texttt{simd\_shuffle} & $\{32,64,128\}^3$ & $256^3$ \\
+\midrule
+(smoke)                          & saxpy    & DRAM saturation                               & $\{1,16,64\}{\rm M}$ & $4{\rm M}$ \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
 
-\paragraph{wave3d.} Three-dimensional acoustic wave equation, 7-point
-isotropic Laplacian, leapfrog in time:
-\begin{equation}
-u^{n+1}_{i,j,k} = 2u^n_{i,j,k} - u^{n-1}_{i,j,k}
-   + \alpha\,\big(u^n_{i\pm 1,j,k}+u^n_{i,j\pm 1,k}+u^n_{i,j,k\pm 1}-6\,u^n_{i,j,k}\big),
-\end{equation}
-where each $\pm$ expands to two terms. CFL stability requires
-$\alpha=(c\Delta t/\Delta x)^2<1/3$ (we use $0.18$). 12\,B/cell unique
-DRAM traffic. Tests register pressure, 2.5D blocking, and marching-axis choice.
+\paragraph{R1 -- Regular stencils.} Bandwidth-bound updates over a
+structured grid: a 5-point heat-equation stencil (8\,B/cell) and a
+7-point leapfrog wave equation (12\,B/cell). The lever is halo
+handling, marching-axis choice, and 2.5D temporal blocking.
+\texttt{wave3d} doubles as a NaN trap --- a sign or indexing error
+compounds over many leapfrog steps, and 10 of Opus's 13 correctness
+fails in Sec.~\ref{sec:results} land here.
 
-\subsection{Compute-bound (regime R2)}
+\paragraph{R2 -- Compute-bound.} $O(N^2)$ pair sums (\texttt{nbody})
+and $O(d^2)$ matvec inside an $L$-step leapfrog (\texttt{hmc}), both
+running ${\sim}20$ FLOPs per memory transaction so the ceiling is
+peak FP32 GFLOPS. The lever is register tiling and threadgroup
+cooperative loads. \texttt{hmc} additionally probes the
+register-pressure boundary --- per-thread $\mathbf{q,p,f}$ at
+$d{=}32$ is ${\sim}512$\,B --- and verifies correctness
+statistically (sample mean and Frobenius covariance error vs.\ the
+target Gaussian).
 
-\paragraph{nbody.} All-pairs gravitational $N$-body problem with leapfrog integration. Per
-body $i$ per step:
-\begin{equation}
-\mathbf{a}_i \;=\; G\sum_{j} m_j
-   \frac{\mathbf{r}_j-\mathbf{r}_i}
-        {(\|\mathbf{r}_j-\mathbf{r}_i\|^2+\varepsilon^2)^{3/2}},
-\quad \mathbf{v}\!\mathrel{+}\!=\mathbf{a}\Delta t,
-\quad \mathbf{r}\!\mathrel{+}\!=\mathbf{v}\Delta t.
-\end{equation}
-Self-interaction is masked by the softening $\varepsilon$. $\sim$20\,FLOPs
-per pair; ceiling at peak FP32 GFLOPS. Tests register blocking and
-threadgroup cooperative loads.
+\paragraph{R3 -- Multi-field, exotic memory.} \texttt{lbm} is a D2Q9
+Lattice Boltzmann (pull-stream $+$ BGK collision) with nine
+distribution fields per cell at 72\,B/cell traffic; the lever is
+SoA layout, push/pull streaming choice, and algebraic factorisations
+of the BGK relaxation (App.~\ref{app:code} dissects an FMA fold
+Opus discovered). \texttt{ising} is 2D Ising checkerboard Metropolis
+MC at 2\,B/site; a precomputed accept-probability table and a
+counter-based Murmur-fmix32 PRNG yield bit-exact CPU/GPU agreement,
+so verification reduces to byte-equality on the spin array.
 
-\paragraph{hmc.} Hamiltonian Monte Carlo on an anisotropic Gaussian target,
-$U(q)=\tfrac12 q^\top A q$ with $A=\Sigma^{-1}$. One thread per chain;
-many chains in parallel. Each HMC step draws $p\sim\mathcal{N}(0,I)$ and
-runs $L$ leapfrog inner steps with stepsize $\varepsilon$,
-\begin{equation}
-p \leftarrow p - \tfrac{\varepsilon}{2}A q,\quad
-q \leftarrow q + \varepsilon p,\quad
-p \leftarrow p - \varepsilon Aq,\ \cdots,\quad
-p \leftarrow p - \tfrac{\varepsilon}{2}A q,
-\end{equation}
-followed by a Metropolis accept/reject with $\log u_{\mathrm{acc}}<-\Delta H$.
-Correctness is verified statistically (sample mean and Frobenius covariance
-error vs.\ the target). Three sizes $(d,K)\in\{(8,16{\rm K}),(16,4{\rm K}),(32,1{\rm K})\}$
-probe the register-pressure boundary; at $d{=}32$ per-thread state
-($\sim$512\,B) competes with the register file.
+\paragraph{R4 -- Irregular memory and atomics.} Lennard-Jones MD
+with a cell-list spatial hash. Three kernels per step
+(\texttt{clear\_cells} / \texttt{build\_cells} / \texttt{step});
+\texttt{build\_cells} is an atomic scatter onto per-cell occupancy
+counters and the force kernel walks 27 neighbour cells with
+minimum-image periodic wrap. The lever is load balancing under
+uneven cell occupancy and atomic-contention mitigation.
 
-\subsection{Multi-field, exotic memory (regime R3)}
+\paragraph{R5 -- Multi-kernel reductions.} Picard iteration for the
+Grad-Shafranov fixed-boundary plasma equilibrium. Each outer step
+dispatches a max-reduction ($\psi_{\mathrm{axis}}{=}\max\psi$)
+followed by a variable-coefficient 5-point stencil with a nonlinear
+source. The lever is the choice of in-kernel reduction strategy ---
+single-threadgroup vs.\ simdgroup-tree --- and how cleanly the two
+kernels compose across the dispatch boundary.
 
-\paragraph{lbm.} D2Q9 Lattice Boltzmann, fused pull-stream + BGK
-collision, periodic BC. With velocity table $\mathbf{c}_k$ and weights
-$w_k$, per cell per step:
-\begin{align}
-f^{\mathrm{str}}_k(\mathbf{x})
-   &= f^{\mathrm{in}}_k(\mathbf{x}-\mathbf{c}_k),\quad
-\rho = \textstyle\sum_k f^{\mathrm{str}}_k,\quad
-\mathbf{u} = \tfrac{1}{\rho}\sum_k \mathbf{c}_k\,f^{\mathrm{str}}_k, \\
-f^{\mathrm{eq}}_k &= w_k\rho\!\left(1+3(\mathbf{c}_k{\cdot}\mathbf{u})
-   +\tfrac{9}{2}(\mathbf{c}_k{\cdot}\mathbf{u})^2 - \tfrac{3}{2}\|\mathbf{u}\|^2\right),\\
-f^{\mathrm{out}}_k &= f^{\mathrm{str}}_k - \tau^{-1}\!\left(f^{\mathrm{str}}_k - f^{\mathrm{eq}}_k\right).
-\end{align}
-Storage is SoA: $f[k\,N_xN_y + jN_x + i]$. $72$\,B/cell DRAM traffic.
-Tests AoS/SoA layout, push vs pull streaming, and algebraic
-factorisations of the BGK kernel.
-
-\paragraph{ising.} Two-dimensional Ising model, checkerboard Metropolis
-Monte Carlo on a periodic $N_x\times N_y$ lattice with $\sigma\in\{\pm 1\}$
-stored as int8. Per attempt at site $(i,j)$:
-\begin{equation}
-h = \sigma_{i\pm 1,j}+\sigma_{i,j\pm 1}\in\{-4,\ldots,4\},\quad
-\Delta E = 2J\sigma\,h,\quad
-\mathrm{accept}\iff u<\exp(-\beta\,\Delta E).
-\end{equation}
-A precomputed five-entry $p_{\mathrm{accept}}$ table and a counter-based
-Murmur-fmix32 PRNG yield bit-exact CPU/GPU agreement: verification is
-byte-equality on the spin array. $2$\,B/site/sweep ceiling.
-
-\subsection{Irregular memory and atomics (regime R4)}
-
-\paragraph{lj.} Lennard-Jones molecular dynamics with a cell-list spatial
-hash. Three kernels per step --- \texttt{clear\_cells}, \texttt{build\_cells}
-(atomic scatter), \texttt{step} (27-neighbour-cell pair force + integration):
-\begin{equation}
-\mathbf{F}_i = \sum_{j\in\mathcal{N}(i)} -24\!\left(2r_{ij}^{-12}-r_{ij}^{-6}\right)r_{ij}^{-2}\,(\mathbf{r}_j-\mathbf{r}_i),
-\qquad r_{ij}<r_{\mathrm{cut}}=2.5,
-\end{equation}
-with minimum-image periodic wrap. Cell occupancy is built via
-\texttt{atomic\_fetch\_add} on a per-cell counter. Tests load balancing,
-atomic contention, and the irregular access patterns of neighbour-list MD.
-
-\subsection{Multi-kernel reductions (regime R5)}
-
-\paragraph{gradshaf.} Grad-Shafranov fixed-boundary equilibrium via Picard
-iteration, two kernels per outer step: an interior max-reduction
-$\psi_{\mathrm{axis}}=\max_{(i,j)\in\mathrm{int}}\psi$, then a
-variable-coefficient 5-point stencil with nonlinear source:
-\begin{align}
-\psi_{\mathrm{norm}} &= \psi/\psi_{\mathrm{axis}},\quad
-J = R\,p_{\mathrm{axis}}\cdot 4\psi_{\mathrm{norm}}(1-\psi_{\mathrm{norm}})\cdot
-   \mathbf{1}[0<\psi_{\mathrm{norm}}<1],\\
-\Delta^*\psi &= a_W\psi_W+a_E\psi_E+a_N\psi_N+a_S\psi_S+a_C\psi_C,\\
-\psi^{n+1} &= \psi^n + \omega\,(-\mu_0 R J - \Delta^*\psi)/a_C,
-\end{align}
-with $R$-dependent $a_{W,E}=1/dR^2 \pm 1/(2RdR)$, $a_{N,S}=1/dZ^2$,
-$a_C=-2(1/dR^2+1/dZ^2)$. Tests in-kernel reduction strategies (single-TG
-vs simdgroup-tree) and multi-kernel composition.
-
-\subsection{Data-shuffle / butterfly (regime R6)}
-
-\paragraph{fft3d.} 3D complex-to-complex forward FFT, fp32, on a
-power-of-two cube of side $N$. Convention is unnormalised (matches
-\texttt{numpy.fft.fftn}); storage is row-major \texttt{float2}$[N][N][N]$.
-Three named kernels --- \texttt{fft3d\_x}, \texttt{fft3d\_y},
-\texttt{fft3d\_z} --- are dispatched in sequence with two ping-ponged
-buffers, each kernel performing a length-$N$ 1D FFT per threadgroup of
-$N$ cooperating threads:
-\begin{equation}
-Y[k_1,k_2,k_3] \;=\; \sum_{n_1,n_2,n_3=0}^{N-1} X[n_1,n_2,n_3]\,
-   \exp\!\left(-\frac{2\pi i}{N}(k_1 n_1 + k_2 n_2 + k_3 n_3)\right).
-\end{equation}
-Sizes $N \in \{32, 64, 128\}$ cover three working-set regimes: $32^3$
-(${\sim}256$\,KB) is SLC-resident and compute-bound; $128^3$
-(${\sim}16$\,MB) DRAM-binds. The optimisation surface is dominated by
-data movement, not arithmetic --- bit-reversal vs Stockham auto-sort,
-twiddle-factor caching, mixed-radix (radix-4, radix-8) butterflies for
-fewer barriers, and \texttt{simd\_shuffle} / \texttt{simd\_shuffle\_xor}
-for intra-simdgroup butterflies are all on the table. Tests
-threadgroup-memory bank-conflict avoidance and the per-axis stride
-asymmetry (stride 1 along $x$ vs strides $N$ and $N^2$ along $y$, $z$).
-$\sim 5N\log_2 N$ FLOPs per 1D FFT; effective DRAM traffic 96\,B/cell
-across the three axis passes (16\,B read + 16\,B write per pass).
-Verification is max-norm against \texttt{numpy.fft.fftn} on a fixed
-seeded Gaussian input, tolerance $10^{-3}{+}10^{-3}\|Y\|_\infty$.
-
-A bandwidth-bound smoke-test (\texttt{saxpy}) is also included to validate
-the harness.
+\paragraph{R6 -- Data-shuffle / butterfly.} 3D complex-to-complex
+forward FFT, dispatched as three per-axis 1D FFTs with two
+ping-ponged buffers. Unlike R1/R2, the optimisation surface is
+\emph{data movement} rather than arithmetic: bit-reversal vs.\
+Stockham auto-sort, twiddle-factor caching, mixed-radix (radix-4,
+radix-8) butterflies for fewer barriers, and intra-simdgroup
+permutes via \texttt{simd\_shuffle\_xor}. The per-axis stride
+asymmetry (stride 1 along $x$ vs.\ $N$ and $N^2$ along $y,z$) makes
+threadgroup-memory bank-conflict avoidance a separate sub-lever.
 
 \section{Harness Design}
 \label{sec:harness}
@@ -540,6 +501,148 @@ cross-chip generalisation (evolve on M2~Pro, evaluate on M3~Max).
 
 
 \appendix
+
+\section{Task formulations}
+\label{app:tasks}
+
+This appendix gives the per-task equations, ceilings, and tolerances
+summarised in Section~\ref{sec:tasks}. Tasks are grouped by the
+regimes R1--R6 of Table~\ref{tab:tasks}; training and held-out sizes
+match the table.
+
+\subsection{R1: Regular stencils}
+
+\paragraph{heat2d.} Two-dimensional heat equation, 5-point stencil on
+$(N_x{\times}N_y)$ grid with Dirichlet boundaries. Per timestep, per
+interior cell:
+\begin{equation}
+u^{n+1}_{i,j} \;=\; u^n_{i,j} + \alpha\!\left(u^n_{i-1,j}+u^n_{i+1,j}
+   + u^n_{i,j-1}+u^n_{i,j+1} - 4\,u^n_{i,j}\right).
+\end{equation}
+Bandwidth-bound at 8\,B/cell.
+
+\paragraph{wave3d.} Three-dimensional acoustic wave equation, 7-point
+isotropic Laplacian, leapfrog in time:
+\begin{equation}
+u^{n+1}_{i,j,k} = 2u^n_{i,j,k} - u^{n-1}_{i,j,k}
+   + \alpha\,\big(u^n_{i\pm 1,j,k}+u^n_{i,j\pm 1,k}+u^n_{i,j,k\pm 1}-6\,u^n_{i,j,k}\big),
+\end{equation}
+where each $\pm$ expands to two terms. CFL stability requires
+$\alpha=(c\Delta t/\Delta x)^2<1/3$ (we use $0.18$). 12\,B/cell unique
+DRAM traffic.
+
+\subsection{R2: Compute-bound}
+
+\paragraph{nbody.} All-pairs gravitational $N$-body with leapfrog
+integration. Per body $i$ per step:
+\begin{equation}
+\mathbf{a}_i \;=\; G\sum_{j} m_j
+   \frac{\mathbf{r}_j-\mathbf{r}_i}
+        {(\|\mathbf{r}_j-\mathbf{r}_i\|^2+\varepsilon^2)^{3/2}},
+\quad \mathbf{v}\!\mathrel{+}\!=\mathbf{a}\Delta t,
+\quad \mathbf{r}\!\mathrel{+}\!=\mathbf{v}\Delta t.
+\end{equation}
+Self-interaction is masked by softening $\varepsilon$. ${\sim}20$
+FLOPs per pair; ceiling at peak FP32 GFLOPS.
+
+\paragraph{hmc.} Hamiltonian Monte Carlo on an anisotropic Gaussian
+target, $U(q)=\tfrac12 q^\top A q$ with $A=\Sigma^{-1}$. One thread
+per chain; many chains in parallel. Each step draws
+$p\sim\mathcal{N}(0,I)$ and runs $L$ leapfrog inner steps with
+stepsize $\varepsilon$,
+\begin{equation}
+p \leftarrow p - \tfrac{\varepsilon}{2}A q,\quad
+q \leftarrow q + \varepsilon p,\quad
+p \leftarrow p - \varepsilon Aq,\ \cdots,\quad
+p \leftarrow p - \tfrac{\varepsilon}{2}A q,
+\end{equation}
+followed by a Metropolis accept/reject with
+$\log u_{\mathrm{acc}}<-\Delta H$. Correctness is verified
+statistically (sample mean and Frobenius covariance error vs.\ the
+target). The three training sizes
+$(d,K)\in\{(8,16{\rm K}),(16,4{\rm K}),(32,1{\rm K})\}$ probe the
+register-pressure boundary; at $d{=}32$ per-thread state
+(${\sim}512$\,B) competes with the register file.
+
+\subsection{R3: Multi-field, exotic memory}
+
+\paragraph{lbm.} D2Q9 Lattice Boltzmann, fused pull-stream $+$ BGK
+collision, periodic BC. With velocity table $\mathbf{c}_k$ and
+weights $w_k$, per cell per step:
+\begin{align}
+f^{\mathrm{str}}_k(\mathbf{x})
+   &= f^{\mathrm{in}}_k(\mathbf{x}-\mathbf{c}_k),\quad
+\rho = \textstyle\sum_k f^{\mathrm{str}}_k,\quad
+\mathbf{u} = \tfrac{1}{\rho}\sum_k \mathbf{c}_k\,f^{\mathrm{str}}_k, \\
+f^{\mathrm{eq}}_k &= w_k\rho\!\left(1+3(\mathbf{c}_k{\cdot}\mathbf{u})
+   +\tfrac{9}{2}(\mathbf{c}_k{\cdot}\mathbf{u})^2 - \tfrac{3}{2}\|\mathbf{u}\|^2\right),\\
+f^{\mathrm{out}}_k &= f^{\mathrm{str}}_k - \tau^{-1}\!\left(f^{\mathrm{str}}_k - f^{\mathrm{eq}}_k\right).
+\end{align}
+Storage is SoA: $f[k\,N_xN_y + jN_x + i]$. 72\,B/cell DRAM traffic.
+
+\paragraph{ising.} Two-dimensional Ising model, checkerboard
+Metropolis Monte Carlo on a periodic $N_x{\times}N_y$ lattice with
+$\sigma\in\{\pm 1\}$ stored as int8. Per attempt at site $(i,j)$:
+\begin{equation}
+h = \sigma_{i\pm 1,j}+\sigma_{i,j\pm 1}\in\{-4,\ldots,4\},\quad
+\Delta E = 2J\sigma\,h,\quad
+\mathrm{accept}\iff u<\exp(-\beta\,\Delta E).
+\end{equation}
+A precomputed five-entry $p_{\mathrm{accept}}$ table and a
+counter-based Murmur-fmix32 PRNG yield bit-exact CPU/GPU agreement;
+verification is byte-equality on the spin array. 2\,B/site/sweep
+ceiling.
+
+\subsection{R4: Irregular memory and atomics}
+
+\paragraph{lj.} Lennard-Jones molecular dynamics with a cell-list
+spatial hash. Three kernels per step --- \texttt{clear\_cells},
+\texttt{build\_cells} (atomic scatter), \texttt{step}
+(27-neighbour-cell pair force $+$ integration):
+\begin{equation}
+\mathbf{F}_i = \sum_{j\in\mathcal{N}(i)} -24\!\left(2r_{ij}^{-12}-r_{ij}^{-6}\right)r_{ij}^{-2}\,(\mathbf{r}_j-\mathbf{r}_i),
+\qquad r_{ij}<r_{\mathrm{cut}}=2.5,
+\end{equation}
+with minimum-image periodic wrap. Cell occupancy is built via
+\texttt{atomic\_fetch\_add} on a per-cell counter.
+
+\subsection{R5: Multi-kernel reductions}
+
+\paragraph{gradshaf.} Grad-Shafranov fixed-boundary equilibrium via
+Picard iteration, two kernels per outer step: an interior
+max-reduction
+$\psi_{\mathrm{axis}}=\max_{(i,j)\in\mathrm{int}}\psi$, then a
+variable-coefficient 5-point stencil with nonlinear source:
+\begin{align}
+\psi_{\mathrm{norm}} &= \psi/\psi_{\mathrm{axis}},\quad
+J = R\,p_{\mathrm{axis}}\cdot 4\psi_{\mathrm{norm}}(1-\psi_{\mathrm{norm}})\cdot
+   \mathbf{1}[0<\psi_{\mathrm{norm}}<1],\\
+\Delta^*\psi &= a_W\psi_W+a_E\psi_E+a_N\psi_N+a_S\psi_S+a_C\psi_C,\\
+\psi^{n+1} &= \psi^n + \omega\,(-\mu_0 R J - \Delta^*\psi)/a_C,
+\end{align}
+with $R$-dependent $a_{W,E}=1/dR^2 \pm 1/(2RdR)$, $a_{N,S}=1/dZ^2$,
+$a_C=-2(1/dR^2+1/dZ^2)$.
+
+\subsection{R6: Data-shuffle / butterfly}
+
+\paragraph{fft3d.} 3D complex-to-complex forward FFT, fp32, on a
+power-of-two cube of side $N$. Convention is unnormalised (matches
+\texttt{numpy.fft.fftn}); storage is row-major
+\texttt{float2}$[N][N][N]$. Three named kernels ---
+\texttt{fft3d\_x}, \texttt{fft3d\_y}, \texttt{fft3d\_z} --- are
+dispatched in sequence with two ping-ponged buffers, each performing
+a length-$N$ 1D FFT per threadgroup of $N$ cooperating threads:
+\begin{equation}
+Y[k_1,k_2,k_3] \;=\; \sum_{n_1,n_2,n_3=0}^{N-1} X[n_1,n_2,n_3]\,
+   \exp\!\left(-\frac{2\pi i}{N}(k_1 n_1 + k_2 n_2 + k_3 n_3)\right).
+\end{equation}
+Sizes $N\in\{32,64,128\}$ cover three working-set regimes: $32^3$
+(${\sim}256$\,KB) is SLC-resident and compute-bound; $128^3$
+(${\sim}16$\,MB) DRAM-binds. ${\sim}5N\log_2 N$ FLOPs per 1D FFT;
+effective DRAM traffic 96\,B/cell across the three axis passes
+(16\,B read $+$ 16\,B write per pass). Verification is max-norm
+against \texttt{numpy.fft.fftn} on a fixed seeded Gaussian input,
+tolerance $10^{-3}{+}10^{-3}\|Y\|_\infty$.
 
 \section{Evolution loop pseudocode}
 \label{app:algorithm}
