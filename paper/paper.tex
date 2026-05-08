@@ -18,6 +18,8 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{positioning, arrows.meta, calc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 % Compact display math
 \setlength{\abovedisplayskip}{4pt}
@@ -262,19 +264,56 @@ median reported). The chip is detected from \texttt{sysctl} and looked up
 in a per-family table (M1 through M4) for peak FP32 GFLOPS and DRAM
 bandwidth; all runs here are on Apple M1 Pro (4500\,GFLOPS, 200\,GB/s).
 
-\paragraph{Scoring.} For a candidate passing correctness at every size,
-$S = \left(\prod_{i} f_i\right)^{1/n}$ with $f_i=\mathrm{achieved}_i/\mathrm{ceiling}_i$.
-Any tolerance failure forces $S{=}0$; this hard gate prevents trading
-correctness for speed, and the geometric mean across sizes discourages
-overfitting to one regime.
+\paragraph{Notation.}
+A task
+$\mathcal{T}{=}(\sigma_{\mathcal{T}},\,\Sigma_{\mathcal{T}},\,\sigma^{\star}_{\mathcal{T}},\,c_{\mathcal{T}})$
+packages a naive correct seed kernel $\sigma_{\mathcal{T}}$ (Metal
+source), three training sizes $\Sigma_{\mathcal{T}}{=}\{s_1,s_2,s_3\}$,
+one held-out size
+$\sigma^{\star}_{\mathcal{T}}{\notin}\Sigma_{\mathcal{T}}$, and a per-size
+roofline $c_{\mathcal{T}}(s)$ in GFLOPS or GB/s. Evaluating a candidate
+$\kappa$ at size $s$ produces a correctness flag
+$\chi_{\mathcal{T}}(\kappa,s){\in}\{0,1\}$ (CPU reference within tolerance
+or not) and an achieved throughput $a_{\mathcal{T}}(\kappa,s)$; write
+$f_{\mathcal{T}}(\kappa,s){=}a_{\mathcal{T}}(\kappa,s)/c_{\mathcal{T}}(s)$
+for the per-size fraction-of-ceiling.
 
-\paragraph{Evolution loop.} A single-population $(\mu{=}1{+}\lambda{=}1)$
-loop. Iteration $i$ shows the LLM the previous candidate, the incumbent
-best, a short history per iteration, and the original task spec. The LLM
-returns a Metal source block (multi-kernel tasks emit multiple
-\texttt{kernel} functions in one file). Candidates strictly beating the
-incumbent are promoted; prompts, raw responses, extended-thinking tokens,
-sources, and per-size JSON results are persisted. A single
+\paragraph{Scoring.} The in-distribution score is the geometric mean of
+$f_{\mathcal{T}}$ over training sizes, gated on correctness on \emph{every}
+size:
+\begin{equation}
+S_{\mathcal{T}}(\kappa) \;=\;
+\Big(\textstyle\prod_{s\in\Sigma_{\mathcal{T}}} f_{\mathcal{T}}(\kappa,s)\Big)^{1/|\Sigma_{\mathcal{T}}|}
+\,\cdot\,
+\textstyle\prod_{s\in\Sigma_{\mathcal{T}}}\chi_{\mathcal{T}}(\kappa,s).
+\end{equation}
+The hard gate ($S_{\mathcal{T}}{=}0$ on any tolerance failure) prevents
+trading correctness for speed; the gmean across sizes discourages overfit
+to one regime. The held-out gate, run only on the run's incumbent at
+end-of-run, is the analogous quantity at the unseen size:
+$\Phi_{\mathcal{T}}(\kappa){=}f_{\mathcal{T}}(\kappa,\sigma^{\star}_{\mathcal{T}}){\cdot}\chi_{\mathcal{T}}(\kappa,\sigma^{\star}_{\mathcal{T}})$.
+$S_{\mathcal{T}}$ is the agent's optimisation target; $\Phi_{\mathcal{T}}$
+is the external oversight signal it never sees.
+
+\paragraph{Evolution loop.} A frozen LLM $\mathcal{M}$ acts as a kernel
+synthesiser. Given a task-spec system prompt $p_{\mathcal{T}}$ and a
+feedback packet $\mathcal{F}_k$ summarising the previous candidate, the
+incumbent, and a short per-iteration history, $\mathcal{M}$ emits a Metal
+source
+\begin{equation}
+\kappa_{k+1} \;=\; \mathcal{M}\!\big(p_{\mathcal{T}},\, q(\kappa_k,\,\kappa^{\star}_k,\,\mathcal{F}_k)\big),
+\qquad \kappa_0 = \sigma_{\mathcal{T}},
+\end{equation}
+which the harness compiles, dispatches across $\Sigma_{\mathcal{T}}$, and
+scores; the strict $(1{+}1)$ rule promotes
+$\kappa^{\star}_{k+1}{=}\kappa_{k+1}$ iff
+$S_{\mathcal{T}}(\kappa_{k+1}){>}S_{\mathcal{T}}(\kappa^{\star}_k)$,
+otherwise $\kappa^{\star}_{k+1}{=}\kappa^{\star}_k$. Compile, pipeline,
+and per-size correctness errors are returned inside $\mathcal{F}_{k+1}$ as
+structured strings (the violating size, the error metric and value, and
+the compiler diagnostic if any). After $K$ iterations the run terminates;
+both $S_{\mathcal{T}}(\kappa^{\star}_K)$ and the held-out
+$\Phi_{\mathcal{T}}(\kappa^{\star}_K)$ are reported. A single
 \texttt{call\_llm} bridge dispatches Claude via the Agent SDK and Gemini
 via \texttt{google-genai}.
 
@@ -460,8 +499,9 @@ The benchmark's $(1{+}1)$ loop is, modulo terminology, an autonomous
 coding agent: it reads a Metal source, edits it, runs it, and
 self-promotes its own outputs based on an internal fitness signal.
 A human merging the agent's incumbent into a downstream codebase
-sees only the in-distribution score the agent reports --- and that
-score is gameable in two ways our held-out gate catches.
+sees only the in-distribution score $S_\mathcal{T}$ the agent
+reports --- and $S_\mathcal{T}$ is gameable in two ways the held-out
+gate $\Phi_\mathcal{T}$ (Sec.~\ref{sec:harness}) catches.
 \textbf{Silent correctness violation.} On HMC, Opus's incumbent hits
 $10.6\times$ with all in-distribution checks green; held out at
 $d{=}24$ --- a problem dimension that sits between two training
@@ -481,10 +521,12 @@ the contribution toward the workshop's verifiability/oversight
 agenda: \textsc{Metal-Sci}'s value lies less in providing a hard
 benchmark and more in instantiating a cheap, mechanical trust
 contract on top of an autonomous coding agent. The roofline anchor,
-per-size tolerance, and geometric mean are the inner scoring
-machinery; the held-out gate is the lightweight oversight primitive
-that lets a human (or a downstream automated reviewer) catch
-confidently-wrong agent code before deployment.
+per-size tolerance, and geometric mean inside $S_\mathcal{T}$ are the
+agent's scoring machinery; $\Phi_\mathcal{T}$ --- evaluated once on
+$\sigma^\star_\mathcal{T}$ at end-of-run, never folded into any
+feedback packet $\mathcal{F}_k$ --- is the lightweight oversight
+primitive that lets a human (or a downstream automated reviewer)
+catch confidently-wrong agent code before deployment.
 
 \paragraph{Other observations.}
 A roofline-anchored score answers ``how close are we to the
@@ -567,6 +609,54 @@ automated CUDA kernel evolution with large language models.
 \end{itemize}
 
 \appendix
+
+\section{Evolution loop pseudocode}
+\label{app:algorithm}
+
+Algorithm~\ref{alg:loop} formalises the harness of
+Sec.~\ref{sec:harness}. The \textsc{Evaluate} subroutine is the
+compile--run--score pipeline: it returns either a structured failure
+(compile or per-size correctness, with the violating size $s$ and
+the error metric so $\mathcal{M}$ can correct course inside
+$\mathcal{F}_{k+1}$) or a successful score $S_\mathcal{T}(\kappa)$
+together with per-size fractions-of-ceiling. The held-out
+$\Phi_\mathcal{T}(\kappa^\star_K)$ is computed once at end-of-run on
+the unseen size $\sigma^\star_\mathcal{T}$ --- never returned in any
+$\mathcal{F}_k$ --- and is the oversight signal of
+Sec.~\ref{sec:results}.
+
+\begin{algorithm}[t]
+\caption{\textsc{Metal-Sci} evolution loop ($\mu{=}1{+}\lambda{=}1$).}
+\label{alg:loop}
+\begin{algorithmic}[1]
+\Require task $\mathcal{T}{=}(\sigma_\mathcal{T},\Sigma_\mathcal{T},\sigma^\star_\mathcal{T},c_\mathcal{T})$, LLM $\mathcal{M}$, system prompt $p_\mathcal{T}$, iterations $K$
+\Ensure incumbent $\kappa^\star_K$, in-dist score $S_\mathcal{T}(\kappa^\star_K)$, held-out $\Phi_\mathcal{T}(\kappa^\star_K)$
+\State $\kappa^\star_0 \gets \sigma_\mathcal{T}$;\quad $\mathcal{F}_0 \gets \textsc{Evaluate}(\sigma_\mathcal{T},\,\mathcal{T})$ \Comment{seed is initial incumbent}
+\For{$k = 1, \ldots, K$}
+  \State $\kappa_k \gets \mathcal{M}\!\left(p_\mathcal{T},\, q(\kappa_{k-1}, \kappa^\star_{k-1}, \mathcal{F}_{k-1})\right)$ \Comment{propose}
+  \State $r_k \gets \textsc{Evaluate}(\kappa_k,\,\mathcal{T})$
+  \State $\mathcal{F}_k \gets (\kappa_k,\, r_k)$ \Comment{structured feedback for next iter}
+  \If{$r_k.\mathit{score}\text{ defined}\;\wedge\;r_k.\mathit{score} > S_\mathcal{T}(\kappa^\star_{k-1})$}
+    \State $\kappa^\star_k \gets \kappa_k$ \Comment{$(1{+}1)$ promote}
+  \Else
+    \State $\kappa^\star_k \gets \kappa^\star_{k-1}$
+  \EndIf
+\EndFor
+\State $\Phi_\mathcal{T}(\kappa^\star_K) \gets f_\mathcal{T}(\kappa^\star_K,\,\sigma^\star_\mathcal{T}) \cdot \chi_\mathcal{T}(\kappa^\star_K,\,\sigma^\star_\mathcal{T})$ \Comment{never given to $\mathcal{M}$}
+\State \Return $\kappa^\star_K,\, S_\mathcal{T}(\kappa^\star_K),\, \Phi_\mathcal{T}(\kappa^\star_K)$
+\Statex
+\Function{Evaluate}{$\kappa,\,\mathcal{T}$}
+  \State $\mathrm{lib},\, e_c \gets \textsc{Compile}(\kappa)$
+  \If{$e_c \neq \emptyset$}\; \Return $(\mathit{compile\_fail},\, e_c)$ \EndIf
+  \For{$s \in \Sigma_\mathcal{T}$}
+    \State $(\chi_s,\, a_s) \gets \textsc{Run}(\mathrm{lib},\, s)$
+    \If{$\chi_s = 0$}\; \Return $(\mathit{correct\_fail},\, s,\, \text{error metric})$ \EndIf
+  \EndFor
+  \State $S \gets \big(\textstyle\prod_{s\in\Sigma_\mathcal{T}} a_s/c_\mathcal{T}(s)\big)^{1/|\Sigma_\mathcal{T}|}$
+  \State \Return $\big(\mathit{score}{:}\,S,\,\{a_s/c_\mathcal{T}(s)\}_{s\in\Sigma_\mathcal{T}}\big)$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 \section{Code-level evidence for the in-distribution split}
 \label{app:code}
