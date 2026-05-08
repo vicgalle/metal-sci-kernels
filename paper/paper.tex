@@ -39,11 +39,7 @@
 \maketitle
 
 \begin{abstract}
- We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7 and Gemini~3.1 Pro Preview on M1~Pro: in-distribution   self-speedups span $1.00\times$ to $10.7\times$, and the held-out gate
-  exposes specialization/generalization tradeoffs the geometric mean 
-  hides: notably an Opus \texttt{template } HMC win that         
-  returns wrong answers at unseen $d{=}24$ where Gemini's variant        
-  generalizes at $17.8\times$ speedup.
+ We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7 and Gemini~3.1 Pro Preview on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate $\Phi_\mathcal{T}$ --- evaluated once at end-of-run on a configuration the agent never sees during search --- functions as a cheap mechanical oversight primitive on this $(1{+}1)$ coding agent, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen $d{=}24$ where Gemini's runtime-$d$ variant generalizes at $17.8\times$.
 \end{abstract}
 
 \section{Introduction}
@@ -81,10 +77,7 @@ non-trivial optimisation surface.
 
 \paragraph{Contributions.} (i) A 10-task scientific compute benchmark over
 six optimization regimes, each with a CPU reference, roofline-anchored
-fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) two matched single-model sweeps (Claude Opus~4.7 and Gemini~3.1~Pro) on M1~Pro, with
-in-distribution \emph{and} held-out evaluation per task; the held-out
-gate exposes specialization/generalization tradeoffs the in-distribution
-geometric mean hides, and the two models overfit asymmetrically.
+fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) two matched single-model sweeps (Claude Opus~4.7 and Gemini~3.1~Pro) on M1~Pro that operationalise the held-out gate $\Phi_\mathcal{T}$ as a cheap mechanical oversight primitive on the $(1{+}1)$ coding agent: $\Phi_\mathcal{T}$ is never folded into any feedback packet seen by the LLM during search and catches confidently-wrong outputs --- silent correctness violations and silent regressions --- that the in-distribution score $S_\mathcal{T}$ alone licenses.
 
 \section{Benchmark tasks}
 \label{sec:tasks}
