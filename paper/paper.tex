@@ -308,7 +308,9 @@ which the harness compiles, dispatches across $\Sigma_{\mathcal{T}}$, and
 scores; the strict $(1{+}1)$ rule promotes
 $\kappa^{\star}_{k+1}{=}\kappa_{k+1}$ iff
 $S_{\mathcal{T}}(\kappa_{k+1}){>}S_{\mathcal{T}}(\kappa^{\star}_k)$,
-otherwise $\kappa^{\star}_{k+1}{=}\kappa^{\star}_k$. Compile, pipeline,
+otherwise $\kappa^{\star}_{k+1}{=}\kappa^{\star}_k$. We formalise this
+compile--evaluate--promote $(1{+}1)$ loop in
+Alg.~\ref{alg:loop} (App.~\ref{app:algorithm}). Compile, pipeline,
 and per-size correctness errors are returned inside $\mathcal{F}_{k+1}$ as
 structured strings (the violating size, the error metric and value, and
 the compiler diagnostic if any). After $K$ iterations the run terminates;

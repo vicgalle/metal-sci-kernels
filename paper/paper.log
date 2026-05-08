@@ -747,13 +747,13 @@ nel $\OML/cmm/m/it/10 ^^[[]$ \T1/ptm/m/n/10 (Metal
  []
 
 [4]
-Underfull \hbox (badness 5203) in paragraph at lines 422--435
+Underfull \hbox (badness 5203) in paragraph at lines 424--437
  []\T1/ptm/b/n/10 Recurring Metal-grammar fail-ures.[] \T1/ptm/m/n/10 Compile-e
 rror pat-terns are sim-i-lar across mod-els.
  []
 
 LaTeX Font Info:    Trying to load font information for T1+phv on input line 47
-6.
+8.
 (t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
@@ -762,33 +762,33 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <8> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 476.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 478.
  [5]
-Underfull \hbox (badness 3612) in paragraph at lines 563--565
+Underfull \hbox (badness 3612) in paragraph at lines 565--567
 []\T1/ptm/m/n/8 Novikov, A. et al. (2025) Al-phaE-volve: A cod-ing agent for sc
 i-en-tific and al-go-rith-mic dis-cov-ery.
  []
 
 [6]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 629.
+put line 631.
 
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 733--738
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 735--740
  [][] 
  []
 
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 742.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 744.
 
-Overfull \hbox (4.5819pt too wide) in paragraph at lines 801--807
+Overfull \hbox (4.5819pt too wide) in paragraph at lines 803--809
  [][] 
  []
 
-[7] [8]
+[7] [8] [9]
 File: figs/convergence.png Graphic file (type bmp)
 <figs/convergence.png>
- [9] [10] (paper.aux)
+ [10] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: BAE720239B5BD3276E74051B05F2006A;4275.
  )
-Output written on paper.xdv (10 pages, 82208 bytes).
+Output written on paper.xdv (10 pages, 82580 bytes).
