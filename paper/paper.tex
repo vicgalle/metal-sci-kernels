@@ -80,6 +80,27 @@ non-trivial optimisation surface.
 six optimization regimes, each with a CPU reference, roofline-anchored
 fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) two matched single-model sweeps (Claude Opus~4.7 and Gemini~3.1~Pro) on M1~Pro that operationalise the held-out gate $\Phi_\mathcal{T}$ as a cheap mechanical oversight primitive on the $(1{+}1)$ coding agent: $\Phi_\mathcal{T}$ is never folded into any feedback packet seen by the LLM during search and catches confidently-wrong outputs --- silent correctness violations and silent regressions --- that the in-distribution score $S_\mathcal{T}$ alone licenses.
 
+\paragraph{Background and notation.}
+\textit{Apple GPU vocabulary.} A \emph{kernel} is a
+\texttt{.metal}-source GPU function launched from the CPU; a
+\emph{threadgroup} (TG) is Apple's name for a CUDA thread block ---
+cooperating threads sharing a scratchpad ``threadgroup memory''; a
+\emph{simdgroup} is the 32-thread SIMD lane group inside a threadgroup
+(Apple's name for a CUDA warp); the \emph{System-Level Cache} (SLC) is
+the CPU/GPU-shared last-level cache (${\sim}24$\,MB on M1~Pro) sitting
+between the on-chip caches and DRAM.
+\textit{Roofline.} A kernel's roofline~\cite{williams2009roofline}
+ceiling is the per-chip throughput upper bound implied by its arithmetic
+intensity (FLOPs per byte transferred). Kernels with low intensity are
+\emph{bandwidth-bound} and cap at peak DRAM bandwidth (GB/s);
+high-intensity ones are \emph{compute-bound} and cap at peak FP32
+throughput (GFLOPS). We score candidates as a fraction of this hardware
+ceiling rather than against any hand-written baseline.
+\textit{Evolution strategy.} $(\mu{=}1{+}\lambda{=}1)$, also called
+$(1{+}1)$, denotes the simplest evolution strategy: one parent, one
+mutated child per iteration; the child replaces the parent iff it
+scores strictly higher.
+
 \section{Benchmark tasks}
 \label{sec:tasks}
 
