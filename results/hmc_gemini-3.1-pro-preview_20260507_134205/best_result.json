@@ -1,0 +1,44 @@
+{
+  "compile_ok": true,
+  "correct": true,
+  "score": 0.0870428494203685,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "d8_K16384",
+      "correct": true,
+      "error_value": 0.06245790603808346,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.011116458333162882,
+      "achieved": 389.0965872733437,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.08646590828296527
+    },
+    {
+      "label": "d16_K4096",
+      "correct": true,
+      "error_value": 0.21478580655798857,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.006629625000641681,
+      "achieved": 674.1791880487043,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.1498175973441565
+    },
+    {
+      "label": "d32_K1024",
+      "correct": true,
+      "error_value": 0.5978362377952502,
+      "error_kind": "max(mean/tol, cov_fro/tol, accept_excess)",
+      "gpu_seconds": 0.019824812500701228,
+      "achieved": 229.08891571304176,
+      "achieved_unit": "GFLOPS (mat-vec FMAs only)",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0509086479362315
+    }
+  ]
+}

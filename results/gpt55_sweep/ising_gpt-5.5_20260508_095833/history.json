@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.09018050267127434,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/00_seed.metal",
+    "elapsed_s": 9.439775943756104,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06422420489119225,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/01_candidate.metal",
+    "elapsed_s": 206.946861743927,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06639990940563656,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/02_candidate.metal",
+    "elapsed_s": 360.79414916038513,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05105530553349914,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/03_candidate.metal",
+    "elapsed_s": 518.1213781833649,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.04320344429157606,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/04_candidate.metal",
+    "elapsed_s": 310.9883620738983,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06540463714287686,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/05_candidate.metal",
+    "elapsed_s": 344.4523956775665,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.07905155275612645,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/06_candidate.metal",
+    "elapsed_s": 424.78190994262695,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.09821411225912506,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/07_candidate.metal",
+    "elapsed_s": 322.2143678665161,
+    "is_new_best": true
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05806948484121487,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/08_candidate.metal",
+    "elapsed_s": 500.94582509994507,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.050997447759371144,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/09_candidate.metal",
+    "elapsed_s": 564.2388362884521,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.07174930741397213,
+    "fail_reason": null,
+    "source_path": "results/gpt55_sweep/ising_gpt-5.5_20260508_095833/10_candidate.metal",
+    "elapsed_s": 555.834990978241,
+    "is_new_best": false
+  }
+]

@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.02043019588483495,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/00_seed.metal",
+    "elapsed_s": 1.5810620784759521,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.03206268136544089,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/01_candidate.metal",
+    "elapsed_s": 174.96844863891602,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.033807647331100914,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/02_candidate.metal",
+    "elapsed_s": 226.1416416168213,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:15:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                       uint tg_size [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(256)]]\n                                                                   ^\n\" UserInfo={NSLocalizedDescription=program_source:15:68: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                       uint tg_size [[threads_per_threadgroup]]) [[max_total_threads_per_threadgroup(256)]]\n                                                                   ^\n}",
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/03_candidate.metal",
+    "elapsed_s": 270.6070008277893,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0408083015870597,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/04_candidate.metal",
+    "elapsed_s": 120.80763530731201,
+    "is_new_best": true
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.023250149123621833,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/05_candidate.metal",
+    "elapsed_s": 153.85996007919312,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.0309432526329866,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/06_candidate.metal",
+    "elapsed_s": 193.4792926311493,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.007527450619508877,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/07_candidate.metal",
+    "elapsed_s": 143.75377082824707,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.014540294322401465,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/08_candidate.metal",
+    "elapsed_s": 115.07248377799988,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.020810488822513084,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/09_candidate.metal",
+    "elapsed_s": 233.86528491973877,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.017430328940674828,
+    "fail_reason": null,
+    "source_path": "results/nbody_gemini-3.1-pro-preview_20260507_123634/10_candidate.metal",
+    "elapsed_s": 226.31536412239075,
+    "is_new_best": false
+  }
+]

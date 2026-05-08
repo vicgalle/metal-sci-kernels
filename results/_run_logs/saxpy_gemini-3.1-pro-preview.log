@@ -1,0 +1,275 @@
+
+=== Metal kernel evolution: task=saxpy ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/saxpy_gemini-3.1-pro-preview_20260507_114809
+
+[seed] Evaluating seed kernel...
+  seed score: 1.0808  (2.1s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 169.7s; evaluating...
+  score = 0.8381 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   144.3 GB/s (72.1%)
+                 16M:    1.13 ms,   177.9 GB/s (89.0%)
+                 64M:    4.39 ms,   183.5 GB/s (91.8%)
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  LLM call failed: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 104.3s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = fma(a, x[i], y[i]);
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+      ^
+program_source:10:19: error: use of undeclared identifier 'x'
+    y[i] = fma(a, x[i], y[i]);
+                  ^
+program_source:10:21: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+                    ^
+program_source:10:25: error: use of undeclared identifier 'y'
+    y[i] = fma(a, x[i], y[i]);
+                        ^
+program_source:10:27: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+                          ^
+program_source:10:16: error: use of undeclared identifier 'a'
+    y[i] = fma(a, x[i], y[i]);
+               ^
+" UserInfo={NSLocalizedDescription=program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = fma(a, x[i], y[i]);
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+      ^
+program_source:10:19: error: use of undeclared identifier 'x'
+    y[i] = fma(a, x[i], y[i]);
+                  ^
+program_source:10:21: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+                    ^
+program_source:10:25: error: use of undeclared identifier 'y'
+    y[i] = fma(a, x[i], y[i]);
+                        ^
+program_source:10:27: error: use of undeclared identifier 'i'
+    y[i] = fma(a, x[i], y[i]);
+                          ^
+program_source:10:16: error: use of undeclared identifier 'a'
+    y[i] = fma(a, x[i], y[i]);
+               ^
+}
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 114.8s; evaluating...
+  score = 0.8218 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   143.8 GB/s (71.9%)
+                 16M:    1.21 ms,   166.2 GB/s (83.1%)
+                 64M:    4.33 ms,   185.8 GB/s (92.9%)
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 133.9s; evaluating...
+  score = 0.8110 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   143.8 GB/s (71.9%)
+                 16M:    1.26 ms,   160.2 GB/s (80.1%)
+                 64M:    4.35 ms,   185.2 GB/s (92.6%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 159.1s; evaluating...
+  score = 0.8109 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   143.2 GB/s (71.6%)
+                 16M:    1.26 ms,   160.3 GB/s (80.1%)
+                 64M:    4.33 ms,   185.8 GB/s (92.9%)
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 111.1s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+      ^
+program_source:10:16: error: use of undeclared identifier 'x'
+    y[i] = a * x[i] + y[i];
+               ^
+program_source:10:18: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                 ^
+program_source:10:12: error: use of undeclared identifier 'a'
+    y[i] = a * x[i] + y[i];
+           ^
+program_source:10:23: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+                      ^
+program_source:10:25: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                        ^
+" UserInfo={NSLocalizedDescription=program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+      ^
+program_source:10:16: error: use of undeclared identifier 'x'
+    y[i] = a * x[i] + y[i];
+               ^
+program_source:10:18: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                 ^
+program_source:10:12: error: use of undeclared identifier 'a'
+    y[i] = a * x[i] + y[i];
+           ^
+program_source:10:23: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+                      ^
+program_source:10:25: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                        ^
+}
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 105.4s; evaluating...
+  score = 0.8369 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   143.6 GB/s (71.8%)
+                 16M:    1.13 ms,   178.3 GB/s (89.1%)
+                 64M:    4.40 ms,   183.1 GB/s (91.6%)
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 96.0s; evaluating...
+  score = 0.8172 (seed = 1.0808, best = 1.0808)
+                  1M:    0.09 ms,   143.9 GB/s (72.0%)
+                 16M:    1.22 ms,   165.4 GB/s (82.7%)
+                 64M:    4.39 ms,   183.5 GB/s (91.7%)
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 89.9s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+      ^
+program_source:10:16: error: use of undeclared identifier 'x'
+    y[i] = a * x[i] + y[i];
+               ^
+program_source:10:18: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                 ^
+program_source:10:12: error: use of undeclared identifier 'a'
+    y[i] = a * x[i] + y[i];
+           ^
+program_source:10:23: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+                      ^
+program_source:10:25: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                        ^
+" UserInfo={NSLocalizedDescription=program_source:4:49: error: expected ')'
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                                                ^
+program_source:4:18: note: to match this '('
+kernel void saxpy(device const float * restrict x [[buffer(0)]],
+                 ^
+program_source:9:9: error: use of undeclared identifier 'i'
+    if (i >= N) return;
+        ^
+program_source:9:14: error: use of undeclared identifier 'N'
+    if (i >= N) return;
+             ^
+program_source:10:5: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+    ^
+program_source:10:7: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+      ^
+program_source:10:16: error: use of undeclared identifier 'x'
+    y[i] = a * x[i] + y[i];
+               ^
+program_source:10:18: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                 ^
+program_source:10:12: error: use of undeclared identifier 'a'
+    y[i] = a * x[i] + y[i];
+           ^
+program_source:10:23: error: use of undeclared identifier 'y'
+    y[i] = a * x[i] + y[i];
+                      ^
+program_source:10:25: error: use of undeclared identifier 'i'
+    y[i] = a * x[i] + y[i];
+                        ^
+}
+
+=== done. seed=1.0808, best=1.0808, output=results/saxpy_gemini-3.1-pro-preview_20260507_114809 ===

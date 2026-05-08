@@ -1,0 +1,44 @@
+{
+  "compile_ok": true,
+  "correct": true,
+  "score": 0.020810488822513084,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "256_10",
+      "correct": true,
+      "error_value": 5.960464477539063e-08,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0009024583332575276,
+      "achieved": 14.523883837038822,
+      "achieved_unit": "GFLOPS",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0032275297415641827
+    },
+    {
+      "label": "1024_10",
+      "correct": true,
+      "error_value": 1.1920928955078125e-07,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0015573333339489182,
+      "achieved": 134.66301364540035,
+      "achieved_unit": "GFLOPS",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.0299251141434223
+    },
+    {
+      "label": "2048_10",
+      "correct": true,
+      "error_value": 1.7881393432617188e-07,
+      "error_kind": "max_abs_pos",
+      "gpu_seconds": 0.0019977291667601094,
+      "achieved": 419.90716957917437,
+      "achieved_unit": "GFLOPS",
+      "ceiling": 4500.0,
+      "ceiling_unit": "GFLOPS",
+      "fraction_of_ceiling": 0.09331270435092763
+    }
+  ]
+}

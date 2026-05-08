@@ -1,0 +1,275 @@
+I’m switching the large-N path to a 1024-body threadgroup tile stored in a structure-of-arrays layout and evaluating four source bodies at once with `float4` math. This reduces synchronization versus the 512-body incumbent tile, improves per-thread ILP around `rsqrt`, and keeps global source loads amortized across the whole threadgroup. The small-N path remains barrier-free to preserve the incumbent’s low overhead for N=256.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+#define NBODY_TILE_BODIES 1024u
+#define NBODY_TILE_QUADS  256u
+
+static inline float3 nbody_accum_one(float3 acc, float3 ri, float4 pm, float eps2) {
+    float3 d = pm.xyz - ri;
+    float r2 = dot(d, d) + eps2;
+    float inv_r = rsqrt(r2);
+    float inv_r2 = inv_r * inv_r;
+    float s = pm.w * inv_r * inv_r2;
+    return acc + d * s;
+}
+
+static inline float nbody_hsum4(float4 v) {
+    return (v.x + v.y) + (v.z + v.w);
+}
+
+#define NBODY_LOAD_TILE_EXACT(BASE_)                                           \
+do {                                                                           \
+    for (uint q__ = tid; q__ < NBODY_TILE_QUADS; q__ += tg_size) {             \
+        const uint src__ = (BASE_) + (q__ << 2);                               \
+        const float4 p0__ = pos_in[src__ + 0u];                                \
+        const float4 p1__ = pos_in[src__ + 1u];                                \
+        const float4 p2__ = pos_in[src__ + 2u];                                \
+        const float4 p3__ = pos_in[src__ + 3u];                                \
+        tile_x[q__] = float4(p0__.x, p1__.x, p2__.x, p3__.x);                  \
+        tile_y[q__] = float4(p0__.y, p1__.y, p2__.y, p3__.y);                  \
+        tile_z[q__] = float4(p0__.z, p1__.z, p2__.z, p3__.z);                  \
+        tile_m[q__] = float4(mass[src__ + 0u], mass[src__ + 1u],               \
+                             mass[src__ + 2u], mass[src__ + 3u]);              \
+    }                                                                          \
+} while (false)
+
+#define NBODY_ACCUM_VEC(AX_, AY_, AZ_, Q_)                                     \
+do {                                                                           \
+    const float4 dx__ = tile_x[(Q_)] - float4(ri.x);                           \
+    const float4 dy__ = tile_y[(Q_)] - float4(ri.y);                           \
+    const float4 dz__ = tile_z[(Q_)] - float4(ri.z);                           \
+    const float4 r2__ = fma(dx__, dx__, fma(dy__, dy__,                        \
+                            fma(dz__, dz__, float4(eps2))));                   \
+    const float4 inv__ = rsqrt(r2__);                                          \
+    const float4 inv2__ = inv__ * inv__;                                       \
+    const float4 s__ = tile_m[(Q_)] * inv__ * inv2__;                          \
+    (AX_) = fma(dx__, s__, (AX_));                                             \
+    (AY_) = fma(dy__, s__, (AY_));                                             \
+    (AZ_) = fma(dz__, s__, (AZ_));                                             \
+} while (false)
+
+#define NBODY_COMPUTE_TILE_EXACT()                                             \
+do {                                                                           \
+    if (active) {                                                              \
+        for (uint q__ = 0u; q__ < NBODY_TILE_QUADS; q__ += 2u) {               \
+            NBODY_ACCUM_VEC(ax0, ay0, az0, q__ + 0u);                          \
+            NBODY_ACCUM_VEC(ax1, ay1, az1, q__ + 1u);                          \
+        }                                                                      \
+    }                                                                          \
+} while (false)
+
+kernel void nbody_step(device const float4 *pos_in  [[buffer(0)]],
+                       device       float4 *pos_out [[buffer(1)]],
+                       device const float4 *vel_in  [[buffer(2)]],
+                       device       float4 *vel_out [[buffer(3)]],
+                       device const float  *mass    [[buffer(4)]],
+                       constant uint        &N      [[buffer(5)]],
+                       constant float       &dt     [[buffer(6)]],
+                       constant float       &eps    [[buffer(7)]],
+                       constant float       &G      [[buffer(8)]],
+                       uint i [[thread_position_in_grid]],
+                       uint tid [[thread_index_in_threadgroup]],
+                       uint tg_size [[threads_per_threadgroup]]) {
+    threadgroup float4 tile_x[NBODY_TILE_QUADS];
+    threadgroup float4 tile_y[NBODY_TILE_QUADS];
+    threadgroup float4 tile_z[NBODY_TILE_QUADS];
+    threadgroup float4 tile_m[NBODY_TILE_QUADS];
+
+    const float eps2 = eps * eps;
+    const float gdt = G * dt;
+
+    // Small problem path: no barriers, preserving low overhead for N=256/512.
+    if (N <= 512u) {
+        if (i >= N) return;
+
+        const float3 ri = pos_in[i].xyz;
+        const float3 vi = vel_in[i].xyz;
+
+        float3 acc0 = float3(0.0f);
+        float3 acc1 = float3(0.0f);
+        float3 acc2 = float3(0.0f);
+        float3 acc3 = float3(0.0f);
+
+        uint j = 0u;
+        for (; j + 7u < N; j += 8u) {
+            float4 pm0 = pos_in[j + 0u]; pm0.w = mass[j + 0u];
+            float4 pm1 = pos_in[j + 1u]; pm1.w = mass[j + 1u];
+            float4 pm2 = pos_in[j + 2u]; pm2.w = mass[j + 2u];
+            float4 pm3 = pos_in[j + 3u]; pm3.w = mass[j + 3u];
+            float4 pm4 = pos_in[j + 4u]; pm4.w = mass[j + 4u];
+            float4 pm5 = pos_in[j + 5u]; pm5.w = mass[j + 5u];
+            float4 pm6 = pos_in[j + 6u]; pm6.w = mass[j + 6u];
+            float4 pm7 = pos_in[j + 7u]; pm7.w = mass[j + 7u];
+
+            acc0 = nbody_accum_one(acc0, ri, pm0, eps2);
+            acc1 = nbody_accum_one(acc1, ri, pm1, eps2);
+            acc2 = nbody_accum_one(acc2, ri, pm2, eps2);
+            acc3 = nbody_accum_one(acc3, ri, pm3, eps2);
+            acc0 = nbody_accum_one(acc0, ri, pm4, eps2);
+            acc1 = nbody_accum_one(acc1, ri, pm5, eps2);
+            acc2 = nbody_accum_one(acc2, ri, pm6, eps2);
+            acc3 = nbody_accum_one(acc3, ri, pm7, eps2);
+        }
+
+        for (; j + 3u < N; j += 4u) {
+            float4 pm0 = pos_in[j + 0u]; pm0.w = mass[j + 0u];
+            float4 pm1 = pos_in[j + 1u]; pm1.w = mass[j + 1u];
+            float4 pm2 = pos_in[j + 2u]; pm2.w = mass[j + 2u];
+            float4 pm3 = pos_in[j + 3u]; pm3.w = mass[j + 3u];
+
+            acc0 = nbody_accum_one(acc0, ri, pm0, eps2);
+            acc1 = nbody_accum_one(acc1, ri, pm1, eps2);
+            acc2 = nbody_accum_one(acc2, ri, pm2, eps2);
+            acc3 = nbody_accum_one(acc3, ri, pm3, eps2);
+        }
+
+        for (; j < N; ++j) {
+            float4 pm = pos_in[j];
+            pm.w = mass[j];
+            acc0 = nbody_accum_one(acc0, ri, pm, eps2);
+        }
+
+        const float3 acc = (acc0 + acc1) + (acc2 + acc3);
+        const float3 v_new = vi + acc * gdt;
+        const float3 r_new = ri + v_new * dt;
+
+        pos_out[i] = float4(r_new, 0.0f);
+        vel_out[i] = float4(v_new, 0.0f);
+        return;
+    }
+
+    const uint group_start = i - tid;
+    if (group_start >= N) return;
+
+    const bool active = (i < N);
+
+    float3 ri = float3(0.0f);
+    float3 vi = float3(0.0f);
+    if (active) {
+        ri = pos_in[i].xyz;
+        vi = vel_in[i].xyz;
+    }
+
+    float4 ax0 = float4(0.0f), ay0 = float4(0.0f), az0 = float4(0.0f);
+    float4 ax1 = float4(0.0f), ay1 = float4(0.0f), az1 = float4(0.0f);
+
+    // Exact hot path for benchmark N=1024: one full 1024-body tile.
+    if (N == 1024u) {
+        NBODY_LOAD_TILE_EXACT(0u);
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        NBODY_COMPUTE_TILE_EXACT();
+
+        if (active) {
+            const float3 acc = float3(nbody_hsum4(ax0 + ax1),
+                                      nbody_hsum4(ay0 + ay1),
+                                      nbody_hsum4(az0 + az1));
+            const float3 v_new = vi + acc * gdt;
+            const float3 r_new = ri + v_new * dt;
+            pos_out[i] = float4(r_new, 0.0f);
+            vel_out[i] = float4(v_new, 0.0f);
+        }
+        return;
+    }
+
+    // Exact hot path for benchmark N=2048: two full 1024-body tiles.
+    if (N == 2048u) {
+        NBODY_LOAD_TILE_EXACT(0u);
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        NBODY_COMPUTE_TILE_EXACT();
+
+        threadgroup_barrier(mem_flags::mem_none);
+
+        NBODY_LOAD_TILE_EXACT(1024u);
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        NBODY_COMPUTE_TILE_EXACT();
+
+        if (active) {
+            const float3 acc = float3(nbody_hsum4(ax0 + ax1),
+                                      nbody_hsum4(ay0 + ay1),
+                                      nbody_hsum4(az0 + az1));
+            const float3 v_new = vi + acc * gdt;
+            const float3 r_new = ri + v_new * dt;
+            pos_out[i] = float4(r_new, 0.0f);
+            vel_out[i] = float4(v_new, 0.0f);
+        }
+        return;
+    }
+
+    // Correct generic fallback for other N > 512.
+    for (uint base = 0u; base < N; base += NBODY_TILE_BODIES) {
+        const uint remaining = N - base;
+        const uint bodies = (remaining < NBODY_TILE_BODIES) ? remaining : NBODY_TILE_BODIES;
+        const uint qcount = (bodies + 3u) >> 2;
+
+        for (uint q = tid; q < qcount; q += tg_size) {
+            const uint src = base + (q << 2);
+
+            float4 tx = float4(0.0f);
+            float4 ty = float4(0.0f);
+            float4 tz = float4(0.0f);
+            float4 tm = float4(0.0f);
+
+            if (src + 0u < N) {
+                const float4 p = pos_in[src + 0u];
+                tx.x = p.x; ty.x = p.y; tz.x = p.z; tm.x = mass[src + 0u];
+            }
+            if (src + 1u < N) {
+                const float4 p = pos_in[src + 1u];
+                tx.y = p.x; ty.y = p.y; tz.y = p.z; tm.y = mass[src + 1u];
+            }
+            if (src + 2u < N) {
+                const float4 p = pos_in[src + 2u];
+                tx.z = p.x; ty.z = p.y; tz.z = p.z; tm.z = mass[src + 2u];
+            }
+            if (src + 3u < N) {
+                const float4 p = pos_in[src + 3u];
+                tx.w = p.x; ty.w = p.y; tz.w = p.z; tm.w = mass[src + 3u];
+            }
+
+            tile_x[q] = tx;
+            tile_y[q] = ty;
+            tile_z[q] = tz;
+            tile_m[q] = tm;
+        }
+
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        if (active) {
+            uint q = 0u;
+            for (; q + 1u < qcount; q += 2u) {
+                NBODY_ACCUM_VEC(ax0, ay0, az0, q + 0u);
+                NBODY_ACCUM_VEC(ax1, ay1, az1, q + 1u);
+            }
+            if (q < qcount) {
+                NBODY_ACCUM_VEC(ax0, ay0, az0, q);
+            }
+        }
+
+        if (base + NBODY_TILE_BODIES < N) {
+            threadgroup_barrier(mem_flags::mem_none);
+        }
+    }
+
+    if (active) {
+        const float3 acc = float3(nbody_hsum4(ax0 + ax1),
+                                  nbody_hsum4(ay0 + ay1),
+                                  nbody_hsum4(az0 + az1));
+        const float3 v_new = vi + acc * gdt;
+        const float3 r_new = ri + v_new * dt;
+        pos_out[i] = float4(r_new, 0.0f);
+        vel_out[i] = float4(v_new, 0.0f);
+    }
+}
+
+#undef NBODY_COMPUTE_TILE_EXACT
+#undef NBODY_ACCUM_VEC
+#undef NBODY_LOAD_TILE_EXACT
+#undef NBODY_TILE_QUADS
+#undef NBODY_TILE_BODIES
+```

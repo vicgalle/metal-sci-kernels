@@ -1,0 +1,132 @@
+{
+  "task": "heat2d",
+  "model": "claude-opus-4-7",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.6087461540822107,
+  "best_score": 0.6087461540822107,
+  "improvement": 1.0,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.6087461540822107,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/00_seed.metal",
+      "elapsed_s": 0.3354630470275879,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:14:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(TS*TS)]]\n  ^\n\" UserInfo={NSLocalizedDescription=program_source:14:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(TS*TS)]]\n  ^\n}",
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/01_candidate.metal",
+      "elapsed_s": 18.752700090408325,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.32409516943637545,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/02_candidate.metal",
+      "elapsed_s": 14.218477964401245,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:10:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n\" UserInfo={NSLocalizedDescription=program_source:10:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n}",
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/03_candidate.metal",
+      "elapsed_s": 14.202568054199219,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.24777726205461026,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/04_candidate.metal",
+      "elapsed_s": 21.849897146224976,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.42994973909414436,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/05_candidate.metal",
+      "elapsed_s": 13.647247314453125,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:16:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n\" UserInfo={NSLocalizedDescription=program_source:16:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n}",
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/06_candidate.metal",
+      "elapsed_s": 19.57628607749939,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4384797002006627,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/07_candidate.metal",
+      "elapsed_s": 14.869405269622803,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.42038475856265256,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/08_candidate.metal",
+      "elapsed_s": 14.129053831100464,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.30898383777329086,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/09_candidate.metal",
+      "elapsed_s": 19.373852014541626,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4406017811095777,
+      "fail_reason": null,
+      "source_path": "results/heat2d_claude-opus-4-7_20260507_110544/10_candidate.metal",
+      "elapsed_s": 15.125477075576782,
+      "is_new_best": false
+    }
+  ]
+}

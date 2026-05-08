@@ -1,0 +1,132 @@
+{
+  "task": "saxpy",
+  "model": "claude-opus-4-7",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.8172791072341589,
+  "best_score": 1.0218097841424765,
+  "improvement": 1.2502580515002906,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8172791072341589,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/00_seed.metal",
+      "elapsed_s": 1.6631760597229004,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:8:57: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint i [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]] {\n                                                        ^\n\" UserInfo={NSLocalizedDescription=program_source:8:57: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint i [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(1024)]] {\n                                                        ^\n}",
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/01_candidate.metal",
+      "elapsed_s": 11.753203868865967,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.7752943364081034,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/02_candidate.metal",
+      "elapsed_s": 11.512667894363403,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.7745231198096424,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/03_candidate.metal",
+      "elapsed_s": 12.99968409538269,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8122927681627791,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/04_candidate.metal",
+      "elapsed_s": 13.027942895889282,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.7938061312557994,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/05_candidate.metal",
+      "elapsed_s": 17.715702056884766,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8339538847522566,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/06_candidate.metal",
+      "elapsed_s": 13.087053060531616,
+      "is_new_best": true
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8067559343679458,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/07_candidate.metal",
+      "elapsed_s": 14.554730653762817,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8139286360874372,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/08_candidate.metal",
+      "elapsed_s": 12.922311544418335,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.8119549847076338,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/09_candidate.metal",
+      "elapsed_s": 22.85207200050354,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 1.0218097841424765,
+      "fail_reason": null,
+      "source_path": "results/saxpy_claude-opus-4-7_20260507_110312/10_candidate.metal",
+      "elapsed_s": 19.005472421646118,
+      "is_new_best": true
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8118824633291214,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/00_seed.metal",
+    "elapsed_s": 1.97481107711792,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8118028901112135,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/01_candidate.metal",
+    "elapsed_s": 15.048353672027588,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8307626037180771,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/02_candidate.metal",
+    "elapsed_s": 19.66345977783203,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8123793637815585,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/03_candidate.metal",
+    "elapsed_s": 16.231940031051636,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8021966091013714,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/04_candidate.metal",
+    "elapsed_s": 17.297510862350464,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8099909785450808,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/05_candidate.metal",
+    "elapsed_s": 14.259490251541138,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.7045622193873956,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/06_candidate.metal",
+    "elapsed_s": 25.66198706626892,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.7933560315697554,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/07_candidate.metal",
+    "elapsed_s": 13.35276198387146,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8377599615108304,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/08_candidate.metal",
+    "elapsed_s": 24.593497276306152,
+    "is_new_best": true
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8180387212789235,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/09_candidate.metal",
+    "elapsed_s": 9.632128953933716,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.8175959706082128,
+    "fail_reason": null,
+    "source_path": "results/saxpy_claude-sonnet-4-6_20260507_105403/10_candidate.metal",
+    "elapsed_s": 13.81222915649414,
+    "is_new_best": false
+  }
+]
