@@ -1,0 +1,48 @@
+The optimized kernel improves upon the previous attempt by reverting to a simplified, cache-aware "naive" approach, which is significantly faster on Apple Silicon for simple 2D stencils. The earlier tiled version suffered from synchronization overhead and branching logic that the L2 cache handles more efficiently in a direct-access pattern. 
+
+Key optimizations applied:
+1.  **Index Calculation Minimization**: Using a single base index (`idx`) and offsets (`±1`, `±NX`) to minimize redundant arithmetic.
+2.  **Instruction Count Reduction**: Re-arranging the Laplacian formula to `(1-4*alpha)*c + alpha*(l+r+u+d)`, which reduces the total number of floating-point operations.
+3.  **Branch Efficiency**: Using a streamlined Dirichlet boundary check that allows the compiler to optimize the dominant "inner-grid" case.
+4.  **Cache Locality**: Leveraging Apple Silicon's large L2 cache by accessing memory in a row-major fashion, allowing the hardware to manage vertical stencil neighbors without threadgroup memory overhead.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+kernel void heat_step(device const float *u_in  [[buffer(0)]],
+                      device       float *u_out [[buffer(1)]],
+                      constant uint      &NX    [[buffer(2)]],
+                      constant uint      &NY    [[buffer(3)]],
+                      constant float     &alpha [[buffer(4)]],
+                      uint2 gid [[thread_position_in_grid]]) {
+    const uint i = gid.x;
+    const uint j = gid.y;
+
+    // Grid boundary guard
+    if (i >= NX || j >= NY) return;
+
+    // Compute linear index once for row-major storage
+    const uint idx = j * NX + i;
+    const float center_val = u_in[idx];
+
+    // Dirichlet Boundary Conditions: Edge cells stay constant
+    // j=0 (top), j=NY-1 (bottom), i=0 (left), i=NX-1 (right)
+    if (i == 0 || i == NX - 1 || j == 0 || j == NY - 1) {
+        u_out[idx] = center_val;
+        return;
+    }
+
+    // 5-point stencil: Left, Right, Up, Down neighbors
+    // Vertical neighbors (idx - NX, idx + NX) are typically fetched from L2 cache
+    const float l = u_in[idx - 1];
+    const float r = u_in[idx + 1];
+    const float d = u_in[idx - NX];
+    const float u = u_in[idx + NX];
+
+    // Optimized math: u_new = (1.0 - 4.0 * alpha) * c + alpha * (l + r + u + d)
+    // This formulation reduces the instruction count compared to the standard Laplacian.
+    const float beta = 1.0f - 4.0f * alpha;
+    u_out[idx] = beta * center_val + alpha * (l + r + d + u);
+}
+```

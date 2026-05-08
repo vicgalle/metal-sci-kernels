@@ -1,0 +1,24 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.35520521290332513,
+    "fail_reason": null,
+    "source_path": "results/lbm_gemini-2.5-flash_20260506_102942/00_seed.metal",
+    "elapsed_s": 0.37488603591918945,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2938201468712167,
+    "fail_reason": null,
+    "source_path": "results/lbm_gemini-2.5-flash_20260506_102942/01_candidate.metal",
+    "elapsed_s": 37.32703900337219,
+    "is_new_best": false
+  }
+]

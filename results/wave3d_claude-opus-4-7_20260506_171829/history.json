@@ -1,0 +1,178 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5325050254276111,
+    "fail_reason": null,
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/00_seed.metal",
+    "elapsed_s": 1.0850110054016113,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/01_candidate.metal",
+    "elapsed_s": 27.826112985610962,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/02_candidate.metal",
+    "elapsed_s": 24.92212176322937,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/03_candidate.metal",
+    "elapsed_s": 21.63844895362854,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5082674390658176,
+    "fail_reason": null,
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/04_candidate.metal",
+    "elapsed_s": 18.402787923812866,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5031775738333382,
+    "fail_reason": null,
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/05_candidate.metal",
+    "elapsed_s": 16.68686819076538,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/06_candidate.metal",
+    "elapsed_s": 24.54897952079773,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=1.458e+01",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/07_candidate.metal",
+    "elapsed_s": 22.462151288986206,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=3.209e+01",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/08_candidate.metal",
+    "elapsed_s": 23.642622232437134,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:10:1: error: an attribute list cannot appear here\n[[max_total_threads_per_threadgroup(TX * TY)]]\n^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\" UserInfo={NSLocalizedDescription=program_source:10:1: error: an attribute list cannot appear here\n[[max_total_threads_per_threadgroup(TX * TY)]]\n^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n}",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/09_candidate.metal",
+    "elapsed_s": 21.749701023101807,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/10_candidate.metal",
+    "elapsed_s": 18.914473056793213,
+    "is_new_best": false
+  },
+  {
+    "iteration": 11,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/11_candidate.metal",
+    "elapsed_s": 20.031677961349487,
+    "is_new_best": false
+  },
+  {
+    "iteration": 12,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/12_candidate.metal",
+    "elapsed_s": 25.31979537010193,
+    "is_new_best": false
+  },
+  {
+    "iteration": 13,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 64x64x64_30: max_abs=nan",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/13_candidate.metal",
+    "elapsed_s": 22.407899141311646,
+    "is_new_best": false
+  },
+  {
+    "iteration": 14,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.6730763254297923,
+    "fail_reason": null,
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/14_candidate.metal",
+    "elapsed_s": 16.57594084739685,
+    "is_new_best": true
+  },
+  {
+    "iteration": 15,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:35:22: error: lambda expressions are not supported in Metal\n    auto load_curr = [&](int gi, int gj) -> float {\n                     ^\n\" UserInfo={NSLocalizedDescription=program_source:35:22: error: lambda expressions are not supported in Metal\n    auto load_curr = [&](int gi, int gj) -> float {\n                     ^\n}",
+    "source_path": "results/wave3d_claude-opus-4-7_20260506_171829/15_candidate.metal",
+    "elapsed_s": 18.3751540184021,
+    "is_new_best": false
+  }
+]

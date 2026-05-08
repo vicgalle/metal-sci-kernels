@@ -1,0 +1,68 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.4845923223348039,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/00_seed.metal",
+    "elapsed_s": 0.4403107166290283,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5571141820858078,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/01_candidate.metal",
+    "elapsed_s": 28.164252996444702,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.388747055363346,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/02_candidate.metal",
+    "elapsed_s": 23.43542194366455,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.4708963926910348,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/03_candidate.metal",
+    "elapsed_s": 24.563252925872803,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.39440932624521036,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/04_candidate.metal",
+    "elapsed_s": 26.03358006477356,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3816212873973997,
+    "fail_reason": null,
+    "source_path": "results/lbm_claude-opus-4-7_20260506_104320/05_candidate.metal",
+    "elapsed_s": 23.946240186691284,
+    "is_new_best": false
+  }
+]

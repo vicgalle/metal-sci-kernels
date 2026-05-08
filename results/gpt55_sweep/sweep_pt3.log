@@ -1,0 +1,12 @@
+=== SWEEP RESUME2 START Fri May  8 15:23:18 CEST 2026 ===
+=== START fft3d (10 iters) Fri May  8 15:23:18 CEST 2026 ===
+
+=== Metal kernel evolution: task=fft3d ===
+  model: gpt-5.5
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gpt55_sweep/fft3d_gpt-5.5_20260508_152319
+
+[seed] Evaluating seed kernel...
+  seed score: 0.1776  (0.3s)
+
+--- iteration 1/10 ---

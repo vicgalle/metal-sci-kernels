@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:26:17: error: use of undeclared identifier 'simd_lane_id'\n    uint lane = simd_lane_id;\n                ^\nprogram_source:27:18: error: use of undeclared identifier 'simd_execution_width'\n    uint width = simd_execution_width;\n                 ^\n\" UserInfo={NSLocalizedDescription=program_source:26:17: error: use of undeclared identifier 'simd_lane_id'\n    uint lane = simd_lane_id;\n                ^\nprogram_source:27:18: error: use of undeclared identifier 'simd_execution_width'\n    uint width = simd_execution_width;\n                 ^\n}",
+  "sizes": []
+}

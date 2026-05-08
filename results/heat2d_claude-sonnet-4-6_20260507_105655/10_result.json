@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:17:20: warning: unknown attribute 'max_total_threads_per_threadgroup' ignored [-Wunknown-attributes]\n    __attribute__((max_total_threads_per_threadgroup(TILE_W * TILE_H)))\n                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:31:22: error: lambda expressions are not supported in Metal\n    auto safe_load = [&](uint sx, uint sy, int gx, int gy) {\n                     ^\n\" UserInfo={NSLocalizedDescription=program_source:17:20: warning: unknown attribute 'max_total_threads_per_threadgroup' ignored [-Wunknown-attributes]\n    __attribute__((max_total_threads_per_threadgroup(TILE_W * TILE_H)))\n                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\nprogram_source:31:22: error: lambda expressions are not supported in Metal\n    auto safe_load = [&](uint sx, uint sy, int gx, int gy) {\n                     ^\n}",
+  "sizes": []
+}
