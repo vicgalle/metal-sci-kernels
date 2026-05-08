@@ -1,0 +1,132 @@
+{
+  "task": "heat2d",
+  "model": "gpt-5.5",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.6883214595661554,
+  "best_score": 0.6883214595661554,
+  "improvement": 1.0,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.6883214595661554,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/00_seed.metal",
+      "elapsed_s": 0.2927742004394531,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.36474589028668897,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/01_candidate.metal",
+      "elapsed_s": 275.1705641746521,
+      "is_new_best": false
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3463215725221932,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/02_candidate.metal",
+      "elapsed_s": 245.04668426513672,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2961192957141125,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/03_candidate.metal",
+      "elapsed_s": 289.2378263473511,
+      "is_new_best": false
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3900575907602331,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/04_candidate.metal",
+      "elapsed_s": 300.9830958843231,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.3070785537375746,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/05_candidate.metal",
+      "elapsed_s": 382.3422622680664,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4193805336288794,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/06_candidate.metal",
+      "elapsed_s": 328.3525776863098,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.4273516006535969,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/07_candidate.metal",
+      "elapsed_s": 472.5320608615875,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.442587634390779,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/08_candidate.metal",
+      "elapsed_s": 266.4734697341919,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.2896515294140095,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/09_candidate.metal",
+      "elapsed_s": 369.5622820854187,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.44590315811382586,
+      "fail_reason": null,
+      "source_path": "results/gpt55_sweep/heat2d_gpt-5.5_20260507_230150/10_candidate.metal",
+      "elapsed_s": 307.4716556072235,
+      "is_new_best": false
+    }
+  ]
+}

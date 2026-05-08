@@ -1,0 +1,107 @@
+
+=== Metal kernel evolution: task=hmc ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/hmc_gemini-3.1-pro-preview_20260507_134205
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0081  (7.1s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 191.1s; evaluating...
+  score = 0.0236 (seed = 0.0081, best = 0.0081)
+           d8_K16384:    4.59 ms,   942.2 GFLOPS (mat-vec FMAs only) (20.9%)
+           d16_K4096:   42.60 ms,   104.9 GFLOPS (mat-vec FMAs only) (2.3%)
+           d32_K1024:  373.74 ms,    12.2 GFLOPS (mat-vec FMAs only) (0.3%)
+  NEW INCUMBENT
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 246.3s; evaluating...
+  score = 0.0303 (seed = 0.0081, best = 0.0236)
+           d8_K16384:    4.69 ms,   922.6 GFLOPS (mat-vec FMAs only) (20.5%)
+           d16_K4096:   40.89 ms,   109.3 GFLOPS (mat-vec FMAs only) (2.4%)
+           d32_K1024:  179.97 ms,    25.2 GFLOPS (mat-vec FMAs only) (0.6%)
+  NEW INCUMBENT
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 256.2s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'
+                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided
+simdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)
+^
+" UserInfo={NSLocalizedDescription=program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'
+                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided
+simdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)
+^
+}
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 266.2s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:43:20: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                 [[max_total_threads_per_threadgroup(64)]]
+                   ^
+" UserInfo={NSLocalizedDescription=program_source:43:20: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                 [[max_total_threads_per_threadgroup(64)]]
+                   ^
+}
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 279.1s; evaluating...
+  score = 0.0069 (seed = 0.0081, best = 0.0303)
+           d8_K16384:  332.18 ms,    13.0 GFLOPS (mat-vec FMAs only) (0.3%)
+           d16_K4096:  116.31 ms,    38.4 GFLOPS (mat-vec FMAs only) (0.9%)
+           d32_K1024:   77.25 ms,    58.8 GFLOPS (mat-vec FMAs only) (1.3%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 234.7s; evaluating...
+  score = 0.0341 (seed = 0.0081, best = 0.0303)
+           d8_K16384:    6.79 ms,   637.3 GFLOPS (mat-vec FMAs only) (14.2%)
+           d16_K4096:   39.18 ms,   114.1 GFLOPS (mat-vec FMAs only) (2.5%)
+           d32_K1024:   91.50 ms,    49.6 GFLOPS (mat-vec FMAs only) (1.1%)
+  NEW INCUMBENT
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 268.3s; evaluating...
+  score = 0.0320 (seed = 0.0081, best = 0.0341)
+           d8_K16384:    5.95 ms,   727.3 GFLOPS (mat-vec FMAs only) (16.2%)
+           d16_K4096:   38.74 ms,   115.4 GFLOPS (mat-vec FMAs only) (2.6%)
+           d32_K1024:  127.37 ms,    35.7 GFLOPS (mat-vec FMAs only) (0.8%)
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 252.3s; evaluating...
+  score = 0.0465 (seed = 0.0081, best = 0.0341)
+           d8_K16384:    6.81 ms,   635.5 GFLOPS (mat-vec FMAs only) (14.1%)
+           d16_K4096:   40.75 ms,   109.7 GFLOPS (mat-vec FMAs only) (2.4%)
+           d32_K1024:   34.64 ms,   131.1 GFLOPS (mat-vec FMAs only) (2.9%)
+  NEW INCUMBENT
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 279.7s; evaluating...
+  score = 0.0870 (seed = 0.0081, best = 0.0465)
+           d8_K16384:   11.12 ms,   389.1 GFLOPS (mat-vec FMAs only) (8.6%)
+           d16_K4096:    6.63 ms,   674.2 GFLOPS (mat-vec FMAs only) (15.0%)
+           d32_K1024:   19.82 ms,   229.1 GFLOPS (mat-vec FMAs only) (5.1%)
+  NEW INCUMBENT
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 232.1s; evaluating...
+  score = 0.0334 (seed = 0.0081, best = 0.0870)
+           d8_K16384:    6.12 ms,   707.3 GFLOPS (mat-vec FMAs only) (15.7%)
+           d16_K4096:   31.42 ms,   142.2 GFLOPS (mat-vec FMAs only) (3.2%)
+           d32_K1024:  134.95 ms,    33.7 GFLOPS (mat-vec FMAs only) (0.7%)
+
+=== done. seed=0.0081, best=0.0870, output=results/hmc_gemini-3.1-pro-preview_20260507_134205 ===

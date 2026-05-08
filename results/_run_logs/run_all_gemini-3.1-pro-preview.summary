@@ -1,0 +1,16 @@
+[start] 2026-05-07T11:48:08+02:00
+[task] saxpy iters=10 -> results/_run_logs/saxpy_gemini-3.1-pro-preview.log  (start 2026-05-07T11:48:08+02:00)
+[done] saxpy iters=10 rc=0 elapsed=1151s
+[task] heat2d iters=10 -> results/_run_logs/heat2d_gemini-3.1-pro-preview.log  (start 2026-05-07T12:07:19+02:00)
+[done] heat2d iters=10 rc=0 elapsed=1755s
+[task] nbody iters=10 -> results/_run_logs/nbody_gemini-3.1-pro-preview.log  (start 2026-05-07T12:36:34+02:00)
+[done] nbody iters=10 rc=0 elapsed=1861s
+[task] gradshaf iters=10 -> results/_run_logs/gradshaf_gemini-3.1-pro-preview.log  (start 2026-05-07T13:07:35+02:00)
+[done] gradshaf iters=10 rc=0 elapsed=2070s
+[task] hmc iters=10 -> results/_run_logs/hmc_gemini-3.1-pro-preview.log  (start 2026-05-07T13:42:05+02:00)
+[done] hmc iters=10 rc=0 elapsed=2548s
+[task] ising iters=10 -> results/_run_logs/ising_gemini-3.1-pro-preview.log  (start 2026-05-07T14:24:33+02:00)
+[done] ising iters=10 rc=0 elapsed=1909s
+[task] lbm iters=25 -> results/_run_logs/lbm_gemini-3.1-pro-preview.log  (start 2026-05-07T14:56:22+02:00)
+[done] lbm iters=25 rc=0 elapsed=5159s
+[end] 2026-05-07T16:22:21+02:00

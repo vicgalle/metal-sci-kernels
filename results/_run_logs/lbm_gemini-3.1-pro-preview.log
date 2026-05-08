@@ -1,0 +1,321 @@
+
+=== Metal kernel evolution: task=lbm ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/lbm_gemini-3.1-pro-preview_20260507_145623
+
+[seed] Evaluating seed kernel...
+  seed score: 0.5199  (0.4s)
+
+--- iteration 1/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 146.0s; evaluating...
+  score = 0.3498 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.51 ms,    29.1 GB/s (effective, 72 B/cell) (14.6%)
+         128x128_100:    2.04 ms,    57.8 GB/s (effective, 72 B/cell) (28.9%)
+         256x256_100:    2.32 ms,   203.4 GB/s (effective, 72 B/cell) (101.7%)
+
+--- iteration 2/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 254.9s; evaluating...
+  score = 0.3583 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.49 ms,    30.3 GB/s (effective, 72 B/cell) (15.1%)
+         128x128_100:    2.06 ms,    57.2 GB/s (effective, 72 B/cell) (28.6%)
+         256x256_100:    2.22 ms,   212.3 GB/s (effective, 72 B/cell) (106.1%)
+
+--- iteration 3/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 275.0s; evaluating...
+  score = 0.4704 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.46 ms,    32.2 GB/s (effective, 72 B/cell) (16.1%)
+         128x128_100:    0.92 ms,   127.9 GB/s (effective, 72 B/cell) (64.0%)
+         256x256_100:    2.33 ms,   202.3 GB/s (effective, 72 B/cell) (101.2%)
+
+--- iteration 4/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 220.8s; evaluating...
+  score = 0.3826 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.46 ms,    31.8 GB/s (effective, 72 B/cell) (15.9%)
+         128x128_100:    1.88 ms,    62.6 GB/s (effective, 72 B/cell) (31.3%)
+         256x256_100:    2.10 ms,   225.2 GB/s (effective, 72 B/cell) (112.6%)
+
+--- iteration 5/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 189.0s; evaluating...
+  score = 0.3514 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.51 ms,    29.0 GB/s (effective, 72 B/cell) (14.5%)
+         128x128_100:    2.04 ms,    57.9 GB/s (effective, 72 B/cell) (28.9%)
+         256x256_100:    2.28 ms,   206.6 GB/s (effective, 72 B/cell) (103.3%)
+
+--- iteration 6/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 234.6s; evaluating...
+  score = 0.4430 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.29 ms,    51.5 GB/s (effective, 72 B/cell) (25.8%)
+         128x128_100:    1.92 ms,    61.4 GB/s (effective, 72 B/cell) (30.7%)
+         256x256_100:    2.15 ms,   219.9 GB/s (effective, 72 B/cell) (109.9%)
+
+--- iteration 7/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 132.6s; evaluating...
+  score = 0.4321 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.53 ms,    27.8 GB/s (effective, 72 B/cell) (13.9%)
+         128x128_100:    1.09 ms,   108.0 GB/s (effective, 72 B/cell) (54.0%)
+         256x256_100:    2.19 ms,   215.1 GB/s (effective, 72 B/cell) (107.5%)
+
+--- iteration 8/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 238.0s; evaluating...
+  score = 0.3498 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.50 ms,    29.4 GB/s (effective, 72 B/cell) (14.7%)
+         128x128_100:    2.08 ms,    56.8 GB/s (effective, 72 B/cell) (28.4%)
+         256x256_100:    2.30 ms,   205.3 GB/s (effective, 72 B/cell) (102.6%)
+
+--- iteration 9/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 176.4s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:14:52: error: expected ')'
+kernel void lbm_step(device const float * restrict f_in   [[buffer(0)]],
+                                                   ^
+program_source:14:21: note: to match this '('
+kernel void lbm_step(device const float * restrict f_in   [[buffer(0)]],
+                    ^
+program_source:21:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:22:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:23:15: error: use of undeclared identifier 'NX'
+    uint nx = NX;
+              ^
+program_source:24:15: error: use of undeclared identifier 'NY'
+    uint ny = NY;
+              ^
+program_source:51:21: error: use of undeclared identifier 'f_in'; did you mean 'fmin'?
+        float val = f_in[k * N + base_y[dir_y[k]] + src_x[dir_x[k]]];
+                    ^~~~
+                    fmin
+/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:3185:17: note: 'fmin' declared here
+METAL_FUNC half fmin(half x, half y)
+                ^
+program_source:51:21: error: subscript of pointer to function type 'half (half, half)'
+        float val = f_in[k * N + base_y[dir_y[k]] + src_x[dir_x[k]]];
+                    ^~~~
+program_source:66:21: error: use of undeclared identifier 'tau'
+    float tau_val = tau;
+                    ^
+program_source:77:9: error: use of undeclared identifier 'f_out'
+        f_out[k * N + idx] = f[k] * tau_comp + feq * inv_tau;
+        ^
+" UserInfo={NSLocalizedDescription=program_source:14:52: error: expected ')'
+kernel void lbm_step(device const float * restrict f_in   [[buffer(0)]],
+                                                   ^
+program_source:14:21: note: to match this '('
+kernel void lbm_step(device const float * restrict f_in   [[buffer(0)]],
+                    ^
+program_source:21:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:22:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:23:15: error: use of undeclared identifier 'NX'
+    uint nx = NX;
+              ^
+program_source:24:15: error: use of undeclared identifier 'NY'
+    uint ny = NY;
+              ^
+program_source:51:21: error: use of undeclared identifier 'f_in'; did you mean 'fmin'?
+        float val = f_in[k * N + base_y[dir_y[k]] + src_x[dir_x[k]]];
+                    ^~~~
+                    fmin
+/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_math:3185:17: note: 'fmin' declared here
+METAL_FUNC half fmin(half x, half y)
+                ^
+program_source:51:21: error: subscript of pointer to function type 'half (half, half)'
+        float val = f_in[k * N + base_y[dir_y[k]] + src_x[dir_x[k]]];
+                    ^~~~
+program_source:66:21: error: use of undeclared identifier 'tau'
+    float tau_val = tau;
+                    ^
+program_source:77:9: error: use of undeclared identifier 'f_out'
+        f_out[k * N + idx] = f[k] * tau_comp + feq * inv_tau;
+        ^
+}
+
+--- iteration 10/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 99.9s; evaluating...
+  score = 0.4623 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.49 ms,    30.2 GB/s (effective, 72 B/cell) (15.1%)
+         128x128_100:    0.96 ms,   123.2 GB/s (effective, 72 B/cell) (61.6%)
+         256x256_100:    2.22 ms,   212.3 GB/s (effective, 72 B/cell) (106.1%)
+
+--- iteration 11/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 203.0s; evaluating...
+  score = 0.3909 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.48 ms,    30.7 GB/s (effective, 72 B/cell) (15.3%)
+         128x128_100:    2.05 ms,    57.5 GB/s (effective, 72 B/cell) (28.8%)
+         256x256_100:    1.74 ms,   270.7 GB/s (effective, 72 B/cell) (135.4%)
+
+--- iteration 12/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 205.8s; evaluating...
+  score = 0.3624 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.47 ms,    31.5 GB/s (effective, 72 B/cell) (15.8%)
+         128x128_100:    2.02 ms,    58.3 GB/s (effective, 72 B/cell) (29.1%)
+         256x256_100:    2.28 ms,   207.4 GB/s (effective, 72 B/cell) (103.7%)
+
+--- iteration 13/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 224.1s; evaluating...
+  score = 0.5531 (seed = 0.5199, best = 0.5199)
+            64x64_50:    0.23 ms,    64.4 GB/s (effective, 72 B/cell) (32.2%)
+         128x128_100:    1.15 ms,   102.4 GB/s (effective, 72 B/cell) (51.2%)
+         256x256_100:    2.30 ms,   205.1 GB/s (effective, 72 B/cell) (102.6%)
+  NEW INCUMBENT
+
+--- iteration 14/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 188.8s; evaluating...
+  score = 0.4888 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.25 ms,    58.4 GB/s (effective, 72 B/cell) (29.2%)
+         128x128_100:    1.63 ms,    72.2 GB/s (effective, 72 B/cell) (36.1%)
+         256x256_100:    2.13 ms,   221.8 GB/s (effective, 72 B/cell) (110.9%)
+
+--- iteration 15/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 309.5s; evaluating...
+  score = 0.3650 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.47 ms,    31.6 GB/s (effective, 72 B/cell) (15.8%)
+         128x128_100:    1.95 ms,    60.6 GB/s (effective, 72 B/cell) (30.3%)
+         256x256_100:    2.32 ms,   203.3 GB/s (effective, 72 B/cell) (101.6%)
+
+--- iteration 16/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 321.9s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:6:17: error: program scope variable must reside in constant address space
+constexpr float W[9] = {
+                ^
+" UserInfo={NSLocalizedDescription=program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:6:17: error: program scope variable must reside in constant address space
+constexpr float W[9] = {
+                ^
+}
+
+--- iteration 17/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 154.2s; evaluating...
+  score = 0.3567 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.50 ms,    29.6 GB/s (effective, 72 B/cell) (14.8%)
+         128x128_100:    2.01 ms,    58.7 GB/s (effective, 72 B/cell) (29.4%)
+         256x256_100:    2.26 ms,   209.0 GB/s (effective, 72 B/cell) (104.5%)
+
+--- iteration 18/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 198.7s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:13:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                     [[max_total_threads_per_threadgroup(256)]]
+                       ^
+" UserInfo={NSLocalizedDescription=program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:13:24: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+                     [[max_total_threads_per_threadgroup(256)]]
+                       ^
+}
+
+--- iteration 19/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 191.1s; evaluating...
+  score = 0.3788 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.46 ms,    32.3 GB/s (effective, 72 B/cell) (16.1%)
+         128x128_100:    1.97 ms,    60.0 GB/s (effective, 72 B/cell) (30.0%)
+         256x256_100:    2.10 ms,   224.3 GB/s (effective, 72 B/cell) (112.2%)
+
+--- iteration 20/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 208.1s; evaluating...
+  score = 0.4859 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.45 ms,    33.0 GB/s (effective, 72 B/cell) (16.5%)
+         128x128_100:    0.88 ms,   133.7 GB/s (effective, 72 B/cell) (66.9%)
+         256x256_100:    2.27 ms,   207.7 GB/s (effective, 72 B/cell) (103.8%)
+
+--- iteration 21/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 156.0s; evaluating...
+  score = 0.4164 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.36 ms,    41.4 GB/s (effective, 72 B/cell) (20.7%)
+         128x128_100:    1.92 ms,    61.5 GB/s (effective, 72 B/cell) (30.7%)
+         256x256_100:    2.08 ms,   226.8 GB/s (effective, 72 B/cell) (113.4%)
+
+--- iteration 22/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 221.2s; evaluating...
+  score = 0.3686 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.46 ms,    31.9 GB/s (effective, 72 B/cell) (16.0%)
+         128x128_100:    2.02 ms,    58.3 GB/s (effective, 72 B/cell) (29.2%)
+         256x256_100:    2.19 ms,   215.1 GB/s (effective, 72 B/cell) (107.6%)
+
+--- iteration 23/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 241.1s; evaluating...
+  score = 0.3587 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.51 ms,    29.1 GB/s (effective, 72 B/cell) (14.5%)
+         128x128_100:    1.97 ms,    59.9 GB/s (effective, 72 B/cell) (29.9%)
+         256x256_100:    2.23 ms,   212.0 GB/s (effective, 72 B/cell) (106.0%)
+
+--- iteration 24/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 177.0s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:6:17: error: program scope variable must reside in constant address space
+constexpr float W[9] = {
+                ^
+" UserInfo={NSLocalizedDescription=program_source:4:17: error: program scope variable must reside in constant address space
+constexpr float CX[9] = {0.0f,  1.0f,  0.0f, -1.0f,  0.0f,  1.0f, -1.0f, -1.0f,  1.0f};
+                ^
+program_source:5:17: error: program scope variable must reside in constant address space
+constexpr float CY[9] = {0.0f,  0.0f,  1.0f,  0.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f};
+                ^
+program_source:6:17: error: program scope variable must reside in constant address space
+constexpr float W[9] = {
+                ^
+}
+
+--- iteration 25/25 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 179.9s; evaluating...
+  score = 0.3724 (seed = 0.5199, best = 0.5531)
+            64x64_50:    0.46 ms,    32.2 GB/s (effective, 72 B/cell) (16.1%)
+         128x128_100:    2.06 ms,    57.2 GB/s (effective, 72 B/cell) (28.6%)
+         256x256_100:    2.10 ms,   224.3 GB/s (effective, 72 B/cell) (112.2%)
+
+=== done. seed=0.5199, best=0.5531, output=results/lbm_gemini-3.1-pro-preview_20260507_145623 ===

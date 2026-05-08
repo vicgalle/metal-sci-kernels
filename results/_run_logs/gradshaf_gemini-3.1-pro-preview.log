@@ -1,0 +1,446 @@
+
+=== Metal kernel evolution: task=gradshaf ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/gradshaf_gemini-3.1-pro-preview_20260507_130735
+
+[seed] Evaluating seed kernel...
+  seed score: 0.0230  (0.4s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 220.7s; evaluating...
+  score = 0.0440 (seed = 0.0230, best = 0.0230)
+            65x65_30:    0.54 ms,     2.8 GB/s (effective, 12 B/cell) (1.4%)
+          257x257_40:    3.17 ms,    10.0 GB/s (effective, 12 B/cell) (5.0%)
+          513x513_30:    3.89 ms,    24.3 GB/s (effective, 12 B/cell) (12.2%)
+  NEW INCUMBENT
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 186.7s; evaluating...
+  score = 0.0189 (seed = 0.0230, best = 0.0440)
+            65x65_30:    1.14 ms,     1.3 GB/s (effective, 12 B/cell) (0.7%)
+          257x257_40:    5.13 ms,     6.2 GB/s (effective, 12 B/cell) (3.1%)
+          513x513_30:   14.60 ms,     6.5 GB/s (effective, 12 B/cell) (3.2%)
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 211.2s; evaluating...
+  score = 0.0400 (seed = 0.0230, best = 0.0440)
+            65x65_30:    0.61 ms,     2.5 GB/s (effective, 12 B/cell) (1.2%)
+          257x257_40:    3.45 ms,     9.2 GB/s (effective, 12 B/cell) (4.6%)
+          513x513_30:    4.23 ms,    22.4 GB/s (effective, 12 B/cell) (11.2%)
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 201.8s; evaluating...
+  score = 0.0369 (seed = 0.0230, best = 0.0440)
+            65x65_30:    0.62 ms,     2.4 GB/s (effective, 12 B/cell) (1.2%)
+          257x257_40:    3.97 ms,     8.0 GB/s (effective, 12 B/cell) (4.0%)
+          513x513_30:    4.60 ms,    20.6 GB/s (effective, 12 B/cell) (10.3%)
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 232.7s; evaluating...
+  score = 0.0172 (seed = 0.0230, best = 0.0440)
+            65x65_30:    1.97 ms,     0.8 GB/s (effective, 12 B/cell) (0.4%)
+          257x257_40:    4.62 ms,     6.9 GB/s (effective, 12 B/cell) (3.4%)
+          513x513_30:   12.37 ms,     7.7 GB/s (effective, 12 B/cell) (3.8%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 222.4s; evaluating...
+  score = 0.0529 (seed = 0.0230, best = 0.0440)
+            65x65_30:    0.36 ms,     4.2 GB/s (effective, 12 B/cell) (2.1%)
+          257x257_40:    2.02 ms,    15.7 GB/s (effective, 12 B/cell) (7.9%)
+          513x513_30:    5.27 ms,    18.0 GB/s (effective, 12 B/cell) (9.0%)
+  NEW INCUMBENT
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 167.6s; evaluating...
+  score = 0.0664 (seed = 0.0230, best = 0.0529)
+            65x65_30:    0.32 ms,     4.8 GB/s (effective, 12 B/cell) (2.4%)
+          257x257_40:    1.88 ms,    16.8 GB/s (effective, 12 B/cell) (8.4%)
+          513x513_30:    3.23 ms,    29.3 GB/s (effective, 12 B/cell) (14.7%)
+  NEW INCUMBENT
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 209.7s; evaluating...
+  score = 0.0284 (seed = 0.0230, best = 0.0664)
+            65x65_30:    0.75 ms,     2.0 GB/s (effective, 12 B/cell) (1.0%)
+          257x257_40:    3.22 ms,     9.8 GB/s (effective, 12 B/cell) (4.9%)
+          513x513_30:   10.38 ms,     9.1 GB/s (effective, 12 B/cell) (4.6%)
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 182.2s; evaluating...
+  score = 0.0290 (seed = 0.0230, best = 0.0664)
+            65x65_30:    0.63 ms,     2.4 GB/s (effective, 12 B/cell) (1.2%)
+          257x257_40:    3.77 ms,     8.4 GB/s (effective, 12 B/cell) (4.2%)
+          513x513_30:    9.85 ms,     9.6 GB/s (effective, 12 B/cell) (4.8%)
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 230.4s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:5:64: error: expected ')'
+kernel void gradshaf_axis_reduce(device const float * restrict psi      [[buffer(0)]],
+                                                               ^
+program_source:5:33: note: to match this '('
+kernel void gradshaf_axis_reduce(device const float * restrict psi      [[buffer(0)]],
+                                ^
+program_source:11:23: error: use of undeclared identifier 'NR'
+    uint interior_w = NR - 2;
+                      ^
+program_source:12:23: error: use of undeclared identifier 'NZ'
+    uint interior_h = NZ - 2;
+                      ^
+program_source:16:17: error: use of undeclared identifier 'tid'
+    uint i_in = tid % interior_w;
+                ^
+program_source:17:17: error: use of undeclared identifier 'tid'
+    uint j_in = tid / interior_w;
+                ^
+program_source:20:19: error: use of undeclared identifier 'tgsize'
+    uint jump_i = tgsize % interior_w;
+                  ^
+program_source:21:19: error: use of undeclared identifier 'tgsize'
+    uint jump_j = tgsize / interior_w;
+                  ^
+program_source:24:16: error: use of undeclared identifier 'tid'
+    uint idx = tid;
+               ^
+program_source:27:22: error: use of undeclared identifier 'tgsize'
+    while (idx + 3 * tgsize < total_interior) {
+                     ^
+program_source:28:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:28:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:32:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:32:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:36:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:36:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:40:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:40:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:44:20: error: use of undeclared identifier 'tgsize'
+        idx += 4 * tgsize;
+                   ^
+program_source:49:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:49:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:52:16: error: use of undeclared identifier 'tgsize'
+        idx += tgsize;
+               ^
+program_source:57:9: error: use of undeclared identifier 'tgsize'
+    if (tgsize <= 32) {
+        ^
+program_source:58:13: error: use of undeclared identifier 'tid'
+        if (tid == 0) psi_axis[0] = local_max;
+            ^
+program_source:58:23: error: use of undeclared identifier 'psi_axis'
+        if (tid == 0) psi_axis[0] = local_max;
+                      ^
+program_source:63:17: error: use of undeclared identifier 'tid'
+    uint lane = tid % 32;
+                ^
+program_source:64:17: error: use of undeclared identifier 'tid'
+    uint warp = tid / 32;
+                ^
+program_source:70:27: error: use of undeclared identifier 'tgsize'
+        uint num_warps = (tgsize + 31) / 32;
+                          ^
+program_source:71:22: error: use of undeclared identifier 'tid'
+        float val = (tid < num_warps) ? shared_max[lane] : -INFINITY;
+                     ^
+program_source:73:13: error: use of undeclared identifier 'tid'
+        if (tid == 0) psi_axis[0] = val;
+            ^
+program_source:73:23: error: use of undeclared identifier 'psi_axis'
+        if (tid == 0) psi_axis[0] = val;
+                      ^
+program_source:78:57: error: expected ')'
+kernel void gradshaf_step(device const float * restrict psi_in   [[buffer(0)]],
+                                                        ^
+program_source:78:26: note: to match this '('
+kernel void gradshaf_step(device const float * restrict psi_in   [[buffer(0)]],
+                         ^
+program_source:90:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:91:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:93:14: error: use of undeclared identifier 'NR'
+    if (i >= NR || j >= NZ) return;
+             ^
+program_source:93:25: error: use of undeclared identifier 'NZ'
+    if (i >= NR || j >= NZ) return;
+                        ^
+program_source:95:20: error: use of undeclared identifier 'NR'
+    uint idx = j * NR + i;
+                   ^
+program_source:98:34: error: use of undeclared identifier 'NR'
+    if (i == 0 || j == 0 || i == NR - 1 || j == NZ - 1) {
+                                 ^
+program_source:98:49: error: use of undeclared identifier 'NZ'
+    if (i == 0 || j == 0 || i == NR - 1 || j == NZ - 1) {
+                                                ^
+program_source:99:9: error: use of undeclared identifier 'psi_out'
+        psi_out[idx] = psi_in[idx];
+        ^
+program_source:99:24: error: use of undeclared identifier 'psi_in'
+        psi_out[idx] = psi_in[idx];
+                       ^
+program_source:104:19: error: use of undeclared identifier 'psi_in'; did you mean 'psi_C'?
+    float psi_C = psi_in[idx];
+                  ^~~~~~
+                  psi_C
+program_source:104:11: note: 'psi_C' declared here
+    float psi_C = psi_in[idx];
+          ^
+program_source:104:25: error: subscripted value is not an array, pointer, or vector
+    float psi_C = psi_in[idx];
+                  ~~~~~~^~~~
+program_source:105:16: error: use of undeclared identifier 'psi_axis'
+    float ax = psi_axis[0];
+               ^
+program_source:108:16: error: use of undeclared identifier 'dR'
+    float dr = dR;
+               ^
+program_source:109:16: error: use of undeclared identifier 'dZ'
+    float dz = dZ;
+               ^
+program_source:116:26: error: use of undeclared identifier 'mu0'
+    float mu0_p_axis_4 = mu0 * p_axis * 4.0f;
+                         ^
+program_source:116:32: error: use of undeclared identifier 'p_axis'
+    float mu0_p_axis_4 = mu0 * p_axis * 4.0f;
+                               ^
+program_source:120:26: error: use of undeclared identifier 'omega'
+    float omega_inv_aC = omega / a_C;
+                         ^
+program_source:122:15: error: use of undeclared identifier 'Rmin'
+    float R = Rmin + float(i) * dr;
+              ^
+program_source:139:19: error: use of undeclared identifier 'psi_in'
+    float psi_W = psi_in[idx - 1];
+                  ^
+program_source:140:19: error: use of undeclared identifier 'psi_in'
+    float psi_E = psi_in[idx + 1];
+                  ^
+program_source:141:19: error: use of undeclared identifier 'psi_in'
+    float psi_N = psi_in[idx + NR];
+                  ^
+program_source:141:32: error: use of undeclared identifier 'NR'
+    float psi_N = psi_in[idx + NR];
+                               ^
+program_source:142:19: error: use of undeclared identifier 'psi_in'
+    float psi_S = psi_in[idx - NR];
+                  ^
+program_source:142:32: error: use of undeclared identifier 'NR'
+    float psi_S = psi_in[idx - NR];
+                               ^
+program_source:150:5: error: use of undeclared identifier 'psi_out'
+    psi_out[idx] = psi_C + omega_inv_aC * (rhs - delta_psi);
+    ^
+" UserInfo={NSLocalizedDescription=program_source:5:64: error: expected ')'
+kernel void gradshaf_axis_reduce(device const float * restrict psi      [[buffer(0)]],
+                                                               ^
+program_source:5:33: note: to match this '('
+kernel void gradshaf_axis_reduce(device const float * restrict psi      [[buffer(0)]],
+                                ^
+program_source:11:23: error: use of undeclared identifier 'NR'
+    uint interior_w = NR - 2;
+                      ^
+program_source:12:23: error: use of undeclared identifier 'NZ'
+    uint interior_h = NZ - 2;
+                      ^
+program_source:16:17: error: use of undeclared identifier 'tid'
+    uint i_in = tid % interior_w;
+                ^
+program_source:17:17: error: use of undeclared identifier 'tid'
+    uint j_in = tid / interior_w;
+                ^
+program_source:20:19: error: use of undeclared identifier 'tgsize'
+    uint jump_i = tgsize % interior_w;
+                  ^
+program_source:21:19: error: use of undeclared identifier 'tgsize'
+    uint jump_j = tgsize / interior_w;
+                  ^
+program_source:24:16: error: use of undeclared identifier 'tid'
+    uint idx = tid;
+               ^
+program_source:27:22: error: use of undeclared identifier 'tgsize'
+    while (idx + 3 * tgsize < total_interior) {
+                     ^
+program_source:28:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:28:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:32:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:32:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:36:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:36:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:40:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:40:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:44:20: error: use of undeclared identifier 'tgsize'
+        idx += 4 * tgsize;
+                   ^
+program_source:49:36: error: use of undeclared identifier 'psi'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                   ^
+program_source:49:53: error: use of undeclared identifier 'NR'
+        local_max = max(local_max, psi[(j_in + 1) * NR + (i_in + 1)]);
+                                                    ^
+program_source:52:16: error: use of undeclared identifier 'tgsize'
+        idx += tgsize;
+               ^
+program_source:57:9: error: use of undeclared identifier 'tgsize'
+    if (tgsize <= 32) {
+        ^
+program_source:58:13: error: use of undeclared identifier 'tid'
+        if (tid == 0) psi_axis[0] = local_max;
+            ^
+program_source:58:23: error: use of undeclared identifier 'psi_axis'
+        if (tid == 0) psi_axis[0] = local_max;
+                      ^
+program_source:63:17: error: use of undeclared identifier 'tid'
+    uint lane = tid % 32;
+                ^
+program_source:64:17: error: use of undeclared identifier 'tid'
+    uint warp = tid / 32;
+                ^
+program_source:70:27: error: use of undeclared identifier 'tgsize'
+        uint num_warps = (tgsize + 31) / 32;
+                          ^
+program_source:71:22: error: use of undeclared identifier 'tid'
+        float val = (tid < num_warps) ? shared_max[lane] : -INFINITY;
+                     ^
+program_source:73:13: error: use of undeclared identifier 'tid'
+        if (tid == 0) psi_axis[0] = val;
+            ^
+program_source:73:23: error: use of undeclared identifier 'psi_axis'
+        if (tid == 0) psi_axis[0] = val;
+                      ^
+program_source:78:57: error: expected ')'
+kernel void gradshaf_step(device const float * restrict psi_in   [[buffer(0)]],
+                                                        ^
+program_source:78:26: note: to match this '('
+kernel void gradshaf_step(device const float * restrict psi_in   [[buffer(0)]],
+                         ^
+program_source:90:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:91:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:93:14: error: use of undeclared identifier 'NR'
+    if (i >= NR || j >= NZ) return;
+             ^
+program_source:93:25: error: use of undeclared identifier 'NZ'
+    if (i >= NR || j >= NZ) return;
+                        ^
+program_source:95:20: error: use of undeclared identifier 'NR'
+    uint idx = j * NR + i;
+                   ^
+program_source:98:34: error: use of undeclared identifier 'NR'
+    if (i == 0 || j == 0 || i == NR - 1 || j == NZ - 1) {
+                                 ^
+program_source:98:49: error: use of undeclared identifier 'NZ'
+    if (i == 0 || j == 0 || i == NR - 1 || j == NZ - 1) {
+                                                ^
+program_source:99:9: error: use of undeclared identifier 'psi_out'
+        psi_out[idx] = psi_in[idx];
+        ^
+program_source:99:24: error: use of undeclared identifier 'psi_in'
+        psi_out[idx] = psi_in[idx];
+                       ^
+program_source:104:19: error: use of undeclared identifier 'psi_in'; did you mean 'psi_C'?
+    float psi_C = psi_in[idx];
+                  ^~~~~~
+                  psi_C
+program_source:104:11: note: 'psi_C' declared here
+    float psi_C = psi_in[idx];
+          ^
+program_source:104:25: error: subscripted value is not an array, pointer, or vector
+    float psi_C = psi_in[idx];
+                  ~~~~~~^~~~
+program_source:105:16: error: use of undeclared identifier 'psi_axis'
+    float ax = psi_axis[0];
+               ^
+program_source:108:16: error: use of undeclared identifier 'dR'
+    float dr = dR;
+               ^
+program_source:109:16: error: use of undeclared identifier 'dZ'
+    float dz = dZ;
+               ^
+program_source:116:26: error: use of undeclared identifier 'mu0'
+    float mu0_p_axis_4 = mu0 * p_axis * 4.0f;
+                         ^
+program_source:116:32: error: use of undeclared identifier 'p_axis'
+    float mu0_p_axis_4 = mu0 * p_axis * 4.0f;
+                               ^
+program_source:120:26: error: use of undeclared identifier 'omega'
+    float omega_inv_aC = omega / a_C;
+                         ^
+program_source:122:15: error: use of undeclared identifier 'Rmin'
+    float R = Rmin + float(i) * dr;
+              ^
+program_source:139:19: error: use of undeclared identifier 'psi_in'
+    float psi_W = psi_in[idx - 1];
+                  ^
+program_source:140:19: error: use of undeclared identifier 'psi_in'
+    float psi_E = psi_in[idx + 1];
+                  ^
+program_source:141:19: error: use of undeclared identifier 'psi_in'
+    float psi_N = psi_in[idx + NR];
+                  ^
+program_source:141:32: error: use of undeclared identifier 'NR'
+    float psi_N = psi_in[idx + NR];
+                               ^
+program_source:142:19: error: use of undeclared identifier 'psi_in'
+    float psi_S = psi_in[idx - NR];
+                  ^
+program_source:142:32: error: use of undeclared identifier 'NR'
+    float psi_S = psi_in[idx - NR];
+                               ^
+program_source:150:5: error: use of undeclared identifier 'psi_out'
+    psi_out[idx] = psi_C + omega_inv_aC * (rhs - delta_psi);
+    ^
+}
+
+=== done. seed=0.0230, best=0.0664, output=results/gradshaf_gemini-3.1-pro-preview_20260507_130735 ===

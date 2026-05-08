@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06647490404968624,
+    "fail_reason": null,
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/00_seed.metal",
+    "elapsed_s": 8.6929771900177,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.075244898461611,
+    "fail_reason": null,
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/01_candidate.metal",
+    "elapsed_s": 26.339348316192627,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:44:22: error: lambda expressions are not supported in Metal\n    auto load_site = [&](int gx, int gy) -> char {\n                     ^\n\" UserInfo={NSLocalizedDescription=program_source:44:22: error: lambda expressions are not supported in Metal\n    auto load_site = [&](int gx, int gy) -> char {\n                     ^\n}",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/02_candidate.metal",
+    "elapsed_s": 21.947319507598877,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 256x256_100: spin_disagreements=3.481e+04",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/03_candidate.metal",
+    "elapsed_s": 17.976276874542236,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06649708196274966,
+    "fail_reason": null,
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/04_candidate.metal",
+    "elapsed_s": 23.491405725479126,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.05041289677691749,
+    "fail_reason": null,
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/05_candidate.metal",
+    "elapsed_s": 29.482089281082153,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.06522928648163716,
+    "fail_reason": null,
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/06_candidate.metal",
+    "elapsed_s": 24.067183256149292,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:23:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n\" UserInfo={NSLocalizedDescription=program_source:23:3: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n[[max_total_threads_per_threadgroup(256)]]\n  ^\n}",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/07_candidate.metal",
+    "elapsed_s": 22.659351110458374,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 256x256_100: spin_disagreements=6.418e+04",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/08_candidate.metal",
+    "elapsed_s": 23.028214693069458,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:17:1: error: an attribute list cannot appear here\n[[max_total_threads_per_threadgroup(256)]]\n^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\" UserInfo={NSLocalizedDescription=program_source:17:1: error: an attribute list cannot appear here\n[[max_total_threads_per_threadgroup(256)]]\n^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n}",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/09_candidate.metal",
+    "elapsed_s": 19.971811294555664,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "correctness failed at size 256x256_100: spin_disagreements=6.401e+04",
+    "source_path": "results/ising_claude-opus-4-7_20260506_182243/10_candidate.metal",
+    "elapsed_s": 21.399558067321777,
+    "is_new_best": false
+  }
+]

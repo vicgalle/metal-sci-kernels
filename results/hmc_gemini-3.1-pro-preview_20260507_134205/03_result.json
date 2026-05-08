@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'\n                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);\n                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided\nsimdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)\n^\n\" UserInfo={NSLocalizedDescription=program_source:64:17: error: no matching function for call to 'simdgroup_multiply_accumulate'\n                simdgroup_multiply_accumulate(F_mat[i][j], X_mat[i][k], A_mat[k][j]);\n                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n/System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/lib/clang/32023.883/include/metal/metal_simdgroup_matrix:208:1: note: candidate function template not viable: requires 4 arguments, but 3 were provided\nsimdgroup_multiply_accumulate(thread simdgroup_matrix<R, Cols, Rows> &d, simdgroup_matrix<T, K, Rows> a, simdgroup_matrix<U, Cols, K> b, simdgroup_matrix<V, Cols, Rows> c)\n^\n}",
+  "sizes": []
+}

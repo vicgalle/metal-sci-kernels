@@ -1,0 +1,223 @@
+
+=== Metal kernel evolution: task=heat2d ===
+  model: gemini-3.1-pro-preview
+  chip:  Apple M1 Pro (peak 4500 GFLOPS, 200 GB/s)
+  output: results/heat2d_gemini-3.1-pro-preview_20260507_120720
+
+[seed] Evaluating seed kernel...
+  seed score: 0.4504  (0.3s)
+
+--- iteration 1/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 275.3s; evaluating...
+  score = 0.3597 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.80 ms,    32.9 GB/s (effective, 8 B/cell) (16.5%)
+         512x512_100:    2.87 ms,    73.2 GB/s (effective, 8 B/cell) (36.6%)
+        1024x1024_50:    2.71 ms,   154.6 GB/s (effective, 8 B/cell) (77.3%)
+
+--- iteration 2/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 209.4s; evaluating...
+  score = 0.4016 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.77 ms,    34.2 GB/s (effective, 8 B/cell) (17.1%)
+         512x512_100:    1.91 ms,   110.1 GB/s (effective, 8 B/cell) (55.0%)
+        1024x1024_50:    3.05 ms,   137.7 GB/s (effective, 8 B/cell) (68.9%)
+
+--- iteration 3/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 128.3s; evaluating...
+  score = 0.3953 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.73 ms,    36.0 GB/s (effective, 8 B/cell) (18.0%)
+         512x512_100:    1.80 ms,   116.7 GB/s (effective, 8 B/cell) (58.3%)
+        1024x1024_50:    3.56 ms,   117.7 GB/s (effective, 8 B/cell) (58.8%)
+
+--- iteration 4/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 116.6s; evaluating...
+  score = 0.4141 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.78 ms,    33.7 GB/s (effective, 8 B/cell) (16.8%)
+         512x512_100:    1.90 ms,   110.5 GB/s (effective, 8 B/cell) (55.3%)
+        1024x1024_50:    2.75 ms,   152.7 GB/s (effective, 8 B/cell) (76.3%)
+
+--- iteration 5/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 189.5s; evaluating...
+  score = 0.2537 (seed = 0.4504, best = 0.4504)
+          256x256_50:    1.23 ms,    21.3 GB/s (effective, 8 B/cell) (10.6%)
+         512x512_100:    3.42 ms,    61.4 GB/s (effective, 8 B/cell) (30.7%)
+        1024x1024_50:    4.20 ms,   100.0 GB/s (effective, 8 B/cell) (50.0%)
+
+--- iteration 6/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 118.4s; evaluating...
+  score = 0.3251 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.78 ms,    33.7 GB/s (effective, 8 B/cell) (16.9%)
+         512x512_100:    3.81 ms,    55.1 GB/s (effective, 8 B/cell) (27.5%)
+        1024x1024_50:    2.84 ms,   147.9 GB/s (effective, 8 B/cell) (73.9%)
+
+--- iteration 7/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 258.8s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:4:53: error: expected ')'
+kernel void heat_step(device const float * restrict u_in  [[buffer(0)]],
+                                                    ^
+program_source:4:22: note: to match this '('
+kernel void heat_step(device const float * restrict u_in  [[buffer(0)]],
+                     ^
+program_source:11:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:12:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:14:14: error: use of undeclared identifier 'NX'
+    if (i >= NX || j >= NY) return;
+             ^
+program_source:14:25: error: use of undeclared identifier 'NY'
+    if (i >= NX || j >= NY) return;
+                        ^
+program_source:18:20: error: use of undeclared identifier 'NX'
+    uint idx = j * NX + i;
+                   ^
+program_source:19:15: error: use of undeclared identifier 'u_in'
+    float c = u_in[idx];
+              ^
+program_source:30:34: error: use of undeclared identifier 'NX'
+    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {
+                                 ^
+program_source:30:49: error: use of undeclared identifier 'NY'
+    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {
+                                                ^
+program_source:31:9: error: use of undeclared identifier 'u_out'
+        u_out[idx] = c;
+        ^
+program_source:38:9: error: use of undeclared identifier 'lane'
+    if (lane > 0 && y_l == j) {
+        ^
+program_source:41:13: error: use of undeclared identifier 'u_in'
+        l = u_in[idx - 1];
+            ^
+program_source:47:9: error: use of undeclared identifier 'lane'
+    if (lane < 31 && y_r == j) {
+        ^
+program_source:50:13: error: use of undeclared identifier 'u_in'
+        r = u_in[idx + 1];
+            ^
+program_source:54:15: error: use of undeclared identifier 'u_in'
+    float d = u_in[idx - NX];
+              ^
+program_source:54:26: error: use of undeclared identifier 'NX'
+    float d = u_in[idx - NX];
+                         ^
+program_source:55:15: error: use of undeclared identifier 'u_in'
+    float u = u_in[idx + NX];
+              ^
+program_source:55:26: error: use of undeclared identifier 'NX'
+    float u = u_in[idx + NX];
+                         ^
+program_source:57:5: error: use of undeclared identifier 'u_out'
+    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);
+    ^
+program_source:57:22: error: use of undeclared identifier 'alpha'
+    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);
+                     ^
+" UserInfo={NSLocalizedDescription=program_source:4:53: error: expected ')'
+kernel void heat_step(device const float * restrict u_in  [[buffer(0)]],
+                                                    ^
+program_source:4:22: note: to match this '('
+kernel void heat_step(device const float * restrict u_in  [[buffer(0)]],
+                     ^
+program_source:11:14: error: use of undeclared identifier 'gid'
+    uint i = gid.x;
+             ^
+program_source:12:14: error: use of undeclared identifier 'gid'
+    uint j = gid.y;
+             ^
+program_source:14:14: error: use of undeclared identifier 'NX'
+    if (i >= NX || j >= NY) return;
+             ^
+program_source:14:25: error: use of undeclared identifier 'NY'
+    if (i >= NX || j >= NY) return;
+                        ^
+program_source:18:20: error: use of undeclared identifier 'NX'
+    uint idx = j * NX + i;
+                   ^
+program_source:19:15: error: use of undeclared identifier 'u_in'
+    float c = u_in[idx];
+              ^
+program_source:30:34: error: use of undeclared identifier 'NX'
+    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {
+                                 ^
+program_source:30:49: error: use of undeclared identifier 'NY'
+    if (i == 0 || j == 0 || i == NX - 1 || j == NY - 1) {
+                                                ^
+program_source:31:9: error: use of undeclared identifier 'u_out'
+        u_out[idx] = c;
+        ^
+program_source:38:9: error: use of undeclared identifier 'lane'
+    if (lane > 0 && y_l == j) {
+        ^
+program_source:41:13: error: use of undeclared identifier 'u_in'
+        l = u_in[idx - 1];
+            ^
+program_source:47:9: error: use of undeclared identifier 'lane'
+    if (lane < 31 && y_r == j) {
+        ^
+program_source:50:13: error: use of undeclared identifier 'u_in'
+        r = u_in[idx + 1];
+            ^
+program_source:54:15: error: use of undeclared identifier 'u_in'
+    float d = u_in[idx - NX];
+              ^
+program_source:54:26: error: use of undeclared identifier 'NX'
+    float d = u_in[idx - NX];
+                         ^
+program_source:55:15: error: use of undeclared identifier 'u_in'
+    float u = u_in[idx + NX];
+              ^
+program_source:55:26: error: use of undeclared identifier 'NX'
+    float u = u_in[idx + NX];
+                         ^
+program_source:57:5: error: use of undeclared identifier 'u_out'
+    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);
+    ^
+program_source:57:22: error: use of undeclared identifier 'alpha'
+    u_out[idx] = c + alpha * (l + r + d + u - 4.0f * c);
+                     ^
+}
+
+--- iteration 8/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 84.3s; evaluating...
+  score = 0.3709 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.75 ms,    35.2 GB/s (effective, 8 B/cell) (17.6%)
+         512x512_100:    3.23 ms,    64.9 GB/s (effective, 8 B/cell) (32.4%)
+        1024x1024_50:    2.34 ms,   178.9 GB/s (effective, 8 B/cell) (89.5%)
+
+--- iteration 9/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 248.6s; evaluating...
+  compile failed: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:26:17: error: use of undeclared identifier 'simd_lane_id'
+    uint lane = simd_lane_id;
+                ^
+program_source:27:18: error: use of undeclared identifier 'simd_execution_width'
+    uint width = simd_execution_width;
+                 ^
+" UserInfo={NSLocalizedDescription=program_source:26:17: error: use of undeclared identifier 'simd_lane_id'
+    uint lane = simd_lane_id;
+                ^
+program_source:27:18: error: use of undeclared identifier 'simd_execution_width'
+    uint width = simd_execution_width;
+                 ^
+}
+
+--- iteration 10/10 ---
+Both GOOGLE_API_KEY and GEMINI_API_KEY are set. Using GOOGLE_API_KEY.
+  generated in 121.5s; evaluating...
+  score = 0.4645 (seed = 0.4504, best = 0.4504)
+          256x256_50:    0.38 ms,    69.6 GB/s (effective, 8 B/cell) (34.8%)
+         512x512_100:    1.84 ms,   113.9 GB/s (effective, 8 B/cell) (57.0%)
+        1024x1024_50:    4.15 ms,   101.1 GB/s (effective, 8 B/cell) (50.5%)
+  NEW INCUMBENT
+
+=== done. seed=0.4504, best=0.4645, output=results/heat2d_gemini-3.1-pro-preview_20260507_120720 ===

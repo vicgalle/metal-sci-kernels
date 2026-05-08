@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.6821190507104802,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/00_seed.metal",
+    "elapsed_s": 0.30004096031188965,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2782111491198901,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/01_candidate.metal",
+    "elapsed_s": 99.4394519329071,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.4042673852636761,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/02_candidate.metal",
+    "elapsed_s": 68.44914984703064,
+    "is_new_best": false
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5446965872681632,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/03_candidate.metal",
+    "elapsed_s": 88.2116448879242,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.4120114505573336,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/04_candidate.metal",
+    "elapsed_s": 56.65060496330261,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2964550182965342,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/05_candidate.metal",
+    "elapsed_s": 100.70590209960938,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.5293643127805301,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/06_candidate.metal",
+    "elapsed_s": 63.837817668914795,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3422860181034194,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/07_candidate.metal",
+    "elapsed_s": 64.84599018096924,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.36124429835282074,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/08_candidate.metal",
+    "elapsed_s": 81.61012291908264,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.44358725189188425,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/09_candidate.metal",
+    "elapsed_s": 70.38236594200134,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.46860117016033853,
+    "fail_reason": null,
+    "source_path": "results/heat2d_gemini-3-flash-preview_20260507_103131/10_candidate.metal",
+    "elapsed_s": 86.35123705863953,
+    "is_new_best": false
+  }
+]

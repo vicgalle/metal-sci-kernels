@@ -1,0 +1,7 @@
+{
+  "compile_ok": false,
+  "correct": false,
+  "score": null,
+  "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  [[max_total_threads_per_threadgroup(256)]] {\n                    ^\n\" UserInfo={NSLocalizedDescription=program_source:9:21: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  [[max_total_threads_per_threadgroup(256)]] {\n                    ^\n}",
+  "sizes": []
+}

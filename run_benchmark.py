@@ -10,6 +10,9 @@ Examples:
 
     # Run with Gemini:
     python run_benchmark.py --task nbody --model gemini-2.5-flash --iterations 5
+
+    # Run with OpenAI:
+    python run_benchmark.py --task heat2d --model gpt-5.5 --iterations 3
 """
 
 from __future__ import annotations
@@ -78,8 +81,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--model", default="claude-sonnet-4-6",
-        help="LLM to use. Claude (e.g. claude-sonnet-4-6, claude-haiku-4-5) "
-             "or Gemini (e.g. gemini-2.5-flash).",
+        help="LLM to use. Claude (e.g. claude-sonnet-4-6, claude-haiku-4-5), "
+             "Gemini (e.g. gemini-2.5-flash), "
+             "or OpenAI (e.g. gpt-5.5, gpt-5, o4-mini).",
     )
     parser.add_argument(
         "--iterations", type=int, default=3,

@@ -1,0 +1,32 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size 64cube: max_abs=nan",
+  "sizes": [
+    {
+      "label": "32cube",
+      "correct": true,
+      "error_value": 0.00018310546875,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.000192749997950159,
+      "achieved": 16.320249200798525,
+      "achieved_unit": "GB/s (effective, 96 B/cell across 3 passes)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.08160124600399263
+    },
+    {
+      "label": "64cube",
+      "correct": false,
+      "error_value": NaN,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.0008567083350499161,
+      "achieved": 29.375019444083865,
+      "achieved_unit": "GB/s (effective, 96 B/cell across 3 passes)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.14687509722041933
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+**Evaluating kernel call efficiency**
+
+I'm considering the kernel call setup where each takes 64 steps. The overhead might be minor compared to arithmetic operations. I could possibly add a branch for common scenarios: what happens if NX equals something and NY equals something else? But what if it's just NX? The P2 path seems to assume that NY is the same. Considering both options could be good, especially since the incumbent checks 256 for both.
