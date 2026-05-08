@@ -39,24 +39,16 @@
 \maketitle
 
 \begin{abstract}
-We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple
-Silicon Metal compute kernels spanning six optimisation regimes
-(stencils, all-pairs, multi-field Boltzmann, neighbour-list MD,
-multi-kernel PDE, FFT). Each task ships a CPU reference, a
-roofline-anchored fitness, and a held-out generalisation size. We
-report matched single-model sweeps of Claude Opus~4.7 and Gemini~3.1
-Pro Preview on M1~Pro: in-distribution self-speedups span
-$1.00\times$ to $10.7\times$, and the held-out gate exposes
-specialisation/generalisation tradeoffs the geometric mean hides ---
-notably an Opus \texttt{template <uint D>} HMC win that returns wrong
-answers at unseen $d{=}24$ where Gemini's variant generalises at
-$17.8\times$.
+ We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7 and Gemini~3.1 Pro Preview on M1~Pro: in-distribution   self-speedups span $1.00\times$ to $10.7\times$, and the held-out gate
+  exposes specialization/generalization tradeoffs the geometric mean 
+  hides: notably an Opus \texttt{template } HMC win that         
+  returns wrong answers at unseen $d{=}24$ where Gemini's variant        
+  generalizes at $17.8\times$ speedup.
 \end{abstract}
 
 \section{Introduction}
 
-LLM code-search systems --- FunSearch~[1], AlphaEvolve~[2], and recent
-kernel-generation work~[3] --- evaluate language models as
+LLM code-search systems such as FunSearch \cite{funsearch}, AlphaEvolve \cite{novikov2025alphaevolve}, and recent kernel-generation work \cite{ouyang2025kernelbench} evaluate language models as
 \emph{optimisers} of executable artefacts. The choice of artefact matters:
 KernelBench targets PyTorch ML kernels (GEMM, attention, convolution) on
 CUDA, where canonical implementations are heavily represented in
@@ -74,14 +66,13 @@ register pressure scales with the problem dimension $d$. Grad-Shafranov
 solvers chain a max-reduction with a variable-coefficient stencil. 3D
 FFTs are dominated by data-shuffle/butterfly patterns and twiddle-factor
 caching rather than tiling. Each pattern stresses a distinct dimension of
-the compiler/memory hierarchy, and canonical optimisations~[5,6,7,8,11]
-differ regime-to-regime.
+the compiler/memory hierarchy, and canonical optimizations \cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high} differ regime-to-regime.
 
-We target Apple Silicon's Metal compute pipeline. It is underrepresented
-in CUDA-centric training data --- frontier models reliably mishandle
+We target the Apple Silicon's Metal compute pipeline. It is underrepresented
+in CUDA-centric training data, as frontier models reliably mishandle
 Metal-specific syntax such as the
-\texttt{[[max\_total\_threads\_per\_threadgroup]]} kernel attribute, a real
-out-of-distribution generalisation test. Its unified memory model removes
+\texttt{[[max\_total\_threads\_per\_threadgroup]]} kernel attribute, a simple
+out-of-distribution generalization test. Its unified memory model removes
 host-device copy plumbing, enabling sub-second compile-run-verify cycles
 per candidate that are essential for fast evolutionary loops. And it
 supports rich simdgroup intrinsics (\texttt{simd\_max},
@@ -89,23 +80,17 @@ supports rich simdgroup intrinsics (\texttt{simd\_max},
 non-trivial optimisation surface.
 
 \paragraph{Contributions.} (i) A 10-task scientific compute benchmark over
-six optimisation regimes, each with a CPU reference, roofline-anchored
-fitness, and multi-size generalisation gate. (ii) A runtime-compiled
-harness that exposes compile errors, correctness diagnostics, and per-size
-GPU timing back to the LLM. (iii) Two matched single-model sweeps ---
-Claude Opus~4.7 and Gemini~3.1~Pro Preview --- on M1~Pro, with
+six optimization regimes, each with a CPU reference, roofline-anchored
+fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) two matched single-model sweeps (Claude Opus~4.7 and Gemini~3.1~Pro) on M1~Pro, with
 in-distribution \emph{and} held-out evaluation per task; the held-out
-gate exposes specialisation/generalisation tradeoffs the in-distribution
+gate exposes specialization/generalization tradeoffs the in-distribution
 geometric mean hides, and the two models overfit asymmetrically.
 
 \section{Benchmark tasks}
 \label{sec:tasks}
 
-Each task ships (a) a Metal source describing the problem, (b) a naive
-correct seed, (c) a CPU reference with task-specific tolerance, (d) three
-in-distribution sizes plus one held-out size, and (e) a roofline ceiling
-in either GFLOPS (compute-bound) or GB/s (bandwidth-bound). Tasks are
-grouped by optimisation regime.
+Each task ships (a) a Metal source describing the problem, (b) a
+correct seed kernel, (c) a CPU reference with task-specific tolerance, (d) three in-distribution sizes plus one held-out size, and (e) a roofline ceiling in either GFLOPS (compute-bound) or GB/s (bandwidth-bound). Tasks are grouped by optimization regime.
 
 \subsection{Regular stencils (regime R1)}
 
@@ -116,7 +101,7 @@ interior cell:
 u^{n+1}_{i,j} \;=\; u^n_{i,j} + \alpha\!\left(u^n_{i-1,j}+u^n_{i+1,j}
    + u^n_{i,j-1}+u^n_{i,j+1} - 4\,u^n_{i,j}\right).
 \end{equation}
-Bandwidth-bound at 8\,B/cell; tests halo handling and temporal blocking.
+Bandwidth-bound at 8\,B/cell. This task tests halo handling and temporal blocking.
 
 \paragraph{wave3d.} Three-dimensional acoustic wave equation, 7-point
 isotropic Laplacian, leapfrog in time:
@@ -130,7 +115,7 @@ DRAM traffic. Tests register pressure, 2.5D blocking, and marching-axis choice.
 
 \subsection{Compute-bound (regime R2)}
 
-\paragraph{nbody.} All-pairs gravitational $N$-body with leapfrog. Per
+\paragraph{nbody.} All-pairs gravitational $N$-body problem with leapfrog integration. Per
 body $i$ per step:
 \begin{equation}
 \mathbf{a}_i \;=\; G\sum_{j} m_j
@@ -249,7 +234,7 @@ seeded Gaussian input, tolerance $10^{-3}{+}10^{-3}\|Y\|_\infty$.
 A bandwidth-bound smoke-test (\texttt{saxpy}) is also included to validate
 the harness.
 
-\section{Harness}
+\section{Harness Design}
 \label{sec:harness}
 
 \paragraph{Compile and dispatch.} The harness uses PyObjC's Metal bindings
@@ -549,66 +534,17 @@ textbook.
 
 \paragraph{Limitations and future work.} The static per-chip ceilings do not
 account for SLC residency at small sizes (see the LBM 256$^2$ result above);
-a workload-aware roofline~[4] per task and per size would tighten the score.
+a workload-aware roofline \cite{williams2009roofline} per task and per size would tighten the score.
 The single-population $(1{+}1)$ loop plateaus within 10--25 iterations on
-most tasks --- an island-model or FunSearch-style~[1] archive with a novelty
-signal~[2] is the natural next step, particularly for the irregular-memory
+most tasks --- an island-model or FunSearch-style \cite{funsearch} archive with a novelty
+signal \cite{novikov2025alphaevolve} is the natural next step, particularly for the irregular-memory
 tasks. Future tasks include sparse linear algebra (SpMV, CG) and
 cross-chip generalisation (evolve on M2~Pro, evaluate on M3~Max).
 
-\section*{References}
-\footnotesize
-\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}\setlength{\topsep}{0pt}
-\item[\textnormal{[1]}] Romera-Paredes, B.\ et al.\ (2024) Mathematical
-discoveries from program search with large language models. \emph{Nature}
-\textbf{625}, 468--475.
-\item[\textnormal{[2]}] Novikov, A.\ et al.\ (2025) AlphaEvolve: A coding agent
-for scientific and algorithmic discovery. \emph{arXiv:2506.13131}.
-\item[\textnormal{[3]}] Ouyang, A.\ et al.\ (2025) KernelBench: Can LLMs Write
-Efficient GPU Kernels? \emph{arXiv:2502.10517}.
-\item[\textnormal{[4]}] Williams, S., Waterman, A.\ \& Patterson, D.\ (2009)
-Roofline: An insightful visual performance model for multicore architectures.
-\emph{CACM} \textbf{52}(4), 65--76.
-\item[\textnormal{[5]}] Datta, K.\ et al.\ (2008) Stencil computation
-optimization and auto-tuning on state-of-the-art multicore architectures.
-\emph{Proc.\ SC '08}.
-\item[\textnormal{[6]}] Nyland, L., Harris, M.\ \& Prins, J.\ (2007) Fast
-N-body simulation with CUDA. \emph{GPU Gems 3}, ch.\ 31.
-\item[\textnormal{[7]}] Sch\"onherr, M.\ et al.\ (2011) Multi-thread
-implementations of the lattice Boltzmann method on non-uniform grids for
-CPUs and GPUs. \emph{Comput.\ Math.\ Appl.}\ \textbf{61}(12), 3730--3743.
-\item[\textnormal{[8]}] Anderson, J.\ A., Lorenz, C.\ D.\ \& Travesset, A.\
-(2008) General purpose molecular dynamics simulations fully implemented on
-graphics processing units. \emph{J.\ Comput.\ Phys.}\ \textbf{227}(10),
-5342--5359.
-\item[\textnormal{[9]}] Micikevicius, P.\ (2009) 3D finite difference
-computation on GPUs using CUDA. \emph{Proc.\ GPGPU-2}.
-\item[\textnormal{[10]}] Geb, L.\ et al.\ (2022) Seamless GPU acceleration
-for C++ based physics on the Apple M1's unified processing units.
-\emph{arXiv:2206.01791}.
-\item[\textnormal{[11]}] Govindaraju, N.\ K.\ et al.\ (2008) High
-performance discrete Fourier transforms on graphics processors.
-\emph{Proc.\ SC '08}.
-\item[\textnormal{[12]}] Li, J.\ et al.\ (2025) TritonBench: Benchmarking
-large language model capabilities for generating Triton operators.
-\emph{Findings of ACL 2025}, pp.\ 23053--23066.
-\item[\textnormal{[13]}] Saroufim, M.\ et al.\ (2025) BackendBench:
-benchmarking PyTorch-backend kernel generation.
-\item[\textnormal{[14]}] Wen, J.\ et al.\ (2025) MultiKernelBench:
-multi-platform LLM kernel generation across CUDA, Ascend\,C, and Pallas.
-\item[\textnormal{[15]}] Kalade, S.\ \& Schelle, G.\ (2025) NPUEval:
-optimising NPU kernels with LLMs and open-source compilers.
-\emph{arXiv:2507.14403}.
-\item[\textnormal{[16]}] Nie, J.\ et al.\ (2026) KernelCraft: benchmarking
-agentic close-to-metal kernel generation on emerging hardware.
-\emph{arXiv:2603.08721}.
-\item[\textnormal{[17]}] Lange, R.\ T.\ et al.\ (2025) Towards robust
-agentic CUDA kernel benchmarking, verification, and optimisation.
-\emph{arXiv:2509.14279}.
-\item[\textnormal{[18]}] Guo, P.\ et al.\ (2025) EvoEngineer: mastering
-automated CUDA kernel evolution with large language models.
-\emph{arXiv:2510.03760}.
-\end{itemize}
+
+\bibliographystyle{abbrv}
+\bibliography{bibliography}
+
 
 \appendix
 
@@ -816,17 +752,17 @@ Gemini 0.282.}
 \subsection{LLM-driven kernel-generation benchmarks}
 
 A wave of benchmarks has emerged for evaluating LLMs as generators of
-high-performance GPU kernels. \emph{KernelBench}~[3] targets PyTorch ML
+high-performance GPU kernels. \emph{KernelBench} \cite{ouyang2025kernelbench} targets PyTorch ML
 kernels (GEMM, attention, convolution, normalisation, activation) on
 CUDA and scores single-shot generation by speedup against the PyTorch
-eager baseline. \emph{TritonBench}~[12] extends to the Triton DSL and
+eager baseline. \emph{TritonBench} \cite{li2025tritonbench} extends to the Triton DSL and
 adds reference code-similarity to correctness and performance.
-\emph{BackendBench}~[13] evaluates correctness alone for kernels written
-against the PyTorch backend interface. \emph{MultiKernelBench}~[14]
+\emph{BackendBench} \cite{saroufim2025backendbench} evaluates correctness alone for kernels written
+against the PyTorch backend interface. \emph{MultiKernelBench} \cite{wen2025multikernelbench}
 broadens the platform set to CUDA, Ascend\,C, and Pallas while retaining
-the ML-operator workload set. \emph{NPUEval}~[15] targets the AMD AIE
+the ML-operator workload set. \emph{NPUEval} \cite{kalade2025npueval} targets the AMD AIE
 NPU in C++ and exposes a tool-use feedback loop with multi-turn
-regeneration. Most recently, \emph{KernelCraft}~[16] benchmarks
+regeneration. Most recently, \emph{KernelCraft} \cite{nie2026kernelcraft} benchmarks
 bare-metal assembly kernel generation on emerging accelerator ISAs
 (PLENA, AMD NPU, Coral NPU, Sonic BOOM), with native tool interfaces
 (\texttt{check\_syntax}, \texttt{run\_evaluation}, \texttt{view\_output},
@@ -837,10 +773,10 @@ the headline number is speedup against a vendor or compiler baseline.
 \subsection{LLM-driven evolutionary code search}
 
 The broader paradigm of LLMs as \emph{optimisers} inside evolutionary
-code-search loops was established by \emph{FunSearch}~[1] for
-symbolic-algorithm discovery and scaled by \emph{AlphaEvolve}~[2] across
-mathematical and algorithmic domains. \emph{AI CUDA Engineer}~[17] and
-\emph{EvoEngineer}~[18] specialise this paradigm to CUDA kernel
+code-search loops was established by \emph{FunSearch} \cite{funsearch} for
+symbolic-algorithm discovery and scaled by \emph{AlphaEvolve} \cite{novikov2025alphaevolve} across
+mathematical and algorithmic domains. \emph{AI CUDA Engineer} \cite{lange2025towards} and
+\emph{EvoEngineer} \cite{guo2025evoengineer} specialise this paradigm to CUDA kernel
 optimisation, replacing single-shot or agentic regeneration with a
 population/archive driven by a fitness signal --- closer in spirit to
 our $(\mu{=}1{+}\lambda{=}1)$ loop, but on CUDA ML kernels rather than
@@ -857,8 +793,7 @@ compute --- regular and irregular stencils, all-pairs interactions,
 multi-field Boltzmann updates, neighbour-list molecular dynamics,
 parallel-chain MCMC, multi-kernel nonlinear PDE solvers, and butterfly
 spectral transforms --- six structurally distinct optimisation regimes
-(R1--R6 of Section~\ref{sec:tasks}) whose canonical recipes
-[5,6,7,8,11] do not transfer between regimes. \emph{(ii) Score basis.}
+(R1--R6 of Section~\ref{sec:tasks}) whose canonical recipes \cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high} do not transfer between regimes. \emph{(ii) Score basis.}
 All listed benchmarks normalise \emph{achieved} against a vendor or
 compiler baseline (PyTorch eager, compiler-emitted code, expert
 hand-tuned reference). This couples the headline number to the
@@ -901,12 +836,12 @@ distinct regimes (R1--R6 of Section~\ref{sec:tasks}).}
 \toprule
 Benchmark & Target & Domain & Score basis & Multi-size & Search \\
 \midrule
-KernelBench~[3]       & CUDA                      & ML  & PyTorch speedup      & ---            & single-shot \\
-TritonBench~[12]      & Triton DSL                & ML  & speedup\,+\,code-sim & ---            & single-shot \\
-BackendBench~[13]     & PyTorch backend           & ML  & correctness only     & ---            & single-shot \\
-MultiKernelBench~[14] & CUDA / Ascend\,C / Pallas & ML  & compiler speedup     & ---            & multi-turn \\
-NPUEval~[15]          & AIE C++ (AMD NPU)         & ML  & compiler speedup     & ---            & tool-use \\
-KernelCraft~[16]      & accelerator asm           & ML  & compiler speedup     & cfg.\ vars     & agentic tool-use \\
+KernelBench \cite{ouyang2025kernelbench}       & CUDA                      & ML  & PyTorch speedup      & ---            & single-shot \\
+TritonBench \cite{li2025tritonbench}      & Triton DSL                & ML  & speedup\,+\,code-sim & ---            & single-shot \\
+BackendBench \cite{saroufim2025backendbench}     & PyTorch backend           & ML  & correctness only     & ---            & single-shot \\
+MultiKernelBench \cite{wen2025multikernelbench} & CUDA / Ascend\,C / Pallas & ML  & compiler speedup     & ---            & multi-turn \\
+NPUEval \cite{kalade2025npueval}          & AIE C++ (AMD NPU)         & ML  & compiler speedup     & ---            & tool-use \\
+KernelCraft \cite{nie2026kernelcraft}      & accelerator asm           & ML  & compiler speedup     & cfg.\ vars     & agentic tool-use \\
 \midrule
 \textbf{\textsc{Metal-Sci} (ours)} & \textbf{Apple Metal MSL} & \textbf{HPC} & \textbf{\% of roofline} & \textbf{3 in\,+\,1 held-out} & \textbf{evolutionary $(1{+}1)$} \\
 \bottomrule
