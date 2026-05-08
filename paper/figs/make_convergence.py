@@ -10,6 +10,7 @@ TASKS = ["saxpy","heat2d","nbody","lbm","gradshaf","fft3d","hmc","ising","lj","w
 MODELS = [
     ("claude-opus-4-7",        "Opus 4.7",          "#5B2D8A"),
     ("gemini-3.1-pro-preview", "Gemini 3.1 Pro",    "#0F8A4F"),
+    ("gpt-5.5",                "GPT-5.5",           "#C04A2A"),
 ]
 
 def pick_dir(task: str, model: str) -> Path | None:
@@ -40,9 +41,9 @@ def best_so_far(task, model):
         iters.append(it)
     return iters, ratio, fails, s["n_iterations"]
 
-fig, axes = plt.subplots(2, 5, figsize=(11.0, 4.4),
+fig, axes = plt.subplots(2, 5, figsize=(11.0, 4.6),
                          sharex=False, sharey=False)
-plt.subplots_adjust(left=0.06, right=0.99, top=0.92, bottom=0.10,
+plt.subplots_adjust(left=0.06, right=0.99, top=0.88, bottom=0.10,
                     wspace=0.35, hspace=0.45)
 
 for ax, t in zip(axes.flat, TASKS):
@@ -87,7 +88,7 @@ for ax in axes[1,:]:
 handles = [plt.Line2D([0],[0], color=c, lw=1.5, label=l) for _,l,c in MODELS]
 handles += [plt.Line2D([0],[0], marker="x", color="gray", lw=0,
                        ms=4, mew=0.9, label="compile/correctness fail")]
-fig.legend(handles=handles, loc="upper center", ncol=3,
+fig.legend(handles=handles, loc="upper center", ncol=4,
            frameon=False, fontsize=8, bbox_to_anchor=(0.5, 1.00))
 
 out = Path("/Users/victorgallego/metal-kernels/paper/figs/convergence.png")
