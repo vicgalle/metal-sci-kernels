@@ -746,6 +746,7 @@ catch confidently-wrong agent code before deployment.
   code/.style={draw, rounded corners=2pt, fill=gray!5,
                inner sep=5pt, align=left, font=\scriptsize\ttfamily,
                text width=64mm, anchor=north west},
+  arr/.style={-{Stealth[length=3.5mm]}, line width=1.4pt},
 ]
 \node[code] (l) at (0,0) {%
 \textcolor{gray!70}{// Dispatch in fft3d\_x kernel}\\
@@ -758,11 +759,10 @@ else if (N == 64u)\\
 else if (N == 128u)\\
 \ \ fft\_line\_128\_io(\textcolor{gray!60}{..., buf0, buf1});\\
 else \{\\
-\ \ \textcolor{gray!70}{// held-out N=256 lands here}\\
 \ \ fft\_line\_direct\_fallback\_io(\textcolor{gray!60}{...});\\
 \}};
 
-\node[code] (r) at ($(l.north east)+(6mm,0)$) {%
+\node[code] (r) at ($(l.north east)+(20mm,0)$) {%
 \textcolor{gray!70}{// fft\_line\_direct\_fallback\_io: O(N\textsuperscript{2}) DFT}\\
 float2 acc   = float2(0.0f, 0.0f);\\
 float theta  = -TWO\_PI * float(tid) / float(N);\\
@@ -774,6 +774,13 @@ for (uint n = 0u; n < N; ++n) \{\\
 \ \ w   = cmul(w, wstep);\\
 \}\\
 out\_data[out\_base + tid * out\_stride] = acc;};
+
+\coordinate (lm) at ($(l.east|-l.center)$);
+\coordinate (rm) at (lm-|r.west);
+\node[font=\footnotesize\sffamily, align=center, above=1mm of $(lm)!0.5!(rm)$]
+  (lab) {\textbf{N=256}\\[-1pt]\textbf{lands here}\\[-1pt]\textit{$O(N^2)$ fallback}};
+\node[font=\footnotesize\sffamily\bfseries, below=1mm of $(lm)!0.5!(rm)$] {$0.23\times$};
+\draw[arr] (lm) -- (rm);
 \end{tikzpicture}
 \caption{GPT-5.5 FFT3D iter-10 best: hand-coded
 \texttt{fft\_line\_32/64/128} routines (left dispatch) deliver the
