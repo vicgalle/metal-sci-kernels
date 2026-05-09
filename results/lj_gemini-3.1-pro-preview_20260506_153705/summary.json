@@ -2,7 +2,7 @@
   "task": "lj",
   "model": "gemini-3.1-pro-preview",
   "chip": "Apple M1 Pro",
-  "n_iterations": 15,
+  "n_iterations": 10,
   "seed_score": 0.0028461040676860555,
   "best_score": 0.00563099114126572,
   "improvement": 1.978490950207537,
@@ -126,61 +126,6 @@
       "fail_reason": null,
       "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/10_candidate.metal",
       "elapsed_s": 290.87348198890686,
-      "is_new_best": false
-    },
-    {
-      "iteration": 11,
-      "role": "candidate",
-      "compile_ok": true,
-      "correct": true,
-      "score": 0.005117012684028163,
-      "fail_reason": null,
-      "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/11_candidate.metal",
-      "elapsed_s": 292.5673623085022,
-      "is_new_best": false
-    },
-    {
-      "iteration": 12,
-      "role": "candidate",
-      "compile_ok": true,
-      "correct": true,
-      "score": 0.00347697609575754,
-      "fail_reason": null,
-      "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/12_candidate.metal",
-      "elapsed_s": 316.2949550151825,
-      "is_new_best": false
-    },
-    {
-      "iteration": 13,
-      "role": "candidate",
-      "compile_ok": true,
-      "correct": true,
-      "score": 0.005241309815871897,
-      "fail_reason": null,
-      "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/13_candidate.metal",
-      "elapsed_s": 361.4481039047241,
-      "is_new_best": false
-    },
-    {
-      "iteration": 14,
-      "role": "candidate",
-      "compile_ok": true,
-      "correct": true,
-      "score": 0.004835564632896163,
-      "fail_reason": null,
-      "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/14_candidate.metal",
-      "elapsed_s": 334.80233693122864,
-      "is_new_best": false
-    },
-    {
-      "iteration": 15,
-      "role": "candidate",
-      "compile_ok": true,
-      "correct": true,
-      "score": 0.005373140736395288,
-      "fail_reason": null,
-      "source_path": "results/lj_gemini-3.1-pro-preview_20260506_153705/15_candidate.metal",
-      "elapsed_s": 363.26153016090393,
       "is_new_best": false
     }
   ]
