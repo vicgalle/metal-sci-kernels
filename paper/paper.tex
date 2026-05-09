@@ -402,17 +402,15 @@ median reported). The chip is detected from \texttt{sysctl} and looked up
 in a per-family table (M1 through M4) for peak FP32 GFLOPS and DRAM
 bandwidth.
 
-\paragraph{Notation.}
-A task
-$\mathcal{T}{=}(\sigma_{\mathcal{T}},\,\Sigma_{\mathcal{T}},\,\sigma^{\star}_{\mathcal{T}},\,c_{\mathcal{T}})$
-packages an initial seed kernel $\sigma_{\mathcal{T}}$ (Metal
-source), three in-distribution size configurations $\Sigma_{\mathcal{T}}{=}\{s_1,s_2,s_3\}$,
-one held-out size config
-$\sigma^{\star}_{\mathcal{T}}{\notin}\Sigma_{\mathcal{T}}$, and a per-size
-roofline $c_{\mathcal{T}}(s)$ in GFLOPS or GB/s. Evaluating a candidate
-$\kappa$ at size $s$ produces a correctness flag
-$\chi_{\mathcal{T}}(\kappa,s){\in}\{0,1\}$ (CPU reference within tolerance
-or not) and an achieved throughput $a_{\mathcal{T}}(\kappa,s)$; write
+\paragraph{Notation.} Each task ships a seed kernel
+$\sigma_{\mathcal{T}}$ (Metal source), three in-distribution size
+configurations $\Sigma_{\mathcal{T}}{=}\{s_1,s_2,s_3\}$, a held-out
+size $\sigma^{\star}_{\mathcal{T}}{\notin}\Sigma_{\mathcal{T}}$, and a
+per-size roofline $c_{\mathcal{T}}(s)$ in GFLOPS or GB/s. Evaluating a
+candidate $\kappa$ at size $s$ produces a correctness flag
+$\chi_{\mathcal{T}}(\kappa,s){\in}\{0,1\}$ (CPU reference within
+tolerance or not) and an achieved throughput
+$a_{\mathcal{T}}(\kappa,s)$; write
 $f_{\mathcal{T}}(\kappa,s){=}a_{\mathcal{T}}(\kappa,s)/c_{\mathcal{T}}(s)$
 for the per-size fraction-of-ceiling.
 
@@ -434,19 +432,14 @@ $S_{\mathcal{T}}$ is the agent's optimisation target; $\Phi_{\mathcal{T}}$
 is the external oversight signal it never sees.
 
 \paragraph{Evolution loop.} A frozen LLM $\mathcal{M}$ acts as a kernel
-synthesiser. Given a task-spec system prompt $p_{\mathcal{T}}$ and a
+synthesiser: given a task-spec system prompt $p_{\mathcal{T}}$ and a
 feedback packet $\mathcal{F}_k$ summarising the previous candidate, the
-incumbent, and a short per-iteration history, $\mathcal{M}$ emits a Metal
-source
-\begin{equation}
-\kappa_{k+1} \;=\; \mathcal{M}\!\big(p_{\mathcal{T}},\, q(\kappa_k,\,\kappa^{\star}_k,\,\mathcal{F}_k)\big),
-\qquad \kappa_0 = \sigma_{\mathcal{T}},
-\end{equation}
-which the harness compiles, dispatches across $\Sigma_{\mathcal{T}}$, and
-scores; the strict $(1{+}1)$ rule promotes
-$\kappa^{\star}_{k+1}{=}\kappa_{k+1}$ iff
-$S_{\mathcal{T}}(\kappa_{k+1}){>}S_{\mathcal{T}}(\kappa^{\star}_k)$,
-otherwise $\kappa^{\star}_{k+1}{=}\kappa^{\star}_k$. We formalise this
+incumbent, and a short per-iteration history, $\mathcal{M}$ emits the
+next Metal source $\kappa_{k+1}$ (with
+$\kappa_0{=}\sigma_{\mathcal{T}}$). The harness compiles it, dispatches
+across $\Sigma_{\mathcal{T}}$, and scores it; the strict $(1{+}1)$ rule
+replaces the incumbent only when the new candidate scores strictly
+higher under $S_{\mathcal{T}}$. We formalise this
 compile--evaluate--promote $(1{+}1)$ loop in
 Alg.~\ref{alg:loop} (App.~\ref{app:algorithm}). Compile, pipeline,
 and per-size correctness errors are returned inside $\mathcal{F}_{k+1}$ as
