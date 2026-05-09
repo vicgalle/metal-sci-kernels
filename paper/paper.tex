@@ -1,6 +1,7 @@
 %%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
 
 \documentclass{article}
+\PassOptionsToPackage{table}{xcolor}
 \usepackage[T1]{fontenc}
 
 % Recommended, but optional, packages for figures and better typesetting:
@@ -285,17 +286,17 @@ structure, included to validate the harness.}
 \toprule
 Regime & Task & Optimisation lever & In-distribution size configurations & Held-out \\
 \midrule
-\multirow{2}{*}{R1 stencil}      & heat2d   & halo, temporal blocking                       & $\{256,512,1024\}^2$ & $768^2$ \\
-                                 & wave3d   & 2.5D blocking, register pressure              & $\{64,160,192\}^3$   & $128^3$ \\
-\multirow{2}{*}{R2 compute}      & nbody    & register tiling, threadgroup cooperative load & $N{\in}\{256,1024,2048\}$ & $512$ \\
-                                 & hmc      & per-thread state vs.\ register file           & $(d{,}K){\in}\{(8{,}16K){,}(16{,}4K){,}(32{,}1K)\}$ & $(24{,}2K)$ \\
-\multirow{2}{*}{R3 multi-field}  & lbm      & SoA layout, BGK algebraic fold                & $\{64,128,256\}^2$   & $192^2$ \\
-                                 & ising    & checkerboard MC, byte-exact verify            & $\{256,1024,2048\}^2$ & $1536^2$ \\
-R4 atomics                       & lj       & cell-list scatter, atomic contention          & $N{\in}\{1.7,4.1,10.6\}{\rm K}$ & $2744$ \\
-R5 multi-kernel                  & gradshaf & in-kernel reduction $+$ var-coef stencil      & $\{65,257,513\}^2$   & $129^2$ \\
-R6 butterfly                     & fft3d    & TG bank conflicts, mixed-radix, \texttt{simd\_shuffle} & $\{32,64,128\}^3$ & $256^3$ \\
+\rowcolor{blue!4}    R1 stencil      & heat2d   & halo, temporal blocking                       & $\{256,512,1024\}^2$ & $768^2$ \\
+\rowcolor{blue!4}                    & wave3d   & 2.5D blocking, register pressure              & $\{64,160,192\}^3$   & $128^3$ \\
+\rowcolor{orange!5} R2 compute      & nbody    & register tiling, threadgroup cooperative load & $N{\in}\{256,1024,2048\}$ & $512$ \\
+\rowcolor{orange!5}                 & hmc      & per-thread state vs.\ register file           & $(d{,}K){\in}\{(8{,}16K){,}(16{,}4K){,}(32{,}1K)\}$ & $(24{,}2K)$ \\
+\rowcolor{green!5}  R3 multi-field  & lbm      & SoA layout, BGK algebraic fold                & $\{64,128,256\}^2$   & $192^2$ \\
+\rowcolor{green!5}                  & ising    & checkerboard MC, byte-exact verify            & $\{256,1024,2048\}^2$ & $1536^2$ \\
+\rowcolor{violet!5}R4 atomics                    & lj       & cell-list scatter, atomic contention          & $N{\in}\{1.7,4.1,10.6\}{\rm K}$ & $2744$ \\
+\rowcolor{yellow!9}R5 multi-kernel               & gradshaf & in-kernel reduction $+$ var-coef stencil      & $\{65,257,513\}^2$   & $129^2$ \\
+\rowcolor{cyan!6}R6 butterfly                    & fft3d    & TG bank conflicts, mixed-radix, \texttt{simd\_shuffle} & $\{32,64,128\}^3$ & $256^3$ \\
 \midrule
-(smoke)                          & saxpy    & DRAM saturation                               & $\{1,16,64\}{\rm M}$ & $4{\rm M}$ \\
+\rowcolor{gray!5}(smoke)                         & saxpy    & DRAM saturation                               & $\{1,16,64\}{\rm M}$ & $4{\rm M}$ \\
 \bottomrule
 \end{tabular}%
 }
