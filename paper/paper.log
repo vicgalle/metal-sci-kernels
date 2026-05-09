@@ -840,51 +840,84 @@ Underfull \vbox (badness 6608) has occurred while \output is active []
 
 
 ]
-Underfull \hbox (badness 2418) in paragraph at lines 246--257
+Underfull \hbox (badness 3815) in paragraph at lines 189--215
+\T1/ptm/m/n/10 marks --- Ker-nel-Bench ([][]Ouyang et al.[][], [][]2025[][]), T
+ri-
+ []
+
+
+Underfull \hbox (badness 1596) in paragraph at lines 189--215
+\T1/ptm/m/n/10 ton-Bench ([][]Li et al.[][], [][]2025[][]), Back-end-Bench ([][
+]Saroufim
+ []
+
+
+Underfull \hbox (badness 2529) in paragraph at lines 189--215
+\T1/ptm/m/n/10 et al.[][], [][]2025[][]), Mul-ti-K-er-nel-Bench ([][]Wen et al.
+[][], [][]2025[][]),
+ []
+
+
+Underfull \hbox (badness 2277) in paragraph at lines 189--215
+\T1/ptm/m/n/10 six struc-turally dis-tinct op-ti-mi-sa-tion regimes (R1--R6,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 189--215
+\T1/ptm/m/n/10 (\T1/pcr/m/n/10 [[max_total_threads_per_threadgroup]]
+ []
+
+
+Overfull \hbox (27.9308pt too wide) in paragraph at lines 232--246
+ [][] 
+ []
+
+
+Underfull \hbox (badness 2418) in paragraph at lines 305--316
 []\T1/ptm/m/sc/10 Metal-Sci \T1/ptm/m/n/10 pack-ages 10 tasks into six \T1/ptm/
 m/it/10 op-ti-mi-sa-tion
  []
 
 
-Underfull \vbox (badness 7667) has occurred while \output is active []
-
-
-Underfull \hbox (badness 1603) in paragraph at lines 284--293
+Underfull \hbox (badness 1603) in paragraph at lines 343--352
 \T1/ptm/m/n/10 probability ta-ble and a counter-based Murmur-fmix32
  []
 
-
-Underfull \hbox (badness 4899) in paragraph at lines 294--301
+[2]
+Underfull \hbox (badness 4899) in paragraph at lines 353--360
 \T1/ptm/m/n/10 MD with a cell-list spa-tial hash. Three ker-nels
  []
 
 
-Underfull \hbox (badness 1237) in paragraph at lines 294--301
+Underfull \hbox (badness 1237) in paragraph at lines 353--360
 \T1/ptm/m/n/10 per step (\T1/pcr/m/n/10 clear_cells \T1/ptm/m/n/10 / \T1/pcr/m/
 n/10 build_cells \T1/ptm/m/n/10 / \T1/pcr/m/n/10 step\T1/ptm/m/n/10 );
  []
 
-[2]
-Underfull \hbox (badness 1852) in paragraph at lines 324--335
+
+Underfull \hbox (badness 1852) in paragraph at lines 383--394
  \T1/ptm/b/n/10 Com-pile and dis-patch. \T1/ptm/m/n/10 The har-ness uses Py-Obj
 C's
  []
 
 
-Underfull \hbox (badness 2865) in paragraph at lines 337--349
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3]
+Underfull \hbox (badness 2865) in paragraph at lines 396--408
  \T1/ptm/b/n/10 No-ta-tion. \T1/ptm/m/n/10 A task $\OMS/cmsy/m/n/10 T[]\OT1/cmr
 /m/n/10 (\OML/cmm/m/it/10 ^^[[];  \OT1/cmr/m/n/10 ^^F[]\OML/cmm/m/it/10 ;  ^^[[
 ];  c[]\OT1/cmr/m/n/10 )$ \T1/ptm/m/n/10 pack-ages a
  []
 
 
-Underfull \hbox (badness 2503) in paragraph at lines 337--349
+Underfull \hbox (badness 2503) in paragraph at lines 396--408
 \T1/ptm/m/n/10 and a per-size roofline $\OML/cmm/m/it/10 c[]\OT1/cmr/m/n/10 (\O
 ML/cmm/m/it/10 s\OT1/cmr/m/n/10 )$ \T1/ptm/m/n/10 in GFLOPS or GB/s.
  []
 
 
-Underfull \hbox (badness 1661) in paragraph at lines 337--349
+Underfull \hbox (badness 1661) in paragraph at lines 396--408
 \T1/ptm/m/n/10 ness flag $\OML/cmm/m/it/10 ^^_[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/
 10 ^^T; s\OT1/cmr/m/n/10 )[]\OMS/cmsy/m/n/10 f\OT1/cmr/m/n/10 0\OML/cmm/m/it/10
  ; \OT1/cmr/m/n/10 1\OMS/cmsy/m/n/10 g$ \T1/ptm/m/n/10 (CPU ref-er-ence within 
@@ -892,19 +925,19 @@ tol-
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 337--349
+Underfull \hbox (badness 1728) in paragraph at lines 396--408
 \T1/ptm/m/n/10 er-ance or not) and an achieved through-put $\OML/cmm/m/it/10 a[
 ]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 ^^T; s\OT1/cmr/m/n/10 )$\T1/ptm/m/n/10 ;
  []
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 375--391
+Underfull \hbox (badness 1762) in paragraph at lines 434--450
 \T1/ptm/m/n/10 this compile--evaluate--promote $\OT1/cmr/m/n/10 (1[]1)$ \T1/ptm
 /m/n/10 loop in Alg. [][]1[][]
  []
 
-[3]
-Underfull \hbox (badness 1609) in paragraph at lines 447--484
+
+Underfull \hbox (badness 1609) in paragraph at lines 506--543
  \T1/ptm/b/n/10 In-distribution. \T1/ptm/m/n/10 Self-speedups span $\OT1/cmr/m/
 n/10 1\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 00\OMS/cmsy/m/n/10 ^^B$ \T1/ptm/m/n/10 
 to $\OT1/cmr/m/n/10 10\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 7\OMS/cmsy/m/n/10 ^^B$\
@@ -912,35 +945,38 @@ T1/ptm/m/n/10 .
  []
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 538--555
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 597--614
  \T1/ptm/b/n/10 Re-cur-ring Metal-grammar fail-ures. \T1/ptm/m/n/10 Compile-
  []
 
 
-Underfull \hbox (badness 5302) in paragraph at lines 538--555
+Underfull \hbox (badness 5302) in paragraph at lines 597--614
 \T1/ptm/m/n/10 error pat-terns are sim-i-lar across the three mod-els.
  []
 
 
-Overfull \hbox (5.1225pt too wide) in paragraph at lines 538--555
+Overfull \hbox (5.1225pt too wide) in paragraph at lines 597--614
 \T1/pcr/m/n/10 [[max_total_threads_per_threadgroup(N)]]
  []
 
 
-Underfull \hbox (badness 1436) in paragraph at lines 538--555
+Underfull \hbox (badness 1436) in paragraph at lines 597--614
 \T1/ptm/m/n/10 op-po-site way: Opus 0.6min/iter, Gem-ini 3.5min/iter,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 538--555
+Underfull \hbox (badness 10000) in paragraph at lines 597--614
 \T1/ptm/m/n/10 GPT-5.5 6.6min/iter (\T1/pcr/m/n/10 reasoning_effort=high\T1/ptm
 /m/n/10 );
  []
 
 File: figs/convergence.png Graphic file (type bmp)
 <figs/convergence.png>
-LaTeX Font Info:    Trying to load font information for T1+phv on input line 62
-1.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 68
+0.
 (t1phv.fd
 File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
@@ -949,17 +985,22 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 621.
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 680.
 
-Underfull \hbox (badness 4886) in paragraph at lines 710--710
-[]\T1/pcr/m/n/7 float2 wstep = float2(cos(theta), 
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[5] (paper.bbl
+ [5]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [6]
-[7]) [8
+Underfull \hbox (badness 4886) in paragraph at lines 769--769
+[]\T1/pcr/m/n/7 float2 wstep = float2(cos(theta), 
+ []
+
+(paper.bbl [7]) [8
 
 ] [9
 
@@ -972,7 +1013,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 6332) in paragraph at lines 1181--1181
+Underfull \hbox (badness 6332) in paragraph at lines 1240--1240
 []\T1/ptm/m/it/9 Figure 6. |\T1/ptm/m/n/9 GPT-5.5 HMC iter-3 best: ex-plicit $\
 OML/cmm/m/it/9 D[]\OMS/cmsy/m/n/9 f\OT1/cmr/m/n/9 8\OML/cmm/m/it/9 ; \OT1/cmr/m
 /n/9 16\OML/cmm/m/it/9 ; \OT1/cmr/m/n/9 24\OML/cmm/m/it/9 ; \OT1/cmr/m/n/9 32\O
@@ -980,8 +1021,8 @@ MS/cmsy/m/n/9 g$ \T1/ptm/m/n/9 enu-mer-a-tion with a runtime-$\OML/cmm/m/it/9 d
 $ \T1/ptm/m/n/9 catch-all. The
  []
 
-[12] [13] [14] (paper.aux)
+[12] [13] (paper.aux)
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  )
-Output written on paper.xdv (14 pages, 134680 bytes).
+Output written on paper.xdv (13 pages, 136160 bytes).
