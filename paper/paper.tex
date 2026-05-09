@@ -146,7 +146,7 @@
 % \printAffiliationsAndNotice{\icmlEqualContribution}
 
 \begin{abstract}
- We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate $\Phi_\mathcal{T}$ --- evaluated once at end-of-run on a configuration the agent never sees during search --- functions as a cheap mechanical oversight primitive on this $(1{+}1)$ coding agent, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen $d{=}24$ (Gemini's runtime-$d$ fallback and GPT-5.5's $D\in\{8,16,24,32\}$ enumeration generalize at $17.6\times$ and $18.6\times$), and a GPT-5.5 FFT3D best that wins in-distribution at $2.95\times$ but collapses to $0.23\times$ on a $256^3$ held-out cube --- a silent regression that the in-distribution score alone cannot see.
+ We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate $\Phi_\mathcal{T}$ --- evaluated once at end-of-run on a configuration the agent never sees during search --- functions as a cheap mechanical oversight primitive on this $(1{+}1)$ coding agent, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen $d{=}24$ (Gemini's runtime-$d$ fallback and GPT-5.5's $D\in\{8,16,24,32\}$ enumeration generalize at $17.6\times$ and $18.6\times$), and a GPT-5.5 FFT3D best that wins in-distribution at $2.95\times$ but collapses to $0.23\times$ on a $256^3$ held-out cube, a silent regression that the in-distribution score alone cannot see.
 \end{abstract}
 
 \section{Introduction}
@@ -249,7 +249,7 @@ KernelCraft \cite{nie2026kernelcraft}      & accelerator asm           & ML  & c
 \paragraph{Background and notation.}
 \textit{Apple GPU vocabulary.} A \emph{kernel} is a
 \texttt{.metal}-source GPU function launched from the CPU; a
-\emph{threadgroup} (TG) is Apple's name for a CUDA thread block ---
+\emph{threadgroup} (TG) is Apple's name for a CUDA thread block:
 cooperating threads sharing a scratchpad ``threadgroup memory''; a
 \emph{simdgroup} is the 32-thread SIMD lane group inside a threadgroup
 (Apple's name for a CUDA warp); the \emph{System-Level Cache} (SLC) is
@@ -263,7 +263,7 @@ high-intensity ones are \emph{compute-bound} and cap at peak FP32
 throughput (GFLOPS). We score candidates as a fraction of this hardware
 ceiling rather than against any hand-written baseline.
 \textit{Evolution strategy} $(\mu{=}1{+}\lambda{=}1)$, also called
-$(1{+}1)$, denotes the simplest evolution strategy: one parent, one
+$(1{+}1)$ \cite{beyer2002evolution}, denotes the simplest evolution strategy: one parent, one
 mutated child per iteration; the child replaces the parent iff it
 scores strictly higher.
 
@@ -326,17 +326,16 @@ the text below names the lever each regime tests.
 structured grid: a 5-point heat-equation stencil (8\,B/cell) and a
 7-point leapfrog wave equation (12\,B/cell). The lever is halo
 handling, marching-axis choice, and 2.5D temporal blocking.
-\texttt{wave3d} doubles as a NaN trap --- a sign or indexing error
-compounds over many leapfrog steps, and 10 of Opus's 13 correctness
-fails in Sec.~\ref{sec:results} land here.
+\texttt{wave3d} doubles as a NaN trap, that is, a sign or indexing error
+compounds over many leapfrog steps (e.g. 10 of Opus's 13 correctness
+fails in Sec.~\ref{sec:results} land here).
 
-\paragraph{R2 -- Compute-bound.} $O(N^2)$ pair sums (\texttt{nbody})
-and $O(d^2)$ matvec inside an $L$-step leapfrog (\texttt{hmc}), both
+\paragraph{R2 -- Compute-bound.} $O(N^2)$ pair sums from $n$-body simulations (\texttt{nbody})
+and $O(d^2)$ matvec inside an $L$-step leapfrog integration (\texttt{hmc}), both
 running ${\sim}20$ FLOPs per memory transaction so the ceiling is
 peak FP32 GFLOPS. The lever is register tiling and threadgroup
 cooperative loads. \texttt{hmc} additionally probes the
-register-pressure boundary --- per-thread $\mathbf{q,p,f}$ at
-$d{=}32$ is ${\sim}512$\,B --- and verifies correctness
+register-pressure boundary and verifies correctness
 statistically (sample mean and Frobenius covariance error vs.\ the
 target Gaussian).
 
@@ -346,28 +345,28 @@ distribution fields per cell at 72\,B/cell traffic; the lever is
 SoA layout, push/pull streaming choice, and algebraic factorisations
 of the BGK relaxation (App.~\ref{app:code} dissects an FMA fold
 Opus discovered). \texttt{ising} is 2D Ising checkerboard Metropolis
-MC at 2\,B/site; a precomputed accept-probability table and a
+Monte Carlo at 2\,B/site; a precomputed accept-probability table and a
 counter-based Murmur-fmix32 PRNG yield bit-exact CPU/GPU agreement,
 so verification reduces to byte-equality on the spin array.
 
-\paragraph{R4 -- Irregular memory and atomics.} Lennard-Jones MD
+\paragraph{R4 -- Irregular memory and atomics.} Lennard-Jones molecular dynamics
 with a cell-list spatial hash. Three kernels per step
 (\texttt{clear\_cells} / \texttt{build\_cells} / \texttt{step});
 \texttt{build\_cells} is an atomic scatter onto per-cell occupancy
-counters and the force kernel walks 27 neighbour cells with
+counters and the force kernel walks 27 neighbor cells with
 minimum-image periodic wrap. The lever is load balancing under
 uneven cell occupancy and atomic-contention mitigation.
 
 \paragraph{R5 -- Multi-kernel reductions.} Picard iteration for the
 Grad-Shafranov fixed-boundary plasma equilibrium. Each outer step
-dispatches a max-reduction ($\psi_{\mathrm{axis}}{=}\max\psi$)
+dispatches a max-reduction
 followed by a variable-coefficient 5-point stencil with a nonlinear
-source. The lever is the choice of in-kernel reduction strategy ---
-single-threadgroup vs.\ simdgroup-tree --- and how cleanly the two
+source. The lever is the choice of in-kernel reduction strategy 
+(single-threadgroup vs.\ simdgroup-tree) and how cleanly the two
 kernels compose across the dispatch boundary.
 
 \paragraph{R6 -- Data-shuffle / butterfly.} 3D complex-to-complex
-forward FFT, dispatched as three per-axis 1D FFTs with two
+forward Fast Fourier Transform (FFT), dispatched as three per-axis 1D FFTs with two
 ping-ponged buffers. Unlike R1/R2, the optimisation surface is
 \emph{data movement} rather than arithmetic: bit-reversal vs.\
 Stockham auto-sort, twiddle-factor caching, mixed-radix (radix-4,
@@ -472,12 +471,12 @@ saxpy    & \textbf{1.25} & 1.00          & 1.01          & 93\%    & 78\%   & 78
 heat2d   & 1.00          & 1.03          & 1.00          & 84\%    & 98\%   & 80\%    & 0.86            & 1.01            & 0.82            & saturated \\
 wave3d   & \textbf{1.26} & 1.00          & 1.00          & 97\%    & 87\%   & 96\%    & 1.00            & 0.90            & 0.99            & saturated \\
 ising    & \textbf{1.13} & 1.00          & \textbf{1.09} & 11\%    & 12\%   & 10\%    & 0.94            & 0.99            & 0.88            & flat \\
-fft3d    & 1.03          & \textbf{1.19} & \textbf{2.95} & 42\%    & 45\%   & 8.5\%   & \textbf{1.12}   & \textbf{1.20}   & 0.23            & \textbf{GPT-5.5 silent regression} \\
+fft3d    & 1.03          & \textbf{1.19} & \textbf{2.95} & 42\%    & 45\%   & 8.5\%   & \textbf{1.12}   & \textbf{1.20}   & {\textcolor{purple}{0.23}}            & \textbf{GPT silent regression} \\
 nbody    & \textbf{2.83} & \textbf{2.00} & \textbf{2.19} & 1.6\%   & 2.0\%  & 1.8\%   & \textbf{1.24}   & \textbf{1.50}   & \textbf{1.37}   & generalises \\
 gradshaf & \textbf{1.89} & \textbf{2.89} & \textbf{1.93} & 5.4\%   & 7.7\%  & 5.0\%   & \textbf{2.05}   & \textbf{2.91}   & \textbf{1.86}   & generalises \\
 lj       & \textbf{1.77} & \textbf{1.98} & \textbf{1.62} & 0.31\%  & 0.47\% & 0.34\%  & \textbf{1.24}   & \textbf{1.87}   & \textbf{1.34}   & generalises \\
 lbm      & \textbf{1.46} & \textbf{1.06} & \textbf{1.33} & 79\%    & 93\%   & 82\%    & 0.97            & \textbf{1.16}   & 1.01            & ~tied at $192^2$ \\
-hmc      & \textbf{10.6} & \textbf{10.7} & \textbf{7.19} & ---     & 9.7\%  & 10.2\%  & FAIL            & \textbf{17.6}   & \textbf{18.6}   & \textbf{Opus wrong at $d{=}24$}; Gemini, GPT-5.5 generalize \\
+hmc      & \textbf{10.6} & \textbf{10.7} & \textbf{7.19} & ---     & 9.7\%  & 10.2\%  & {\textcolor{purple}{FAIL}}            & \textbf{17.6}   & \textbf{18.6}   & \textbf{Opus wrong at $d{=}24$}; Gemini, GPT generalize \\
 \bottomrule
 \end{tabular}%
 }
