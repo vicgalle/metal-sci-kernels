@@ -658,6 +658,11 @@ GPT-5.5 reports an in-distribution win of $2.95\times$ --- the
 largest single-model in-distribution gap in our sweep --- that
 flips to a $0.23\times$ slowdown at the held-out $256^3$ cube
 (the one configuration past the largest training size $128^3$).
+The cause is a single dispatch line
+(Fig.~\ref{fig:gpt5-fft-fallback}): when $N\notin\{32,64,128\}$
+the kernel falls into a textbook $O(N^{2})$ direct DFT, so
+$N{=}256$ pays ${\sim}32{\times}$ more arithmetic per output than
+the seed's Stockham FFT.
 The agent confidently labels its iter-10 output as a
 $\sim 3\times$ ``improvement'' over the seed; the held-out gate
 shows it is $4\times$ slower in deployment. Both failures share a
@@ -675,6 +680,55 @@ $\sigma^\star_\mathcal{T}$ at end-of-run, never folded into any
 feedback packet $\mathcal{F}_k$ --- is the lightweight oversight
 primitive that lets a human (or a downstream automated reviewer)
 catch confidently-wrong agent code before deployment.
+
+\begin{figure*}[!t]
+\centering
+\begin{tikzpicture}[
+  code/.style={draw, rounded corners=2pt, fill=gray!5,
+               inner sep=5pt, align=left, font=\scriptsize\ttfamily,
+               text width=64mm, anchor=north west},
+]
+\node[code] (l) at (0,0) {%
+\textcolor{gray!70}{// Dispatch in fft3d\_x kernel}\\
+threadgroup float2 buf0[128];\\
+threadgroup float2 buf1[128];\\
+if (N == 32u)\\
+\ \ fft\_line\_32\_io(\textcolor{gray!60}{...});\\
+else if (N == 64u)\\
+\ \ fft\_line\_64\_io(\textcolor{gray!60}{..., buf0});\\
+else if (N == 128u)\\
+\ \ fft\_line\_128\_io(\textcolor{gray!60}{..., buf0, buf1});\\
+else \{\\
+\ \ \textcolor{gray!70}{// held-out N=256 lands here}\\
+\ \ fft\_line\_direct\_fallback\_io(\textcolor{gray!60}{...});\\
+\}};
+
+\node[code] (r) at ($(l.north east)+(6mm,0)$) {%
+\textcolor{gray!70}{// fft\_line\_direct\_fallback\_io: O(N\textsuperscript{2}) DFT}\\
+float2 acc   = float2(0.0f, 0.0f);\\
+float theta  = -TWO\_PI * float(tid) / float(N);\\
+float2 wstep = float2(cos(theta), sin(theta));\\
+float2 w     = float2(1.0f, 0.0f);\\
+for (uint n = 0u; n < N; ++n) \{\\
+\ \ float2 v = in\_data[in\_base + n*in\_stride];\\
+\ \ acc += cmul(v, w);\\
+\ \ w   = cmul(w, wstep);\\
+\}\\
+out\_data[out\_base + tid * out\_stride] = acc;};
+\end{tikzpicture}
+\caption{GPT-5.5 FFT3D iter-10 best: hand-coded
+\texttt{fft\_line\_32/64/128} routines (left dispatch) deliver the
+$2.95\times$ in-distribution self-speedup; for any $N$ outside
+$\{32, 64, 128\}$ the kernel falls into a textbook direct
+$O(N^{2})$ DFT (right). At held-out $N{=}256$ this costs
+${\sim}32{\times}$ more arithmetic per output than the seed's
+$O(N\log N)$ Stockham FFT, producing the $0.23\times$ held-out
+slowdown reported in Table~\ref{tab:results}. The fast paths reuse
+a 64-entry \texttt{constant float2 W128[]} twiddle table whose stride
+indexing only covers $N{\leq}128$ --- the structural reason the
+fallback is direct DFT rather than a longer FFT.}
+\label{fig:gpt5-fft-fallback}
+\end{figure*}
 
 \paragraph{Other observations.}
 A roofline-anchored score answers ``how close are we to the
@@ -1081,55 +1135,6 @@ ${\sim}32{\times}$ arithmetic blow-up, and three 1D passes per 3D
 transform compound it. The held-out gate $\Phi_{\mathcal{T}}$ surfaces
 the resulting $0.23\times$ slowdown that the in-distribution score
 $S_{\mathcal{T}}$ alone licenses.
-
-\begin{figure}[t]
-\centering
-\begin{tikzpicture}[
-  code/.style={draw, rounded corners=2pt, fill=gray!5,
-               inner sep=5pt, align=left, font=\scriptsize\ttfamily,
-               text width=64mm, anchor=north west},
-]
-\node[code] (l) at (0,0) {%
-\textcolor{gray!70}{// Dispatch in fft3d\_x kernel}\\
-threadgroup float2 buf0[128];\\
-threadgroup float2 buf1[128];\\
-if (N == 32u)\\
-\ \ fft\_line\_32\_io(\textcolor{gray!60}{...});\\
-else if (N == 64u)\\
-\ \ fft\_line\_64\_io(\textcolor{gray!60}{..., buf0});\\
-else if (N == 128u)\\
-\ \ fft\_line\_128\_io(\textcolor{gray!60}{..., buf0, buf1});\\
-else \{\\
-\ \ \textcolor{gray!70}{// held-out N=256 lands here}\\
-\ \ fft\_line\_direct\_fallback\_io(\textcolor{gray!60}{...});\\
-\}};
-
-\node[code] (r) at ($(l.north east)+(6mm,0)$) {%
-\textcolor{gray!70}{// fft\_line\_direct\_fallback\_io: O(N\textsuperscript{2}) DFT}\\
-float2 acc   = float2(0.0f, 0.0f);\\
-float theta  = -TWO\_PI * float(tid) / float(N);\\
-float2 wstep = float2(cos(theta), sin(theta));\\
-float2 w     = float2(1.0f, 0.0f);\\
-for (uint n = 0u; n < N; ++n) \{\\
-\ \ float2 v = in\_data[in\_base + n*in\_stride];\\
-\ \ acc += cmul(v, w);\\
-\ \ w   = cmul(w, wstep);\\
-\}\\
-out\_data[out\_base + tid * out\_stride] = acc;};
-\end{tikzpicture}
-\caption{GPT-5.5 FFT3D iter-10 best: hand-coded
-\texttt{fft\_line\_32/64/128} routines (left dispatch) deliver the
-$2.95\times$ in-distribution self-speedup; for any $N$ outside
-$\{32, 64, 128\}$ the kernel falls into a textbook direct
-$O(N^{2})$ DFT (right). At held-out $N{=}256$ this costs
-${\sim}32{\times}$ more arithmetic per output than the seed's
-$O(N\log N)$ Stockham FFT, producing the $0.23\times$ held-out
-slowdown reported in Table~\ref{tab:results}. The fast paths reuse
-a 64-entry \texttt{constant float2 W128[]} twiddle table whose stride
-indexing only covers $N{\leq}128$ --- the structural reason the
-fallback is direct DFT rather than a longer FFT.}
-\label{fig:gpt5-fft-fallback}
-\end{figure}
 
 \subsection{GPT-5.5 HMC: defensive $D$ enumeration covering $d{=}24$}
 
