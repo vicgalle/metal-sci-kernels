@@ -1,26 +1,48 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
 \documentclass{article}
-
-% Workshop submission: switch to [dblblindworkshop] (or [sglblindworkshop])
-% and set \workshoptitle{...} when a target workshop is fixed. We use the
-% [preprint] option here to keep the draft venue-neutral.
-\usepackage[preprint, nonatbib]{neurips_2026}
-
-\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{hyperref}
-\usepackage{url}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
+
+% Recommended, but optional, packages for figures and better typesetting:
 \usepackage{microtype}
-\usepackage{xcolor}
 \usepackage{graphicx}
-\usepackage{tikz}
-\usetikzlibrary{positioning, arrows.meta, calc}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+
+\usepackage{multirow}
+
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2026}
+
+% For preprint, use
+% \usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, calc}
 
 % Compact display math
 \setlength{\abovedisplayskip}{4pt}
@@ -28,19 +50,94 @@
 \setlength{\abovedisplayshortskip}{2pt}
 \setlength{\belowdisplayshortskip}{2pt}
 
-\title{Metal-Sci: A Scientific Compute Benchmark for\\Evolutionary LLM Kernel Search on Apple Silicon}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
 
-\author{%
-  Anonymous Authors \\
-  Anonymous Affiliation \\
-  \texttt{anonymous@example.org}
-}
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{Metal-Sci: A Scientific Compute Benchmark for Evolutionary LLM Kernel Search on Apple Silicon}
 
 \begin{document}
-\maketitle
+
+\twocolumn[
+  \icmltitle{Metal-Sci: A Scientific Compute Benchmark\\for Evolutionary LLM Kernel Search on Apple Silicon}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Firstname1 Lastname1}{equal,yyy}
+    \icmlauthor{Firstname2 Lastname2}{equal,yyy,comp}
+    \icmlauthor{Firstname3 Lastname3}{comp}
+    \icmlauthor{Firstname4 Lastname4}{sch}
+    \icmlauthor{Firstname5 Lastname5}{yyy}
+    \icmlauthor{Firstname6 Lastname6}{sch,yyy,comp}
+    \icmlauthor{Firstname7 Lastname7}{comp}
+    %\icmlauthor{}{sch}
+    \icmlauthor{Firstname8 Lastname8}{sch}
+    \icmlauthor{Firstname8 Lastname8}{yyy,comp}
+    %\icmlauthor{}{sch}
+    %\icmlauthor{}{sch}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{yyy}{Department of XXX, University of YYY, Location, Country}
+  \icmlaffiliation{comp}{Company Name, Location, Country}
+  \icmlaffiliation{sch}{School of ZZZ, Institute of WWW, Location, Country}
+
+  \icmlcorrespondingauthor{Firstname1 Lastname1}{first1.last1@xxx.edu}
+  \icmlcorrespondingauthor{Firstname2 Lastname2}{first2.last2@www.uk}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Machine Learning, ICML}
+
+  \vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+\printAffiliationsAndNotice{}  % no special notice (required even if empty)
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
 
 \begin{abstract}
- We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro Preview, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate $\Phi_\mathcal{T}$ --- evaluated once at end-of-run on a configuration the agent never sees during search --- functions as a cheap mechanical oversight primitive on this $(1{+}1)$ coding agent, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen $d{=}24$ (Gemini's runtime-$d$ fallback and GPT-5.5's $D\in\{8,16,24,32\}$ enumeration generalize at $17.6\times$ and $18.6\times$), and a GPT-5.5 FFT3D best that wins in-distribution at $2.95\times$ but collapses to $0.23\times$ on a $256^3$ held-out cube --- a silent regression that the in-distribution score alone cannot see.
+ We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate $\Phi_\mathcal{T}$ --- evaluated once at end-of-run on a configuration the agent never sees during search --- functions as a cheap mechanical oversight primitive on this $(1{+}1)$ coding agent, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen $d{=}24$ (Gemini's runtime-$d$ fallback and GPT-5.5's $D\in\{8,16,24,32\}$ enumeration generalize at $17.6\times$ and $18.6\times$), and a GPT-5.5 FFT3D best that wins in-distribution at $2.95\times$ but collapses to $0.23\times$ on a $256^3$ held-out cube --- a silent regression that the in-distribution score alone cannot see.
 \end{abstract}
 
 \section{Introduction}
@@ -104,26 +201,7 @@ scores strictly higher.
 \section{Benchmark tasks}
 \label{sec:tasks}
 
-\textsc{Metal-Sci} packages 10 tasks into six \emph{optimisation
-regimes} (R1--R6, Table~\ref{tab:tasks}). The choice of regimes is
-the benchmark's central design decision: each regime stresses a
-structurally distinct dimension of the GPU/memory hierarchy, and its
-canonical recipe~\cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high}
-does not transfer to its neighbours. A halo-blocking move that wins
-R1 is useless on R2 (register tiling), R4 (atomic contention), or R6
-(intra-simdgroup butterflies). For an LLM, this is the structural
-reason recall alone cannot solve the suite: there is no template that
-wins everywhere, so the model has to actually \emph{recognise the
-regime} from the seed and reach for the right lever.
-
-Each task ships (a)~a Metal seed kernel, (b)~a CPU reference with
-task-specific tolerance, (c)~three in-distribution training sizes
-plus one held-out size, and (d)~a per-size roofline ceiling in
-GFLOPS (compute-bound) or GB/s (bandwidth-bound). Per-task equations,
-ceilings, and verification details are deferred to App.~\ref{app:tasks};
-the prose below names the lever each regime tests.
-
-\begin{table}[t]
+\begin{table*}[t]
 \caption{The 10 \textsc{Metal-Sci} tasks. ``Optimisation lever''
 names the dominant move an LLM must reach for in that regime;
 ``Train sizes'' / ``Held-out'' are passed to the harness verbatim.
@@ -153,7 +231,28 @@ R6 butterfly                     & fft3d    & TG bank conflicts, mixed-radix, \t
 \bottomrule
 \end{tabular}%
 }
-\end{table}
+\end{table*}
+
+
+\textsc{Metal-Sci} packages 10 tasks into six \emph{optimisation
+regimes} (R1--R6, Table~\ref{tab:tasks}). The choice of regimes is
+the benchmark's central design decision: each regime stresses a
+structurally distinct dimension of the GPU/memory hierarchy, and its
+canonical recipe~\cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high}
+does not transfer to its neighbours. A halo-blocking move that wins
+R1 is useless on R2 (register tiling), R4 (atomic contention), or R6
+(intra-simdgroup butterflies). For an LLM, this is the structural
+reason recall alone cannot solve the suite: there is no template that
+wins everywhere, so the model has to actually \emph{recognise the
+regime} from the seed and reach for the right lever.
+
+Each task ships (a)~a Metal seed kernel, (b)~a CPU reference with
+task-specific tolerance, (c)~three in-distribution training sizes
+plus one held-out size, and (d)~a per-size roofline ceiling in
+GFLOPS (compute-bound) or GB/s (bandwidth-bound). Per-task equations,
+ceilings, and verification details are deferred to App.~\ref{app:tasks};
+the prose below names the lever each regime tests.
+
 
 \paragraph{R1 -- Regular stencils.} Bandwidth-bound updates over a
 structured grid: a 5-point heat-equation stencil (8\,B/cell) and a
@@ -208,6 +307,7 @@ radix-8) butterflies for fewer barriers, and intra-simdgroup
 permutes via \texttt{simd\_shuffle\_xor}. The per-axis stride
 asymmetry (stride 1 along $x$ vs.\ $N$ and $N^2$ along $y,z$) makes
 threadgroup-memory bank-conflict avoidance a separate sub-lever.
+
 
 \section{Harness Design}
 \label{sec:harness}
@@ -280,25 +380,7 @@ $\Phi_{\mathcal{T}}(\kappa^{\star}_K)$ are reported. A single
 Gemini via \texttt{google-genai}, and GPT-5.5 via the OpenAI
 Responses API at \texttt{reasoning\_effort=high}.
 
-\section{Experiments}
-\label{sec:results}
-
-We run three matched single-model sweeps on Apple M1~Pro ---
-claude-opus-4-7 (\emph{O}), gemini-3.1-pro-preview (\emph{G}), and
-gpt-5.5 (\emph{G5}) --- over the ten tasks at the same per-task
-iteration budget (10 each except lbm at 25 and wave3d at 15),
-$\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
-Table~\ref{tab:results} reports each model's in-distribution self-speedup
-(best / seed, gmean over three training sizes) and a held-out evaluation
-in which the unmodified seed and each incumbent best are run on a single
-unseen problem size declared by the task spec (Sec.~\ref{sec:tasks}).
-The held-out columns are remeasured in a single fresh session for all
-three models so the absolute fraction-of-ceiling numbers stay
-apples-to-apples; we observed that single-size held-out fractions can
-shift by tens of percentage points across sessions due to GPU thermal
-state and SLC residency, so we anchor on the within-session ratios.
-
-\begin{table}[t]
+\begin{table*}[t]
 \caption{Matched 10/15/25-iter sweeps on Apple M1~Pro:
 O = claude-opus-4-7, G = gemini-3.1-pro-preview, G5 = gpt-5.5.
 \emph{In-dist.\ $\times$} = best / seed, gmean over three training sizes;
@@ -329,7 +411,26 @@ lbm      & 1.46 & 1.06  & 1.33  & 79\%   & 93\%   & 82\%   & 0.97           & 1.
 hmc      & 10.6 & 10.7  & 7.19  & ---    & 9.7\%  & 10.2\% & \textbf{FAIL}  & 17.6           & 18.6           & \textbf{O wrong at $d{=}24$}; G,G5 clean \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
+
+\section{Experiments}
+\label{sec:results}
+
+We run three matched single-model sweeps on Apple M1~Pro ---
+claude-opus-4-7 (\emph{O}), gemini-3.1-pro-preview (\emph{G}), and
+gpt-5.5 (\emph{G5}) --- over the ten tasks at the same per-task
+iteration budget (10 each except lbm at 25 and wave3d at 15),
+$\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
+Table~\ref{tab:results} reports each model's in-distribution self-speedup
+(best / seed, gmean over three training sizes) and a held-out evaluation
+in which the unmodified seed and each incumbent best are run on a single
+unseen problem size declared by the task spec (Sec.~\ref{sec:tasks}).
+The held-out columns are remeasured in a single fresh session for all
+three models so the absolute fraction-of-ceiling numbers stay
+apples-to-apples; we observed that single-size held-out fractions can
+shift by tens of percentage points across sessions due to GPU thermal
+state and SLC residency, so we anchor on the within-session ratios.
+
 
 \paragraph{In-distribution.} Self-speedups span $1.00\times$ to
 $10.7\times$. The HMC step (Fig.~\ref{fig:hmc-evol}) is the high end
@@ -440,7 +541,7 @@ opposite way: Opus 0.6\,min/iter, Gemini 3.5\,min/iter, GPT-5.5
 exploration and longer reasoning context costs roughly $2\times$
 Gemini and $11\times$ Opus per iteration at matched budget.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
 \begin{tikzpicture}[
   code/.style={draw, rounded corners=2pt, fill=gray!5,
@@ -496,7 +597,7 @@ stalled at 2--4\% of peak. Opus enumerated $D{\in}\{8,16,32\}$ and broke
 correctness at the held-out $d{=}24$; Gemini kept a runtime-$d$ fallback
 and generalised cleanly.}
 \label{fig:hmc-evol}
-\end{figure}
+\end{figure*}
 
 
 \section{Discussion}
@@ -571,11 +672,19 @@ tasks. Future tasks include sparse linear algebra (SpMV, CG) and
 cross-chip generalisation (evolve on M2~Pro, evaluate on M3~Max).
 
 
-\bibliographystyle{abbrv}
+
+
 \bibliography{bibliography}
+\bibliographystyle{icml2026}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% APPENDIX
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \appendix
+\onecolumn
 
 \section{Task formulations}
 \label{app:tasks}
@@ -1182,3 +1291,17 @@ all three models.}
 \end{figure}
 
 \end{document}
+
+% This document was modified from the file originally made available by
+% Pat Langley and Andrea Danyluk for ICML-2K. This version was created
+% by Iain Murray in 2018, and modified by Alexandre Bouchard in
+% 2019 and 2021 and by Csaba Szepesvari, Gang Niu and Sivan Sabato in 2022.
+% Modified again in 2023 and 2024 by Sivan Sabato and Jonathan Scarlett.
+% Previous contributors include Dan Roy, Lise Getoor and Tobias
+% Scheffer, which was slightly modified from the 2010 version by
+% Thorsten Joachims & Johannes Fuernkranz, slightly modified from the
+% 2009 version by Kiri Wagstaff and Sam Roweis's 2008 version, which is
+% slightly modified from Prasad Tadepalli's 2007 version which is a
+% lightly changed version of the previous year's version by Andrew
+% Moore, which was in turn edited from those of Kristian Kersting and
+% Codrina Lauth. Alex Smola contributed to the algorithmic style files.
