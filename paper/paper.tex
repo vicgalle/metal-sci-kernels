@@ -50,6 +50,15 @@
 \setlength{\abovedisplayshortskip}{2pt}
 \setlength{\belowdisplayshortskip}{2pt}
 
+% Allow two double-column floats to share the top of one page.
+\setcounter{topnumber}{2}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\dbltopfraction}{0.95}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dblfloatpagefraction}{0.7}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % THEOREMS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -419,7 +428,10 @@ hmc      & 10.6 & 10.7  & 7.19  & ---    & 9.7\%  & 10.2\% & \textbf{FAIL}  & 17
 We run three matched single-model sweeps on Apple M1~Pro ---
 claude-opus-4-7 (\emph{O}), gemini-3.1-pro-preview (\emph{G}), and
 gpt-5.5 (\emph{G5}) --- over the ten tasks at the same per-task
-iteration budget (10 each except lbm at 25 and wave3d at 15),
+iteration budget (10 each except lbm at 25 and wave3d at 15;
+the asymmetry tracks where the incumbent kept moving past iter~10
+in pilot runs and is justified \emph{post hoc} by
+Fig.~\ref{fig:convergence}),
 $\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
 Table~\ref{tab:results} reports each model's in-distribution self-speedup
 (best / seed, gmean over three training sizes) and a held-out evaluation
@@ -541,7 +553,32 @@ opposite way: Opus 0.6\,min/iter, Gemini 3.5\,min/iter, GPT-5.5
 exploration and longer reasoning context costs roughly $2\times$
 Gemini and $11\times$ Opus per iteration at matched budget.
 
-\begin{figure*}[t]
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=\textwidth]{figs/convergence.png}
+\caption{Per-task running self-speedup (best-so-far / seed) versus
+iteration, Opus 4.7 (purple) vs Gemini 3.1 Pro (green) vs GPT-5.5
+(orange). Filled circles mark the iteration that achieved the
+final best; each \texttt{x} along $y{=}1$ is a candidate that
+compiled or ran wrong (the incumbent is unchanged) --- the visible
+counts make the silent-correctness story concrete: Opus emits more
+failures than Gemini or GPT-5.5 at every task with non-trivial
+search (nbody, hmc, ising, lj, wave3d). The plot also justifies
+the asymmetric per-task budgets: on most tasks (saxpy, heat2d,
+nbody, gradshaf, hmc, ising, lj) the incumbent stops moving by
+iter~$\sim$8 for all three models, but lbm's Opus run plateaus at
+$1.36\times$ from iter~3 through iter~22 and only breaks through
+to $1.46\times$ at iter~23 (the BGK fold + pinned threadgroup of
+App.~\ref{app:code}); wave3d's Opus run shows the same shape with
+the lift at iter~14 ($1.26\times$). A 10-iter budget would have
+missed both Opus exemplars. GPT-5.5's fft3d, the only late-arriving
+in-distribution win in the new sweep, climbs monotonically through
+iter~10 to $2.95\times$ --- and is exactly the win that fails to
+generalise on the held-out gate.}
+\label{fig:convergence}
+\end{figure*}
+
+\begin{figure*}[!t]
 \centering
 \begin{tikzpicture}[
   code/.style={draw, rounded corners=2pt, fill=gray!5,
@@ -1242,53 +1279,6 @@ KernelCraft \cite{nie2026kernelcraft}      & accelerator asm           & ML  & c
 \end{tabular}%
 }
 \end{table}
-
-\section{Further results: convergence and iteration budgets}
-\label{app:convergence}
-
-The per-task iteration budget is uneven --- lbm 25, wave3d 15, all
-others 10. Figure~\ref{fig:convergence} shows the running self-speedup
-\emph{best/seed} per iteration across the three sweeps and justifies
-the choice. Two patterns recur. First, on most tasks (saxpy, heat2d,
-nbody, gradshaf, hmc, ising, lj) the incumbent stops moving by
-iteration $\sim$8 for all three models; extending past 10 would not
-change the headline number. Second, lbm and wave3d are different:
-lbm's Opus run plateaus at $1.36\times$ from iter~3 through iter~22,
-then breaks through to $1.46\times$ at iter~23 (the BGK fold +
-pinned threadgroup of App.~\ref{app:code}); a 10-iter budget would
-have reported $1.36\times$ and missed App.~\ref{app:code}'s
-exemplar. GPT-5.5 reaches its lbm best at iter~13 ($1.33\times$).
-Wave3d's Opus run shows the same shape with the lift at iter~14
-(GPT-5.5 and Gemini stay at $1.00\times$ throughout). One additional
-late-arriving win shows up only in the new sweep: GPT-5.5's fft3d
-best lands at iter~10 ($2.95\times$), having climbed monotonically
-from iter~2 onward --- the only task where extending the GPT-5.5
-budget past 10 might have paid off in-distribution (though as the
-held-out gate shows, that is exactly the win that fails to
-generalise). Both late-arriving Opus wins land in tasks where the
-seed is already saturated on at least one size --- the search has
-to pick a structural lever (kernel attribute, marching axis), and
-$1+1$ exploration finds those rarely. The figure also makes the
-silent-correctness story visible: every \texttt{x} on the $y{=}1$
-baseline is a candidate that compiled or ran wrong, and Opus emits
-more of them than Gemini or GPT-5.5 at every task with non-trivial
-search (nbody, hmc, ising, lj, wave3d).
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{figs/convergence.png}
-\caption{Per-task running self-speedup (best-so-far / seed) versus
-iteration, Opus 4.7 (purple) vs Gemini 3.1 Pro (green) vs GPT-5.5
-(orange). Filled circles mark the iteration that achieved the
-final best; \texttt{x} along $y{=}1$ marks compile or correctness
-failures (which leave the incumbent unchanged). lbm and wave3d
-are the tasks where extending the budget past 10 paid off for
-Opus (lbm iter~23 at $1.46\times$, wave3d iter~14 at $1.26\times$);
-fft3d is the task where GPT-5.5 keeps climbing through iter~10
-(to $2.95\times$). Every other task plateaus by iter~$\sim$8 for
-all three models.}
-\label{fig:convergence}
-\end{figure}
 
 \end{document}
 
