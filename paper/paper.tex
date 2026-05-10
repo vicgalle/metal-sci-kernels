@@ -148,7 +148,7 @@
 
 \begin{abstract}
  We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs in $n$-body problems, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate scoring function $\Phi_\mathcal{T}$ (evaluated once at end-of-run on a configuration the agent never sees during search) functions as a cheap mechanical oversight primitive on this automatic search loop, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen dimensions, and a GPT FFT3D best that wins in-distribution at $2.95\times$ speedup but collapses to $0.23\times$ on a $256^3$ held-out cube, a silent regression that the in-distribution score alone cannot see. Code at\\
- \href{github.com/vicgalle/metal-kernels}{https://github.com/vicgalle/metal-kernels}.
+ \href{https://github.com/vicgalle/metal-kernels}{github.com/vicgalle/metal-kernels}.
 \end{abstract}
 
 \section{Introduction}
