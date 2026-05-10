@@ -15,7 +15,9 @@ licenses.
 This repo accompanies the paper *Metal-Sci: A Scientific Compute Benchmark
 for Evolutionary LLM Kernel Search on Apple Silicon*.
 
-![Metal-Sci overview: six optimization regimes (top) and the harness loop (bottom)](figures/overview.png)
+<p align="center">
+  <img src="figures/overview.png" alt="Metal-Sci overview: six optimization regimes (top) and the harness loop (bottom)" width="70%">
+</p>
 
 *Top:* the six optimization regimes (R1–R6), each stressing a structurally
 distinct GPU/memory bottleneck whose canonical recipe does not transfer
