@@ -15,6 +15,21 @@ licenses.
 This repo accompanies the paper *Metal-Sci: A Scientific Compute Benchmark
 for Evolutionary LLM Kernel Search on Apple Silicon*.
 
+![Metal-Sci overview: six optimization regimes (top) and the harness loop (bottom)](figures/overview.png)
+
+*Top:* the six optimization regimes (R1–R6), each stressing a structurally
+distinct GPU/memory bottleneck whose canonical recipe does not transfer
+to its neighbours. *Bottom:* the harness loop. A frozen LLM $\mathcal{M}$
+emits a Metal source $\kappa_k$; the harness runtime-compiles it,
+dispatches across the in-distribution size configurations
+$\Sigma_{\mathcal{T}}$, and scores it against per-size roofline ceilings.
+The candidate becomes the new incumbent $\kappa^{\star}_k$ only when
+$S_{\mathcal{T}}$ strictly improves. Compile diagnostics and per-size
+$(\chi_s, a_s)$ flow back through a structured feedback packet
+$\mathcal{F}_k$ that primes the next iteration. The held-out evaluation
+$\Phi_{\mathcal{T}}$ at $\sigma^{\star}_{\mathcal{T}}$ runs once at
+end-of-run and is **never** folded into any $\mathcal{F}_k$.
+
 ## What's here
 
 - **Harness** (`metal_kernels/harness.py`): runtime-compiles `.metal`
