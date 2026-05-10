@@ -1342,6 +1342,44 @@ summarizes how \textsc{Metal-Sci} differs from these comparators
 across workload, score basis, multi-size generalization, and
 hardware target.
 
+Beyond GPU-kernel generation, LLM-driven program search has been
+applied to several adjacent code-synthesis settings, and the design
+choices made there inform our own. \emph{Eureka}~\cite{ma2024eureka}
+synthesizes RL reward functions directly from environment source
+code, using GPU-parallel rollouts as the fitness signal in a
+population-based coding loop. \emph{ReEvo}~\cite{ye2024reevo}
+positions LLMs as hyper-heuristics that evolve combinatorial-optimization
+heuristics with explicit short- and long-term reflective feedback
+between mutations, an approach that directly motivates our use of
+the previous-iteration profile and diff as in-context signal for
+the next mutation. \emph{OPRO}~\cite{yang2024opro} more abstractly
+casts the LLM itself as a black-box optimizer that proposes
+candidate solutions conditioned on a textual trace of past trials,
+and \emph{Reflexion}~\cite{shinn2023reflexion} shows that verbal
+self-critique between attempts can substitute for gradient-based
+updates on agentic tasks. Closer to artifact accumulation,
+\emph{Voyager}~\cite{wang2024voyager} grows a library of executable
+skills for an embodied agent by incrementally generating, testing, and
+archiving code, mirroring at the skill level what our archive does
+at the kernel level.
+
+A complementary, more recent strand recasts the \emph{synthesis
+pipeline} itself as the search target. Karpathy's
+\emph{autoresearch}~\cite{karpathy2026autoresearch} runs a coding
+agent that edits a nanoGPT training script under a held-out
+validation-loss budget, while \citet{gallego2026policies} lets an
+outer coding agent rewrite the synthesis pipeline of an inner-loop
+multi-agent policy synthesizer for sequential social dilemmas.
+\textsc{Metal-Sci} sits at the inner-loop level of this hierarchy:
+the harness, scoring rule, and prompt scaffold are fixed by us, and
+each LLM call rewrites a single kernel under a wall-clock fitness
+signal. We differ from all of the above in workload (Apple-Silicon
+scientific GPU kernels rather than ML training, robotic skills, or
+combinatorial heuristics) and in score basis (multi-size,
+in-/out-of-distribution geometric-mean speedup over a vendor MPS/MLX
+reference, rather than ML-task speedup, validation loss, episodic
+return, or solution cost).
+
 \end{document}
 
 % This document was modified from the file originally made available by
