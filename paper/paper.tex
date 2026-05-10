@@ -156,10 +156,10 @@ LLM code-search systems such as FunSearch \cite{funsearch}, AlphaEvolve \cite{no
 \emph{optimisers} of executable artefacts. The choice of artefact matters:
 KernelBench targets PyTorch ML kernels (GEMM, attention, convolution) on
 CUDA, where canonical implementations are heavily represented in
-pretraining data and the optimisation surface is dominated by tiling and
+pretraining data and the optimization surface is dominated by tiling and
 warp-level reductions.
 
-Scientific computing exposes a different surface. Stencils are
+Scientific computing exposes a different surface. For example, stencils are
 bandwidth-bound and reward halo and temporal blocking. All-pairs
 interactions are compute-bound and reward register blocking with
 shared-memory cooperative loads. Lattice Boltzmann ping-pongs nine
@@ -167,7 +167,7 @@ distribution functions per cell with non-trivial pull-stream indexing.
 Cell-list molecular dynamics touches irregular memory through atomic
 counters. Hamiltonian Monte Carlo runs many chains in parallel where
 register pressure scales with the problem dimension $d$. Grad-Shafranov
-solvers chain a max-reduction with a variable-coefficient stencil. 3D
+solvers chain a max-reduction with a variable-coefficient stencil. And 3D
 FFTs are dominated by data-shuffle/butterfly patterns and twiddle-factor
 caching rather than tiling. Each pattern stresses a distinct dimension of
 the compiler/memory hierarchy, and canonical optimizations \cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high} differ regime-to-regime.
@@ -181,11 +181,11 @@ host-device copy plumbing, enabling sub-second compile-run-verify cycles
 per candidate that are essential for fast evolutionary loops. And it
 supports rich simdgroup intrinsics (\texttt{simd\_max},
 \texttt{simd\_broadcast}) and threadgroup-memory tiling, giving the LLM a
-non-trivial optimisation surface.
+non-trivial optimization surface.
 
 \paragraph{Contributions.} (i) A 10-task scientific compute benchmark over
 six optimization regimes, each with a CPU reference, roofline-anchored
-fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) three matched single-model sweeps (Claude Opus~4.7, Gemini~3.1~Pro, and GPT-5.5) on M1~Pro that operationalise the held-out gate $\Phi_\mathcal{T}$ as a cheap mechanical oversight primitive on the $(1{+}1)$ coding agent: $\Phi_\mathcal{T}$ is never folded into any feedback packet seen by the LLM during search and catches confidently-wrong outputs --- silent correctness violations and silent regressions --- that the in-distribution score $S_\mathcal{T}$ alone licenses.
+fitness function, and multi-size generalization gate; (ii) a runtime-compiled harness that exposes compile errors, correctness diagnostics, and per-size GPU timing back to the LLM; and (iii) three matched single-model sweeps (Claude Opus~4.7, Gemini~3.1~Pro, and GPT-5.5) on M1~Pro that operationalize the held-out gate $\Phi_\mathcal{T}$ as a cheap mechanical oversight primitive on the coding agent: $\Phi_\mathcal{T}$ is never folded into any feedback packet seen by the LLM during search and catches confidently-wrong outputs (silent correctness violations and silent regressions) that the in-distribution score $S_\mathcal{T}$ alone licenses.
 
 \paragraph{Related work.} Existing LLM kernel-generation benchmarks, such as KernelBench~\cite{ouyang2025kernelbench},
 TritonBench~\cite{li2025tritonbench},
@@ -197,11 +197,11 @@ target ML operators on CUDA or accelerator backends and score speedup
 against a vendor or compiler baseline (Table~\ref{tab:related}).
 \textsc{Metal-Sci} differs on three axes that drive the harness
 design: \emph{(i)}~scientific compute spanning six structurally
-distinct optimisation regimes (R1--R6, Sec.~\ref{sec:tasks}) whose
+distinct optimization regimes (R1--R6, Sec.~\ref{sec:tasks}) whose
 canonical recipes \cite{datta,nyland2007fast,schonherr2011multi,anderson2008general,govindaraju2008high}
 do not transfer between regimes; \emph{(ii)}~a per-chip roofline
 score (decoupled from any reference implementation) with a held-out
-single-size gate $\Phi_\mathcal{T}$ the agent never sees during search;
+size configuration gate $\Phi_\mathcal{T}$ the agent never sees during search;
 and \emph{(iii)}~Apple Silicon Metal, which is structurally underrepresented
 in CUDA-centric pretraining and a real OOD test on Metal-grammar
 idioms (\texttt{[[max\_total\_threads\_per\_threadgroup]]} attribute
@@ -211,18 +211,18 @@ search is established by FunSearch~\cite{funsearch} and
 AlphaEvolve~\cite{novikov2025alphaevolve} and specialised to CUDA ML
 kernels by AI~CUDA~Engineer~\cite{lange2025towards} and
 EvoEngineer~\cite{guo2025evoengineer}; App.~\ref{app:related} expands
-the full comparator set.
+this related work.
 
 \begin{table*}[!t]
 \caption{\textsc{Metal-Sci} versus existing LLM kernel-generation
 benchmarks across the axes that drive the design of our harness.
 \emph{Domain}: ML = neural-network operators (GEMM, attention,
-convolution, normalisation, activation); HPC = scientific compute
+convolution, normalization, activation); HPC = scientific compute
 (stencil, $N$-body, LBM, MD, MCMC, PDE solver, FFT). \emph{Score basis}:
-what \emph{achieved} is normalised against. \emph{Multi-size}: whether
-the score requires generalisation across problem sizes. \emph{Search}:
+what \emph{achieved} is normalized against. \emph{Multi-size}: whether
+the score requires generalization across problem sizes. \emph{Search}:
 the loop structure exposed to the LLM. Within the ML row, all listed
-benchmarks span a single optimisation regime (matmul-style, with
+benchmarks span a single optimization regime (matmul-style, with
 norm/activation epilogues); \textsc{Metal-Sci} spans six structurally
 distinct regimes (R1--R6 of Section~\ref{sec:tasks}).}
 \label{tab:related}
@@ -247,8 +247,8 @@ KernelCraft \cite{nie2026kernelcraft}      & accelerator asm           & ML  & c
 }
 \end{table*}
 
-\paragraph{Background and notation.}
-\textit{Apple GPU vocabulary.} A \emph{kernel} is a
+\paragraph{Background and vocabulary.}
+\textit{Apple GPU terms.} A \emph{kernel} is a
 \texttt{.metal}-source GPU function launched from the CPU; a
 \emph{threadgroup} (TG) is Apple's name for a CUDA thread block:
 cooperating threads sharing a scratchpad ``threadgroup memory''; a
@@ -272,11 +272,11 @@ scores strictly higher.
 \label{sec:tasks}
 
 \begin{table*}[t]
-\caption{The 10 \textsc{Metal-Sci} tasks. ``Optimisation lever''
+\caption{The 10 \textsc{Metal-Sci} tasks. ``Optimization lever''
 names the dominant move an LLM must reach for in that regime.
 $N_x{\times}N_y$ grids written as $N^2$ when square; cube edges as
 $N^3$. \texttt{saxpy} is a bandwidth smoke-test outside the regime
-structure, included to validate the harness.}
+structure, used to validate the harness.}
 \label{tab:tasks}
 \centering
 \footnotesize
@@ -284,7 +284,7 @@ structure, included to validate the harness.}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l l l l l}
 \toprule
-Regime & Task & Optimisation lever & In-distribution size configurations & Held-out \\
+Regime & Task & Optimization lever & In-distribution size configurations & Held-out \\
 \midrule
 \rowcolor{blue!4}    R1 stencil      & heat2d   & halo, temporal blocking                       & $\{256,512,1024\}^2$ & $768^2$ \\
 \rowcolor{blue!4}                    & wave3d   & 2.5D blocking, register pressure              & $\{64,160,192\}^3$   & $128^3$ \\
@@ -303,7 +303,7 @@ Regime & Task & Optimisation lever & In-distribution size configurations & Held-
 \end{table*}
 
 
-\textsc{Metal-Sci} packages 10 tasks into six \emph{optimisation
+\textsc{Metal-Sci} packages 10 tasks into six \emph{optimization
 regimes} (R1--R6, Table~\ref{tab:tasks}). The choice of regimes is
 the benchmark's central design decision: each regime stresses a
 structurally distinct dimension of the GPU/memory hierarchy, and its
@@ -313,11 +313,11 @@ R1 is useless on R2 (register tiling), R4 (atomic contention), or R6
 (intra-simdgroup butterflies). For an LLM, this is the structural
 reason recall alone cannot solve the suite: there is no template that
 wins everywhere, so the model has to actually \emph{recognise the
-regime} from the seed and reach for the right lever.
+regime} from the kernel seed and reach for the right lever.
 
 Each task ships (a)~a Metal seed kernel, (b)~a CPU reference with
 task-specific tolerance, to check correctness, (c)~three in-distribution size configurations
-plus one held-out size, and (d)~a per-size roofline ceiling in
+plus one held-out size configuration, and (d)~a per-size roofline ceiling in
 GFLOPS (compute-bound) or GB/s (bandwidth-bound). Per-task equations,
 ceilings, and verification details are deferred to App.~\ref{app:tasks};
 the text below names the lever each regime tests.
@@ -368,12 +368,12 @@ kernels compose across the dispatch boundary.
 
 \paragraph{R6 -- Data-shuffle / butterfly.} 3D complex-to-complex
 forward Fast Fourier Transform (FFT), dispatched as three per-axis 1D FFTs with two
-ping-ponged buffers. Unlike R1/R2, the optimisation surface is
+ping-ponged buffers. Unlike R1/R2, the optimization surface is
 \emph{data movement} rather than arithmetic: bit-reversal vs.\
 Stockham auto-sort, twiddle-factor caching, mixed-radix (radix-4,
 radix-8) butterflies for fewer barriers, and intra-simdgroup
 permutes via \texttt{simd\_shuffle\_xor}. The per-axis stride
-asymmetry (stride 1 along $x$ vs.\ $N$ and $N^2$ along $y,z$) makes
+asymmetry (stride 1 along $x$ vs.\ $N$/$N^2$ along $y,z$) makes
 threadgroup-memory bank-conflict avoidance a separate sub-lever.
 
 
@@ -389,7 +389,7 @@ The harness we propose closes an evolutionary loop around a frozen LLM: each
   a Python process, so each $(1{+}1)$ step costs seconds rather than
   minutes and the agent can iterate on the same kernel dozens of times
   per task; and \emph{(ii)}~a held-out score $\Phi_{\mathcal{T}}$ at an unseen size configuration, computed once at end-of-run and never folded into
-  any $\mathcal{F}_k$ the LLM sees during search. %The remainder of this section makes the loop precise: compile and dispatch, task notation, the two scoring quantities $S_{\mathcal{T}}$ and $\Phi_{\mathcal{T}}$, and the $(1{+}1)$ evolution loop itself.
+  any $\mathcal{F}_k$ the LLM sees during search, to also test for generalization. %The remainder of this section makes the loop precise: compile and dispatch, task notation, the two scoring quantities $S_{\mathcal{T}}$ and $\Phi_{\mathcal{T}}$, and the $(1{+}1)$ evolution loop itself.
 
 \paragraph{Compile and dispatch.} The harness uses PyObjC's Metal bindings
 and runtime-compiles \texttt{.metal} source via
@@ -428,18 +428,18 @@ trading correctness for speed; the gmean across sizes discourages overfit
 to one regime. The held-out gate, run only on the run's incumbent at
 end-of-run, is the analogous quantity at the unseen size configuration:
 $\Phi_{\mathcal{T}}(\kappa){=}f_{\mathcal{T}}(\kappa,\sigma^{\star}_{\mathcal{T}}){\cdot}\chi_{\mathcal{T}}(\kappa,\sigma^{\star}_{\mathcal{T}})$.
-$S_{\mathcal{T}}$ is the agent's optimisation target; $\Phi_{\mathcal{T}}$
+$S_{\mathcal{T}}$ is the agent's optimization target; $\Phi_{\mathcal{T}}$
 is the external oversight signal it never sees.
 
 \paragraph{Evolution loop.} A frozen LLM $\mathcal{M}$ acts as a kernel
-synthesiser: given a task-spec system prompt $p_{\mathcal{T}}$ and a
-feedback packet $\mathcal{F}_k$ summarising the previous candidate, the
+synthesizer: given a task-spec system prompt $p_{\mathcal{T}}$ and a
+feedback packet $\mathcal{F}_k$ summarizing the previous candidate, the
 incumbent, and a short per-iteration history, $\mathcal{M}$ emits the
 next Metal source $\kappa_{k+1}$ (with
 $\kappa_0{=}\sigma_{\mathcal{T}}$). The harness compiles it, dispatches
 across $\Sigma_{\mathcal{T}}$, and scores it; the strict $(1{+}1)$ rule
 replaces the incumbent only when the new candidate scores strictly
-higher under $S_{\mathcal{T}}$. We formalise this
+higher under $S_{\mathcal{T}}$. We formalize this
 compile--evaluate--promote $(1{+}1)$ loop in
 Alg.~\ref{alg:loop} (App.~\ref{app:algorithm}). Compile, pipeline,
 and per-size correctness errors are returned inside $\mathcal{F}_{k+1}$ as
@@ -473,9 +473,9 @@ heat2d   & 1.00          & 1.03          & 1.00          & 84\%    & 98\%   & 80
 wave3d   & \textbf{1.26} & 1.00          & 1.00          & 97\%    & 87\%   & 96\%    & 1.00            & 0.90            & 0.99            & saturated \\
 ising    & \textbf{1.13} & 1.00          & \textbf{1.09} & 11\%    & 12\%   & 10\%    & 0.94            & 0.99            & 0.88            & flat \\
 fft3d    & 1.03          & \textbf{1.19} & \textbf{2.95} & 42\%    & 45\%   & 8.5\%   & \textbf{1.12}   & \textbf{1.20}   & {\textcolor{purple}{0.23}}            & \textbf{GPT silent regression} \\
-nbody    & \textbf{2.83} & \textbf{2.00} & \textbf{2.19} & 1.6\%   & 2.0\%  & 1.8\%   & \textbf{1.24}   & \textbf{1.50}   & \textbf{1.37}   & generalises \\
-gradshaf & \textbf{1.89} & \textbf{2.89} & \textbf{1.93} & 5.4\%   & 7.7\%  & 5.0\%   & \textbf{2.05}   & \textbf{2.91}   & \textbf{1.86}   & generalises \\
-lj       & \textbf{1.77} & \textbf{1.98} & \textbf{1.62} & 0.31\%  & 0.47\% & 0.34\%  & \textbf{1.24}   & \textbf{1.87}   & \textbf{1.34}   & generalises \\
+nbody    & \textbf{2.83} & \textbf{2.00} & \textbf{2.19} & 1.6\%   & 2.0\%  & 1.8\%   & \textbf{1.24}   & \textbf{1.50}   & \textbf{1.37}   & generalizes \\
+gradshaf & \textbf{1.89} & \textbf{2.89} & \textbf{1.93} & 5.4\%   & 7.7\%  & 5.0\%   & \textbf{2.05}   & \textbf{2.91}   & \textbf{1.86}   & generalizes \\
+lj       & \textbf{1.77} & \textbf{1.98} & \textbf{1.62} & 0.31\%  & 0.47\% & 0.34\%  & \textbf{1.24}   & \textbf{1.87}   & \textbf{1.34}   & generalizes \\
 lbm      & \textbf{1.46} & \textbf{1.06} & \textbf{1.33} & 79\%    & 93\%   & 82\%    & 0.97            & \textbf{1.16}   & 1.01            & ~tied at $192^2$ \\
 hmc      & \textbf{10.6} & \textbf{10.7} & \textbf{7.19} & ---     & 9.7\%  & 10.2\%  & {\textcolor{purple}{FAIL}}            & \textbf{17.6}   & \textbf{18.6}   & \textbf{Opus wrong at $d{=}24$}; Gemini, GPT generalize \\
 \bottomrule
@@ -518,10 +518,10 @@ wave3d ($1.26$); Gemini wins on gradshaf ($2.89$) and lj ($1.98$);
 $1.03$ Opus), the largest in-distribution gap any single model opens
 on the suite, and is competitive on nbody ($2.19$), gradshaf ($1.93$),
 ising ($1.09$), and lbm ($1.33$). The Opus--Gemini split correlates
-with the type of optimisation lever: ``tune the same algorithm
-tighter'' (BW saturation, BGK fold, leapfrog ILP) favours Opus,
+with the type of optimization lever: ``tune the same algorithm
+tighter'' (BW saturation, BGK fold, leapfrog ILP) favors Opus,
 while ``find a different algorithm'' (simdgroup-tree reduction,
-twiddle caching, neighbour-list reorganisation) favours Gemini (see
+twiddle caching, neighbor-list reorganization) favors Gemini (see
 App.~\ref{app:code} for code-level diffs on lbm and fft3d, plus
 GPT-5.5's FFT3D direct-DFT fallback and HMC defensive
 enumeration). GPT-5.5
@@ -542,9 +542,9 @@ indexing error into NaN); GPT-5.5 had 2 across 120 candidates,
 the second-lowest correctness-failure rate of the three after
 Gemini.
 
-\paragraph{Held-out generalisation is sharper than in-distribution
+\paragraph{Held-out generalization is sharper than in-distribution
 --- and the three models overfit asymmetrically.}
-Three populations separate. (i)~\emph{Generalises}: nbody, gradshaf,
+Three populations separate. (i)~\emph{Generalizes}: nbody, gradshaf,
 lj, and (for Opus and Gemini) fft3d. Gradshaf is the standout where all
 three models extrapolate cleanly ($2.05\times$ Opus, $2.91\times$ Gemini,
 $1.86\times$ GPT-5.5); on lj only Gemini exceeds its in-distribution
@@ -554,7 +554,7 @@ gains ($1.24\times$ and $1.34\times$ respectively).
 $192^2$. lbm is the cleanest reclassification under our refreshed
 session: where an earlier measurement at the held-out grid showed
 both Opus and Gemini regressing to $0.41\times$/$0.50\times$, the
-single-session three-way remeasurement above puts all three within
+single-session three-way re-measurement above puts all three within
 the $0.97\times$--$1.16\times$ band, with Gemini even gaining a
 modest $1.16\times$. The 192-square sits between the $128^2$ and
 $256^2$ training sizes, on a multiple of 32, and SLC residency at
@@ -563,7 +563,7 @@ to flip the within-task ordering session-to-session. We treat lbm
 as held-out-saturated rather than as a regression exemplar.
 (iii)~\emph{Overfits}, with the most consequential disagreements
 between the three models. \textbf{HMC} is the sharpest correctness
-case: Opus's template specialisation dispatches
+case: Opus's template specialization dispatches
 \texttt{if (d==8) run<8>() ... else run<32>()}, so $d{=}24$ lands
 in the $D{=}32$ branch, per-thread \texttt{q[32], p[32]} and the
 unrolled matvec process 32 entries against 24-entry data, and
@@ -589,7 +589,7 @@ sweep: $S_\mathcal{T}$ alone licenses a $2.95\times$ win,
 $\Phi_\mathcal{T}$ surfaces a $0.23\times$ deployment-grade
 slowdown. \textbf{GPT-5.5} is never strictly worse than Opus on
 held-out correctness (both clean except Opus's HMC fail) and on
-generalisation falls between Opus and Gemini on most tasks --- but
+generalization falls between Opus and Gemini on most tasks --- but
 its FFT3D collapse is the largest single held-out swing in the
 table and exemplifies the oversight value of $\Phi_\mathcal{T}$ on
 a non-Anthropic, non-Google frontier model.
@@ -988,7 +988,7 @@ tolerance $10^{-3}{+}10^{-3}\|Y\|_\infty$.
 \section{Evolution loop pseudocode}
 \label{app:algorithm}
 
-Algorithm~\ref{alg:loop} formalises the harness of
+Algorithm~\ref{alg:loop} formalizes the harness of
 Sec.~\ref{sec:harness}. The \textsc{Evaluate} subroutine is the
 compile--run--score pipeline: it returns either a structured failure
 (compile or per-size correctness, with the violating size $s$ and
@@ -1278,13 +1278,13 @@ The broader paradigm of LLMs as \emph{optimisers} inside evolutionary
 code-search loops was established by \emph{FunSearch} \cite{funsearch} for
 symbolic-algorithm discovery and scaled by \emph{AlphaEvolve} \cite{novikov2025alphaevolve} across
 mathematical and algorithmic domains. \emph{AI CUDA Engineer} \cite{lange2025towards} and
-\emph{EvoEngineer} \cite{guo2025evoengineer} specialise this paradigm to CUDA kernel
-optimisation, replacing single-shot or agentic regeneration with a
+\emph{EvoEngineer} \cite{guo2025evoengineer} specialize this paradigm to CUDA kernel
+optimization, replacing single-shot or agentic regeneration with a
 population/archive driven by a fitness signal --- closer in spirit to
 our $(\mu{=}1{+}\lambda{=}1)$ loop, but on CUDA ML kernels rather than
 Apple Silicon scientific kernels. Table~\ref{tab:related} (main text)
-summarises how \textsc{Metal-Sci} differs from these comparators
-across workload, score basis, multi-size generalisation, and
+summarizes how \textsc{Metal-Sci} differs from these comparators
+across workload, score basis, multi-size generalization, and
 hardware target.
 
 \end{document}
