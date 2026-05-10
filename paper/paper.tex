@@ -147,8 +147,8 @@
 % \printAffiliationsAndNotice{\icmlEqualContribution}
 
 \begin{abstract}
- We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs in $n$-body problems, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate scoring function $\Phi_\mathcal{T}$ (evaluated once at end-of-run on a configuration the agent never sees during search) functions as a cheap mechanical oversight primitive on this automatic search loop, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen dimensions, and a GPT-5.5 FFT3D best that wins in-distribution at $2.95\times$ speedup but collapses to $0.23\times$ on a $256^3$ held-out cube, a silent regression that the in-distribution score alone cannot see. \\
- Code: \href{github.com/vicgalle/metal-kernels}{https://github.com/vicgalle/metal-kernels}.
+ We present \textsc{Metal-Sci}, a 10-task benchmark of scientific Apple  Silicon Metal compute kernels spanning six optimization regimes (stencils, all-pairs in $n$-body problems, multi-field Boltzmann, neighbor-list molecular dynamics, multi-kernel PDE, FFT). Each task ships a CPU reference, a  roofline-anchored fitness function, and a held-out generalization size. We pair the benchmark with a \emph{lightweight harness for automatic kernel search} that runtime-compiles each candidate, scores it against the roofline across multiple sizes, and feeds structured compile and per-size correctness diagnostics back to a frozen LLM driving a $(1{+}1)$ evolutionary loop. We report matched single-model sweeps of  Claude Opus~4.7, Gemini~3.1 Pro, and GPT-5.5 on M1~Pro: in-distribution self-speedups span $1.00\times$ to $10.7\times$. Beyond raw speedup, our central methodological claim is structural: the held-out gate scoring function $\Phi_\mathcal{T}$ (evaluated once at end-of-run on a configuration the agent never sees during search) functions as a cheap mechanical oversight primitive on this automatic search loop, catching e.g.\ an Opus \texttt{template <uint D>} HMC win that returns wrong samples at unseen dimensions, and a GPT FFT3D best that wins in-distribution at $2.95\times$ speedup but collapses to $0.23\times$ on a $256^3$ held-out cube, a silent regression that the in-distribution score alone cannot see. Code at\\
+ \href{github.com/vicgalle/metal-kernels}{https://github.com/vicgalle/metal-kernels}.
 \end{abstract}
 
 \section{Introduction}
@@ -505,15 +505,15 @@ shift by tens of percentage points across sessions due to GPU thermal
 state and SLC residency, so we anchor on the within-session ratios.
 
 \paragraph{In-distribution results.} Self-speedups span $1.00\times$ to
-$10.7\times$. The \texttt{hmc} step (Fig.~\ref{fig:hmc-evol}) is the high end for Opus and Gemini: each independently introduces a
+$10.7\times$. The \texttt{hmc} step (Fig.~\ref{fig:hmc-evol}) is the high end for Opus-4.7 and Gemini-3.1-Pro: each independently introduces a
 \texttt{template <uint D>} worker dispatched on runtime $d$ that takes
 $d{=}8$ from $\sim$120 to $\sim$970\,GFLOPS by enabling full unroll
 of the inner $A\,q$ matvec, and the two top scores agree to within
 1.4\% (Opus 0.0932 vs Gemini 0.0870); GPT-5.5 reaches the same regime more
-cautiously at $7.2\times$ (GPT-5.5 0.0634). Outside \texttt{hmc} the models split:
+cautiously at $7.2\times$ (GPT 0.0634). Outside \texttt{hmc} the models split:
 Opus wins on \texttt{saxpy} ($1.25$), \texttt{nbody} ($2.83$), \texttt{lbm} ($1.46$), and
 \texttt{wave3d} ($1.26$); Gemini wins on \texttt{gradshaf} ($2.89$) and \texttt{lj} ($1.98$);
-GPT-5.5 wins \texttt{fft3d} outright at $2.95\times$ (vs $1.19$ Gemini,
+GPT wins \texttt{fft3d} outright at $2.95\times$ (vs $1.19$ Gemini,
 $1.03$ Opus), the largest in-distribution gap any single model opens
 on the suite, and is competitive on \texttt{nbody} ($2.19$), \texttt{gradshaf} ($1.93$),
 \texttt{ising} ($1.09$), and \texttt{lbm} ($1.33$). The Opus--Gemini split correlates
@@ -522,8 +522,8 @@ tighter'' (BW saturation, BGK fold, leapfrog ILP) favors Opus,
 while ``find a different algorithm'' (simdgroup-tree reduction,
 twiddle caching, neighbor-list reorganization) favors Gemini (see
 App.~\ref{app:code} for code-level diffs on \texttt{lbm} and \texttt{fft3d}, plus
-GPT-5.5's \texttt{fft3d} direct-DFT fallback and \texttt{hmc} defensive
-enumeration). GPT-5.5
+GPT's \texttt{fft3d} direct-DFT fallback and \texttt{hmc} defensive
+enumeration). GPT
 sits closer to Gemini in temperament: it explores aggressive
 restructurings, which on \texttt{fft3d} pays off in-distribution but, as the
 held-out column makes visible, at the cost of a sharp overfit
@@ -532,20 +532,20 @@ Saturated tasks (\texttt{saxpy},
 \texttt{heat2d}, \texttt{wave3d}) sit above 78\% of effective DRAM ceiling on the seed;
 \texttt{saxpy} and \texttt{heat2d} primarily validate the harness, leaving the search
 loop little to do, and \texttt{heat2d} shows the score is a \emph{hard}
-signal: on both Opus and GPT-5.5 zero candidates strictly dominated
+signal: on both Opus and GPT zero candidates strictly dominated
 the seed across all three sizes and the incumbent stayed at iter~0.
 Across all three sweeps, Gemini had \emph{zero} correctness failures
 across all its candidates; Opus had 13
 (notably \texttt{wave3d} 10/15: multi-step leapfrog amplifies any sign or
-indexing error into NaN); GPT-5.5 had 2 across all candidates,
+indexing error into NaN); GPT had 2 across all candidates,
 the second-lowest correctness-failure rate of the three.
 
 \paragraph{Held-out generalization is sharper than in-distribution, and the three models overfit asymmetrically.}
 We distinguish two main result populations. (i)~\emph{Generalizes}: \texttt{nbody}, \texttt{gradshaf},
 \texttt{lj}, and (for Opus and Gemini) \texttt{fft3d}. \texttt{gradshaf} is the standout where all
 three models extrapolate cleanly ($2.05\times$ Opus, $2.91\times$ Gemini,
-$1.86\times$ GPT-5.5); on \texttt{lj} only Gemini exceeds its in-distribution
-speedup ($1.87\times$ at $N{=}2744$); Opus and GPT-5.5 hold partial
+$1.86\times$ GPT); on \texttt{lj} only Gemini exceeds its in-distribution
+speedup ($1.87\times$ at $N{=}2744$); Opus and GPT hold partial
 gains ($1.24\times$ and $1.34\times$ respectively).
 (ii)~\emph{Overfits}, with the most consequential disagreements
 between the three models. \texttt{hmc} is the sharpest correctness
@@ -555,14 +555,13 @@ in the $D{=}32$ branch, per-thread \texttt{q[32], p[32]} and the
 unrolled matvec process 32 entries against 24-entry data, and
 sample covariance lands ${\sim}10\sigma$ off target. Gemini pairs
 the template-$D$ speedup with a runtime-$d$ leapfrog fallback;
-GPT-5.5 goes one step further and enumerates
+GPT goes one step further and enumerates
 \texttt{D$\in$\{8,16,24,32\}} explicitly (App.~\ref{app:code}),
 covering the held-out dimension with its own fully-unrolled
 template instance and a runtime-$d$ safety net for any
 other $d$. Both generalize to $d{=}24$ at $\sim$10\% of FP32 peak
 ($17.6\times$ Gemini, $18.6\times$ GPT).
-\texttt{fft3d} is the sharpest \emph{performance} case for the new
-model for GPT-5.5: its iter-10 best wins the in-distribution gmean at
+\texttt{fft3d} is the sharpest \emph{performance} case for GPT-5.5: its iter-10 best wins the in-distribution gmean at
 $2.95\times$ but on the held-out $256^3$ cube it collapses to $0.23\times$ of seed
 ($8.5\%$ of effective ceiling vs Opus's $42\%$ and Gemini's $45\%$
 on the same configuration). The kernel relies on a fixed-twiddle,
@@ -572,8 +571,8 @@ fallback path is dramatically slower than the seed's textbook
 Stockham. This is the cleanest silent-regression instance in the
 sweep: $S_\mathcal{T}$ alone allows a $2.95\times$ win,
 $\Phi_\mathcal{T}$ surfaces a $0.23\times$ deployment-grade
-slowdown. GPT-5.5 is never strictly worse than Opus on
-held-out correctness (both clean except Opus's HMC fail) and on
+slowdown. GPT is never strictly worse than Opus on
+held-out correctness (both clean except Opus's \texttt{hmc} fail) and on
 generalization falls between Opus and Gemini on most tasks, but
 its \texttt{fft3d} collapse is the largest single held-out swing in the
 table and exemplifies the oversight value of $\Phi_\mathcal{T}$.
@@ -582,13 +581,13 @@ table and exemplifies the oversight value of $\Phi_\mathcal{T}$.
 Compile-error patterns are similar across the three models.
 \texttt{[[max\_total\_threads\_per\_threadgroup(N)]]} is mis-placed
 (after the parameter list, or as a standalone statement, instead of on
-the \texttt{kernel void} declaration) on Opus across five tasks and GPT-5.5 hits the same
+the \texttt{kernel void} declaration) on Opus across five tasks and GPT hits the same
 attribute placement error on its first \texttt{saxpy} iteration.
 \texttt{half} is reserved as MSL's fp16 type, breaking
 \texttt{uint half = N >> 1u;}; C++ lambdas are unsupported. The
 three sweeps differ in volume rather than kind: $12$ compile
-fails for Opus, $22$ for Gemini, $12$ for GPT-5.5. Though we configured each LLM to use high thinking budgets, the observed generation times per iteration were very varied: Opus 0.6\,min/iter, Gemini 3.5\,min/iter, GPT-5.5
-6.6\,min/iter; GPT-5.5's wider
+fails for Opus, $22$ for Gemini, $12$ for GPT. Though we configured each LLM to use high thinking budgets, the observed generation times per iteration were very varied: Opus 0.6\,min/iter, Gemini 3.5\,min/iter, GPT
+6.6\,min/iter; GPT's wider
 exploration and longer reasoning context costs roughly $2\times$
 Gemini and $10\times$ Opus per iteration at matched budget.
 
@@ -601,7 +600,7 @@ iteration, Opus 4.7 (orange) vs Gemini 3.1 Pro (purple) vs GPT-5.5
 final best; each \texttt{x} along $y{=}1$ is a candidate that
 compiled or ran wrong (the incumbent is unchanged). The visible
 counts make the silent-correctness story concrete: Opus emits more
-failures than Gemini or GPT-5.5 at every task with non-trivial
+failures than Gemini or GPT at every task with non-trivial
 search (\texttt{nbody}, \texttt{hmc}, \texttt{ising}, \texttt{lj}, \texttt{wave3d}). The plot also justifies
 the asymmetric per-task budgets: on most tasks (\texttt{saxpy}, \texttt{heat2d},
 \texttt{nbody}, \texttt{gradshaf}, \texttt{hmc}, \texttt{ising}, \texttt{lj}) the incumbent stops moving by
@@ -610,8 +609,7 @@ $1.36\times$ from iter~3 through iter~22 and only breaks through
 to $1.46\times$ at iter~23 (the BGK fold + pinned threadgroup of
 App.~\ref{app:code}); \texttt{wave3d}'s Opus run shows the same shape with
 the lift at iter~14 ($1.26\times$). A 10-iter budget would have
-missed both Opus exemplars. GPT-5.5's \texttt{fft3d} climbs monotonically through
-iter~10 to $2.95\times$, and is exactly the win that fails to
+missed both Opus exemplars. GPT's \texttt{fft3d} climbs monotonically to $2.95\times$, and is exactly the win that fails to
 generalize on the held-out gate.}
 \label{fig:convergence}
 \end{figure*}
@@ -676,6 +674,8 @@ and generalized cleanly.}
 
 
 \section{Discussion}
+
+We have introduced \textsc{Metal-Sci}, a 10-task scientific compute benchmark for Apple Silicon Metal, paired with a lightweight evolutionary harness that runtime-compiles, scores against a roofline anchor, and feeds structured diagnostics back to a frozen LLM. Across matched $(1{+}1)$ sweeps of three frontier models we measure in-distribution self-speedups spanning $1.00\times$ to $10.7\times$, and find that each model fails the held-out gate $\Phi_\mathcal{T}$ in a different shape: Opus-4.7 loses correctness, GPT-5.5 loses performance, Gemini-3.1-Pro stays robust at higher wall-clock cost. The headline contribution is therefore not a single number but a methodological one: a single auxiliary configuration per task, withheld from the agent's feedback loop, is enough to catch confidently-wrong code that the in-distribution score certifies as a win.
 
 \paragraph{The held-out gate as agent oversight.}
 The benchmark's $(1{+}1)$ loop is, modulo terminology, an autonomous
@@ -780,15 +780,15 @@ hardware?'' in physical units; the gmean across sizes is hard to
 game by overfitting one regime. The three-model asymmetry is
 concrete: at matched iteration budgets the in-distribution scores
 are close, but each model fails the held-out gate in a different
-shape. Opus loses correctness at \texttt{hmc} $d{=}24$, GPT-5.5 loses
+shape. Opus loses correctness at \texttt{hmc} $d{=}24$, GPT loses
 performance at \texttt{fft3d} $256^3$, and Gemini, the only model with
 zero correctness failures across the entire candidate budget
 and no held-out collapse beyond a borderline $0.90\times$ on
 \texttt{wave3d}, is the most robust of the three. Wall time orders the
 other way: Opus is $\sim 10\times$ faster per iteration than
-GPT-5.5 and $\sim 6\times$ faster than Gemini at matched budgets,
+GPT and $\sim 6\times$ faster than Gemini at matched budgets,
 which makes Opus the cheapest run when in-distribution speedup is
-the only deliverable, and Gemini/GPT-5.5 the safer choice when the
+the only deliverable, and Gemini/GPT the safer choice when the
 output ships across configurations the in-distribution set did not cover.
 Apple Silicon's unified memory halves the host-side scaffolding
 compared to CUDA, enabling sub-second compile-run-verify cycles per
