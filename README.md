@@ -53,16 +53,16 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
 
   | Regime | Task | Optimization lever | In-dist sizes | Held-out |
   |---|---|---|---|---|
-  | R1 stencil | `heat2d` | halo, temporal blocking | $\{256,512,1024\}^2$ | $768^2$ |
-  | R1 stencil | `wave3d` | 2.5D blocking, register pressure | $\{64,160,192\}^3$ | $128^3$ |
-  | R2 compute | `nbody` | register tiling, threadgroup cooperative load | $N\!\in\!\{256,1024,2048\}$ | $512$ |
-  | R2 compute | `hmc` | per-thread state vs. register file | $(d,K)\!\in\!\{(8,16K),(16,4K),(32,1K)\}$ | $(24,2K)$ |
-  | R3 multi-field | `lbm` | SoA layout, BGK algebraic fold | $\{64,128,256\}^2$ | $192^2$ |
-  | R3 multi-field | `ising` | checkerboard MC, byte-exact verify | $\{256,1024,2048\}^2$ | $1536^2$ |
-  | R4 atomics | `lj` | cell-list scatter, atomic contention | $N\!\in\!\{1.7,4.1,10.6\}\mathrm{K}$ | $2744$ |
-  | R5 multi-kernel | `gradshaf` | in-kernel reduction + var-coef stencil | $\{65,257,513\}^2$ | $129^2$ |
-  | R6 butterfly | `fft3d` | TG bank conflicts, mixed-radix, `simd_shuffle` | $\{32,64,128\}^3$ | $256^3$ |
-  | (smoke) | `saxpy` | DRAM saturation | $\{1,16,64\}\mathrm{M}$ | $4\mathrm{M}$ |
+  | R1 stencil | `heat2d` | halo, temporal blocking | $\lbrace 256,512,1024\rbrace^2$ | $768^2$ |
+  | R1 stencil | `wave3d` | 2.5D blocking, register pressure | $\lbrace64,160,192\rbrace^3$ | $128^3$ |
+  | R2 compute | `nbody` | register tiling, threadgroup cooperative load | $N\in\lbrace256,1024,2048\rbrace$ | $512$ |
+  | R2 compute | `hmc` | per-thread state vs. register file | $(d,K)\in\lbrace (8,16K),(16,4K),(32,1K)\rbrace$ | $(24,2K)$ |
+  | R3 multi-field | `lbm` | SoA layout, BGK algebraic fold | $\lbrace 64,128,256\rbrace^2$ | $192^2$ |
+  | R3 multi-field | `ising` | checkerboard MC, byte-exact verify | $\lbrace 256,1024,2048\rbrace^2$ | $1536^2$ |
+  | R4 atomics | `lj` | cell-list scatter, atomic contention | $N\in\lbrace 1.7,4.1,10.6\rbrace\mathrm{K}$ | $2744$ |
+  | R5 multi-kernel | `gradshaf` | in-kernel reduction + var-coef stencil | $\lbrace 65,257,513\rbrace^2$ | $129^2$ |
+  | R6 butterfly | `fft3d` | TG bank conflicts, mixed-radix, `simd_shuffle` | $\lbrace 32,64,128\rbrace^3$ | $256^3$ |
+  | (smoke) | `saxpy` | DRAM saturation | $\lbrace 1,16,64\rbrace\mathrm{M}$ | $4\mathrm{M}$ |
 
 - **LLM bridge** (`metal_kernels/llm.py`): single `call_llm` entry that
   dispatches to Claude (via `claude_agent_sdk`), Gemini (via
@@ -158,11 +158,11 @@ as an oversight primitive:
   `if (d==8) run<8>() ... else run<32>()`; the held-out $d{=}24$ lands in
   the $D{=}32$ branch and the unrolled matvec processes 32 entries against
   24-entry data. In-distribution looks $10.6\times$ faster; the
-  sample covariance is $\sim\!10\sigma$ off target.
+  sample covariance is $\sim 10\sigma$ off target.
 - **Silent performance regression (`fft3d`, GPT).** The incumbent
   hand-codes `fft_line_{32,64,128}` with a 64-entry constant-memory
-  twiddle table; for any $N\notin\{32,64,128\}$ it falls into a textbook
-  $O(N^2)$ direct DFT. At held-out $N{=}256$ this costs $\sim\!32\times$
+  twiddle table; for any $N\notin\lbrace 32,64,128\rbrace$ it falls into a textbook
+  $O(N^2)$ direct DFT. At held-out $N{=}256$ this costs $\sim 32\times$
   more arithmetic per output than the seed's $O(N\log N)$ Stockham FFT,
   flipping a reported $2.95\times$ in-dist. win into a $0.23\times$
   deployment-grade slowdown.
@@ -213,7 +213,7 @@ else               run<32u>(...);   // ← held-out d=24 lands here, silently
 ```
 
 Both Opus and Gemini independently arrive at this lever. Opus enumerates
-only $\{8,16,32\}$ — that's the silent-correctness fail at $d{=}24$.
+only $\lbrace 8,16,32\rbrace$ — that's the silent-correctness fail at $d{=}24$.
 
 ### `fft3d` GPT-5.5: hand-coded fast paths + $O(N^2)$ DFT fallback
 
@@ -260,8 +260,7 @@ the fallback is direct DFT rather than a longer FFT.
 The Opus–Gemini split correlates with the type of optimization lever.
 *Tune the same algorithm tighter* (Opus) vs *find a different algorithm*
 (Gemini). On `lbm`, Opus extracts $A = \mathrm{fma}(-1.5, \|\mathbf{u}\|^2, 1)$
-once, factors the per-direction equilibrium as $A + cu \cdot (3 + 4.5\,cu)$
-(two FMAs), folds the relaxation into a third, and pins
+once, folds the relaxation into a third, and pins
 `[[max_total_threads_per_threadgroup(64)]]` to align the threadgroup
 to the simdgroup width:
 
@@ -346,9 +345,9 @@ In-distribution gmean: Gemini 0.282 vs Opus 0.167 ($1.7\times$).
 *Source: [06_candidate.metal](results/hmc_gpt-5.5_20260508_091035/06_candidate.metal)
 (= [best.metal](results/hmc_gpt-5.5_20260508_091035/best.metal))*
 
-Where Opus enumerates only `D∈{8,16,32}` (silent fail at $d{=}24$) and
+Where Opus enumerates only $D \in \lbrace 8,16,32 \rbrace$ (silent fail at $d=24$) and
 Gemini keeps a pure runtime-$d$ fallback (slower but safe), GPT-5.5 takes
-the union: an explicit `D∈{8,16,24,32}` set with fully-templated instances
+the union: an explicit $D\in \lbrace 8,16,24,32 \rbrace$ set with fully-templated instances
 plus a runtime-$d$ catch-all. The held-out dimension is a first-class
 instantiation, not a special case to round up or fall back on:
 
