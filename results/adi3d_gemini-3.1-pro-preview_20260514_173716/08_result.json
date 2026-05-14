@@ -1,0 +1,20 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "correctness failed at size N64_20: max_abs=6.892e-02",
+  "sizes": [
+    {
+      "label": "N64_20",
+      "correct": false,
+      "error_value": 0.0689179003238678,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.008164000000761007,
+      "achieved": 15.412680057358017,
+      "achieved_unit": "GB/s (effective, 24 B/cell/step across 3 sweeps)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.07706340028679008
+    }
+  ]
+}

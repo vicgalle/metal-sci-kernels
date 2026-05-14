@@ -1,0 +1,132 @@
+{
+  "task": "adi3d",
+  "model": "gemini-3.1-pro-preview",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.17196879893902736,
+  "best_score": 0.20316624153339444,
+  "improvement": 1.1814133888638039,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.17196879893902736,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/00_seed.metal",
+      "elapsed_s": 1.8746659755706787,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.19454296300475069,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/01_candidate.metal",
+      "elapsed_s": 254.00942301750183,
+      "is_new_best": true
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.07286105637145143,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/02_candidate.metal",
+      "elapsed_s": 250.64328622817993,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.20316624153339444,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/03_candidate.metal",
+      "elapsed_s": 205.74767184257507,
+      "is_new_best": true
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.16572778468335406,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/04_candidate.metal",
+      "elapsed_s": 216.5798625946045,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1651520066580215,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/05_candidate.metal",
+      "elapsed_s": 252.60570311546326,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.16503698604064632,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/06_candidate.metal",
+      "elapsed_s": 284.0961699485779,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.16704257333750508,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/07_candidate.metal",
+      "elapsed_s": 311.565886259079,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": false,
+      "score": null,
+      "fail_reason": "correctness failed at size N64_20: max_abs=6.892e-02",
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/08_candidate.metal",
+      "elapsed_s": 267.3523349761963,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.19332733043028236,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/09_candidate.metal",
+      "elapsed_s": 236.85395216941833,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.18126706009751178,
+      "fail_reason": null,
+      "source_path": "results/adi3d_gemini-3.1-pro-preview_20260514_173716/10_candidate.metal",
+      "elapsed_s": 200.29715204238892,
+      "is_new_best": false
+    }
+  ]
+}
