@@ -1,6 +1,6 @@
 # Metal-Sci
 
-An 11-task scientific-compute benchmark for **Apple Silicon Metal** kernels,
+A 12-task scientific-compute benchmark for **Apple Silicon Metal** kernels,
 paired with a lightweight evolutionary harness for LLM-driven kernel search.
 
 Each task ships a Metal seed kernel, a CPU reference, a roofline-anchored
@@ -17,6 +17,14 @@ for Evolutionary LLM Kernel Search on Apple Silicon*.
 
 ## News
 
+- **2026-05-14** — New task `adi3d` (LOD-ADI heat equation; three
+  tridiagonal sweeps per timestep, one per axis). GPT-5.5 flips its
+  `fft3d` silent-regression pattern: defensive size enumeration on top
+  of a competent generic Thomas (with a fixed-point $c'$ identity that
+  collapses most of the inner loop to one FMA against a constant)
+  yields $2.79\times$ in-distribution and $2.00\times$ at the held-out
+  non-cubic prism. Opus stays within the seed algorithm and ties at
+  scale.
 - **2026-05-14** — New task `morton` (bit-permutation memory; 3D heat
   stencil on Z-order storage). All three sweeped models generalize at
   the held-out $256^3$ cube; Gemini reaches 90% of peak BW.
@@ -57,8 +65,8 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
   per-size roofline. The in-distribution score $S_\mathcal{T}$ is the
   geometric mean of `achieved / ceiling` across $\Sigma_\mathcal{T}$,
   hard-gated on correctness (any tolerance failure forces score $=0$).
-- **Tasks** (R1–R6 in the preprint, plus R8 added post-preprint, plus a
-  smoke test):
+- **Tasks** (R1–R6 in the preprint, plus R7 and R8 added post-preprint,
+  plus a smoke test):
 
   | Regime | Task | Optimization lever | In-dist sizes | Held-out |
   |---|---|---|---|---|
@@ -71,6 +79,7 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
   | R4 atomics | `lj` | cell-list scatter, atomic contention | $N\in\lbrace 1.7,4.1,10.6\rbrace\mathrm{K}$ | $2744$ |
   | R5 multi-kernel | `gradshaf` | in-kernel reduction + var-coef stencil | $\lbrace 65,257,513\rbrace^2$ | $129^2$ |
   | R6 butterfly | `fft3d` | TG bank conflicts, mixed-radix, `simd_shuffle` | $\lbrace 32,64,128\rbrace^3$ | $256^3$ |
+  | R7 wavefront | `adi3d` | constant-coef Thomas, per-axis stride asymmetry | $\lbrace 64,96,128\rbrace^3$ | $256\times192\times128$ prism |
   | R8 bit-perm | `morton` | Z-order encode/decode, neighbour-bit twiddle | $\lbrace 32,64,128\rbrace^3$ | $256^3$ |
   | (smoke) | `saxpy` | DRAM saturation | $\lbrace 1,16,64\rbrace\mathrm{M}$ | $4\mathrm{M}$ |
 
@@ -130,7 +139,7 @@ packet $\mathcal{F}_k$ the LLM sees during search.
 
 ## Reference results (Apple M1 Pro, 4500 GFLOPS / 200 GB/s)
 
-Three matched single-model sweeps over the 11 tasks at the same per-task
+Three matched single-model sweeps over the 12 tasks at the same per-task
 iteration budget (10 each except `lbm` at 25 and `wave3d` at 15),
 $\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
 *In-dist. ×* = best/seed, gmean over the three in-distribution sizes.
@@ -151,6 +160,7 @@ improvements ($\geq 1.05\times$).
 | `lbm`      | **1.46** | **1.06** | **1.33** | 0.97     | **1.16** | 1.01     | tied at $192^2$ |
 | `hmc`      | **10.6** | **10.7** | **7.19** | **FAIL** | **17.6** | **18.6** | **Opus wrong at $d{=}24$**; Gemini, GPT generalize |
 | `morton`   | **6.72** | **4.22** | **2.79** | **11.6** | **12.6** | **4.60** | generalizes (added post-preprint) |
+| `adi3d`    | **1.29** | **1.18** | **2.79** | 0.99     | **1.10** | **2.00** | **GPT generalizes; Opus tied at prism** |
 
 (Opus = `claude-opus-4-7`, Gemini = `gemini-3.1-pro-preview`,
 GPT = `gpt-5.5`.)
@@ -381,6 +391,62 @@ In-distribution gmean comes in lower than Opus or Gemini (0.0634 vs
 0.0932, 0.0870) — the cost of emitting four template instantiations
 plus a runtime fallback — but held-out $d{=}24$ runs at $10.2\%$ of
 FP32 peak, $18.6\times$ the seed.
+
+### `adi3d` GPT-5.5: the `fft3d`-flip — defensive enumeration with a competent fallback
+
+*Source: [10_candidate.metal](results/adi3d_gpt-5.5_20260514_174118/10_candidate.metal)
+(= [best.metal](results/adi3d_gpt-5.5_20260514_174118/best.metal))*
+
+Three models, three temperaments. **Opus** stays inside the seed
+algorithm and promotes the modified RHS $d'$ from device-memory
+streaming to a thread-private array — one register-vs-DRAM move, no
+algorithmic change, $1.29\times$ in-distribution but $0.99\times$ at
+the DRAM-bound held-out prism (the register lever has nothing to bite
+on at scale). **Gemini** reaches for a tile-transpose lever
+(`threadgroup float tile[32][33]` with bank-conflict padding, 32-line
+cooperative loads) — same shape as fft3d-Gemini's TG tile, transplanted
+to ADI; $1.18\times$ in-dist, $1.10\times$ at the prism. **GPT-5.5**
+reaches for the *math*: the modified upper-diagonal $c'_i$ for the
+constant-coefficient Thomas with $a{=}c{=}-\mu$, $b{=}1{+}2\mu$
+converges geometrically to a fixed point, so for $i$ past the
+transient the forward sweep collapses to a single FMA against
+$1/(b - a c'_\infty)$. GPT freezes $\mu{=}0.5$, precomputes
+$\mathrm{INV}_1..\mathrm{INV}_8$ for the transient, and uses
+$\mathrm{INV}_\infty$ for the tail; the inner loop is manually
+4-way-unrolled with no in-loop divides:
+
+```metal
+// adi3d GPT-5.5 iter-10 best, generic forward sweep tail (mu = 0.5):
+//   c'_i -> c'_inf = -2 + sqrt(3) ~ -0.268, so for i past the
+//   transient the constant-coef Thomas degenerates to:
+//     dp_new = (rhs + 0.5 * dp) * INVINF
+//   where INVINF = 1 / (1 + 2*mu - mu^2 / (1 + 2*mu) - ... ) is the
+//   converged 1 / (b - a c'_inf). Manually unroll 4-way.
+for (; i + 4u <= limit; i += 4u) {
+    float r0 = u_in[i0], r1 = u_in[i1], r2 = u_in[i2], r3 = u_in[i3];
+    float q0 = (r0 + HALF * dp) * INVINF;
+    float q1 = (r1 + HALF * q0) * INVINF;
+    float q2 = (r2 + HALF * q1) * INVINF;
+    float q3 = (r3 + HALF * q2) * INVINF;
+    u_out[i0] = q0; u_out[i1] = q1; u_out[i2] = q2; u_out[i3] = q3;
+    dp = q3;
+}
+```
+
+On top of the math, GPT layers defensive size enumeration —
+`DEFINE_THOMAS_TG_FIXED_TAIL16` macro-instantiates specialized variants
+for $N \in \lbrace 64, 96, 128 \rbrace$ (the three in-distribution
+axes) and falls through to the generic above for any other $N$. At the
+held-out $(256, 192, 128)$ prism the $x$-sweep ($N{=}256$) and
+$y$-sweep ($N{=}192$) hit the generic; the $z$-sweep ($N{=}128$) hits
+the specialized path. End to end the held-out runs at $33.5\%$ of peak
+DRAM bandwidth, $2.00\times$ the seed and $2.02\times$ Opus's incumbent
+on the same configuration. This is the **flip** of `fft3d`-GPT: the
+same defensive-enumeration temperament that confidently shipped a
+$0.23\times$ deployment-grade slowdown there generalizes cleanly here,
+because the fallback path is competently implemented rather than a
+textbook $O(N^2)$ DFT. The held-out gate $\Phi_\mathcal{T}$ catches the
+asymmetry in both directions.
 
 ## Adding a new task
 
