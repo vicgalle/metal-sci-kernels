@@ -1,0 +1,7 @@
+{
+  "compile_ok": true,
+  "correct": false,
+  "score": null,
+  "fail_reason": "pipeline error: pipeline build failed for 'adi_x': Error Domain=AGXMetalG13X Code=3 \"Threadgroup memory size (33792) exceeds the maximum threadgroup memory allowed (32768)\" UserInfo={NSLocalizedDescription=Threadgroup memory size (33792) exceeds the maximum threadgroup memory allowed (32768)}",
+  "sizes": []
+}
