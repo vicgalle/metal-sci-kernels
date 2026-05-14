@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.17180218519970264,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/00_seed.metal",
+    "elapsed_s": 1.9697825908660889,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": false,
+    "score": null,
+    "fail_reason": "pipeline error: pipeline build failed for 'adi_x': Error Domain=AGXMetalG13X Code=3 \"Threadgroup memory size (33792) exceeds the maximum threadgroup memory allowed (32768)\" UserInfo={NSLocalizedDescription=Threadgroup memory size (33792) exceeds the maximum threadgroup memory allowed (32768)}",
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/01_candidate.metal",
+    "elapsed_s": 30.261688470840454,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2181024628561033,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/02_candidate.metal",
+    "elapsed_s": 27.254180192947388,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.1521525170829217,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/03_candidate.metal",
+    "elapsed_s": 30.87661910057068,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.21328436718795288,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/04_candidate.metal",
+    "elapsed_s": 28.15074610710144,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.19805160545259845,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/05_candidate.metal",
+    "elapsed_s": 25.679771900177002,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.20229771121431084,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/06_candidate.metal",
+    "elapsed_s": 28.760972023010254,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.10188703327948384,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/07_candidate.metal",
+    "elapsed_s": 33.96368217468262,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.16483326452287472,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/08_candidate.metal",
+    "elapsed_s": 30.43968176841736,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:78:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\nprogram_source:110:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\nprogram_source:137:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\n\" UserInfo={NSLocalizedDescription=program_source:78:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\nprogram_source:110:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\nprogram_source:137:65: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n                  uint  tlid [[thread_index_in_threadgroup]]) [[max_total_threads_per_threadgroup(32)]]\n                                                                ^\n}",
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/09_candidate.metal",
+    "elapsed_s": 26.47755002975464,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.22245491507494233,
+    "fail_reason": null,
+    "source_path": "results/adi3d_claude-opus-4-7_20260514_173153/10_candidate.metal",
+    "elapsed_s": 25.907289028167725,
+    "is_new_best": true
+  }
+]

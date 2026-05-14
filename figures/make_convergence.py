@@ -7,7 +7,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 ROOT = Path("/Users/victorgallego/metal-kernels/results")
-TASKS = ["saxpy","heat2d","nbody","lbm","gradshaf","fft3d","hmc","ising","lj","wave3d","morton"]
+TASKS = ["saxpy","heat2d","nbody","lbm","gradshaf","fft3d","hmc","ising","lj","wave3d","morton","adi3d"]
 MODELS = [
     ("claude-opus-4-7",        "Opus 4.7",         "#C04A2A"),
     ("gemini-3.1-pro-preview", "Gemini 3.1 Pro",    "#5B2D8A"),
@@ -64,14 +64,13 @@ def best_so_far(task, model):
         iters.append(it)
     return iters, ratio, fails, s["n_iterations"]
 
-# 3x4 grid: 11 task panels + 1 cell repurposed as the legend pane.
-fig, axes = plt.subplots(3, 4, figsize=(10.0, 7.2),
+# 3x4 grid: 12 task panels; the legend sits below the grid (no spare cell).
+fig, axes = plt.subplots(3, 4, figsize=(10.0, 7.4),
                          sharex=False, sharey=False)
-plt.subplots_adjust(left=0.06, right=0.99, top=0.96, bottom=0.07,
+plt.subplots_adjust(left=0.06, right=0.99, top=0.96, bottom=0.10,
                     wspace=0.42, hspace=0.55)
 
 task_axes = list(axes.flat[:len(TASKS)])
-legend_ax = axes.flat[len(TASKS)]  # = axes[2, 3]
 
 for ax, t in zip(task_axes, TASKS):
     max_iter = 0
@@ -120,20 +119,18 @@ for ax, t in zip(task_axes, TASKS):
 # Y label on the leftmost cell of each row.
 for ax in axes[:, 0]:
     ax.set_ylabel("speedup", fontsize=8.5, color="#222222", labelpad=2)
-# X label on the bottom-most task cell of each column. axes[2, 3] is the
-# legend pane, so column 3's xlabel lives one row up (ising at [1, 3]).
-for ax in (axes[2, 0], axes[2, 1], axes[2, 2], axes[1, 3]):
+# X label on every cell of the bottom row.
+for ax in axes[2, :]:
     ax.set_xlabel("iteration", fontsize=8.5, color="#222222", labelpad=2)
 
-# Legend in the unused (2, 3) cell.
-legend_ax.axis("off")
+# Legend strip below the grid (no spare cell now that adi3d fills [2, 3]).
 handles = [plt.Line2D([0],[0], color=c, lw=1.8, label=l,
                       solid_capstyle="round") for _,l,c in MODELS]
 handles += [plt.Line2D([0],[0], marker="x", color="#888888", lw=0,
                        ms=4.5, mew=1.1, label="compile / correctness fail")]
-legend_ax.legend(handles=handles, loc="center", frameon=False,
-                 fontsize=9.0, handlelength=2.0, handletextpad=0.7,
-                 borderaxespad=0.2)
+fig.legend(handles=handles, loc="lower center", ncol=4,
+           frameon=False, fontsize=9.0, handlelength=2.0,
+           handletextpad=0.7, bbox_to_anchor=(0.5, 0.01))
 
 out = Path("/Users/victorgallego/metal-kernels/figures/convergence.png")
 fig.savefig(out, bbox_inches="tight", dpi=400)
