@@ -390,3 +390,19 @@ implementing `Task.evaluate_size`, declaring `in_distribution_sizes` and
 with `@register_task("<name>")` and add the import to
 `metal_kernels/tasks/__init__.py`. The harness plumbing (compile,
 multi-size loop, scoring, correctness gate, $\Phi_\mathcal{T}$) is shared.
+
+## Citation
+
+If you find this useful, please consider citing
+```
+@misc{gallego2026metalsci,
+      title={Metal-Sci: A Scientific Compute Benchmark for Evolutionary LLM Kernel Search on Apple Silicon}, 
+      author={Víctor Gallego},
+      year={2026},
+      eprint={2605.09708},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2605.09708}, 
+}
+```
+
