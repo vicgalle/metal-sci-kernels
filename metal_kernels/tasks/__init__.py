@@ -47,3 +47,7 @@ try:
     from . import morton  # noqa: F401
 except ImportError:
     pass
+try:
+    from . import adi3d   # noqa: F401
+except ImportError:
+    pass
