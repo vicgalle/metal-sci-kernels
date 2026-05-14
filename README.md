@@ -17,7 +17,7 @@ for Evolutionary LLM Kernel Search on Apple Silicon*.
 
 ## News
 
-- **2026-05-14** — New task `morton` (R8 bit-permutation memory; 3D heat
+- **2026-05-14** — New task `morton` (bit-permutation memory; 3D heat
   stencil on Z-order storage). All three sweeped models generalize at
   the held-out $256^3$ cube; Gemini reaches 90% of peak BW.
 - **2026-05-10** — Preprint on arXiv:
@@ -172,7 +172,17 @@ as an oversight primitive:
   deployment-grade slowdown.
 
 A rough generation-time profile at high reasoning budgets: Opus
-$\sim 0.6$ min/iter, Gemini $\sim 3.5$ min/iter, GPT $\sim 6.6$ min/iter.
+$\sim 0.6$ min/iter, Gemini $\sim 3.5$ min/iter, GPT $\sim 6.6$ min/iter. Here are sample convergence curves for each task and model:
+
+<p align="center">
+  <img src="figures/convergence.png" alt="Best-so-far in-distribution self-speedup vs. iteration, per task per model" width="92%">
+</p>
+
+*Per-task best-so-far in-distribution self-speedup ($S_\mathcal{T} /
+S_\mathcal{T}^{\mathrm{seed}}$) over the search loop, one panel per task,
+one curve per model. Dots mark the iteration at which each model's
+final incumbent was found; $\times$ ticks along the seed line are
+compile or correctness failures rejected by the strict $(1{+}1)$ gate.*
 
 ## Notable kernel snippets
 
