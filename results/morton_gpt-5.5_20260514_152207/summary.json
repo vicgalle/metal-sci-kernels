@@ -1,0 +1,132 @@
+{
+  "task": "morton",
+  "model": "gpt-5.5",
+  "chip": "Apple M1 Pro",
+  "n_iterations": 10,
+  "seed_score": 0.07345154143890095,
+  "best_score": 0.20477821903064605,
+  "improvement": 2.787936304930868,
+  "history": [
+    {
+      "iteration": 0,
+      "role": "seed",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.07345154143890095,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/00_seed.metal",
+      "elapsed_s": 0.9999277591705322,
+      "is_new_best": true
+    },
+    {
+      "iteration": 1,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.20001246273698833,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/01_candidate.metal",
+      "elapsed_s": 399.3897979259491,
+      "is_new_best": true
+    },
+    {
+      "iteration": 2,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n\" UserInfo={NSLocalizedDescription=program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n}",
+      "source_path": "results/morton_gpt-5.5_20260514_152207/02_candidate.metal",
+      "elapsed_s": 455.9979770183563,
+      "is_new_best": false
+    },
+    {
+      "iteration": 3,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.20477821903064605,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/03_candidate.metal",
+      "elapsed_s": 442.804899930954,
+      "is_new_best": true
+    },
+    {
+      "iteration": 4,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n\" UserInfo={NSLocalizedDescription=program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n}",
+      "source_path": "results/morton_gpt-5.5_20260514_152207/04_candidate.metal",
+      "elapsed_s": 510.3418917655945,
+      "is_new_best": false
+    },
+    {
+      "iteration": 5,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1991598298797611,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/05_candidate.metal",
+      "elapsed_s": 454.0004427433014,
+      "is_new_best": false
+    },
+    {
+      "iteration": 6,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.15775071631222423,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/06_candidate.metal",
+      "elapsed_s": 451.8810932636261,
+      "is_new_best": false
+    },
+    {
+      "iteration": 7,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.18449768564971078,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/07_candidate.metal",
+      "elapsed_s": 404.81223821640015,
+      "is_new_best": false
+    },
+    {
+      "iteration": 8,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.17716214150830464,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/08_candidate.metal",
+      "elapsed_s": 359.2192816734314,
+      "is_new_best": false
+    },
+    {
+      "iteration": 9,
+      "role": "candidate",
+      "compile_ok": false,
+      "correct": false,
+      "score": null,
+      "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n\" UserInfo={NSLocalizedDescription=program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types\n    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]\n                                            ^\n}",
+      "source_path": "results/morton_gpt-5.5_20260514_152207/09_candidate.metal",
+      "elapsed_s": 390.7880525588989,
+      "is_new_best": false
+    },
+    {
+      "iteration": 10,
+      "role": "candidate",
+      "compile_ok": true,
+      "correct": true,
+      "score": 0.1819022340408669,
+      "fail_reason": null,
+      "source_path": "results/morton_gpt-5.5_20260514_152207/10_candidate.metal",
+      "elapsed_s": 274.0015358924866,
+      "is_new_best": false
+    }
+  ]
+}

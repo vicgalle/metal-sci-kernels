@@ -1,0 +1,44 @@
+{
+  "compile_ok": true,
+  "correct": true,
+  "score": 0.2904362844232099,
+  "fail_reason": null,
+  "sizes": [
+    {
+      "label": "N32_120",
+      "correct": true,
+      "error_value": 6.258487701416016e-07,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.001342875000773347,
+      "achieved": 23.425322522114193,
+      "achieved_unit": "GB/s (effective, 8 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.11712661261057096
+    },
+    {
+      "label": "N64_60",
+      "correct": true,
+      "error_value": 8.940696716308594e-07,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.0023913333334348863,
+      "achieved": 52.61881237579721,
+      "achieved_unit": "GB/s (effective, 8 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.26309406187898604
+    },
+    {
+      "label": "N128_30",
+      "correct": true,
+      "error_value": 5.364418029785156e-07,
+      "error_kind": "max_abs",
+      "gpu_seconds": 0.003165374999298365,
+      "achieved": 159.00690443045923,
+      "achieved_unit": "GB/s (effective, 8 B/cell)",
+      "ceiling": 200.0,
+      "ceiling_unit": "GB/s",
+      "fraction_of_ceiling": 0.7950345221522962
+    }
+  ]
+}

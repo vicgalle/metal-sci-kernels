@@ -1,0 +1,3 @@
+**Considering function attributes**
+
+I'm thinking about whether an attribute can be placed before a function to suggest that the host selects 256. However, there are risks with that approach. The host is already capped at 256, so using an attribute could lead to max total exceeding 256 if the host's minimum is 256. That's good to keep in mind. I also noticed a potential issue with using `(void)N;` from a previous attempt affecting the total shift. Good to clarify!

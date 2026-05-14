@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.07177634456919986,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/00_seed.metal",
+    "elapsed_s": 0.8845968246459961,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3870279639559386,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/01_candidate.metal",
+    "elapsed_s": 19.599637031555176,
+    "is_new_best": true
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.48249521721992483,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/02_candidate.metal",
+    "elapsed_s": 17.255128145217896,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.29900674241656644,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/03_candidate.metal",
+    "elapsed_s": 17.37015390396118,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2856219333410913,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/04_candidate.metal",
+    "elapsed_s": 18.499654293060303,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2898003608806134,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/05_candidate.metal",
+    "elapsed_s": 19.70299458503723,
+    "is_new_best": false
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.33396441575005426,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/06_candidate.metal",
+    "elapsed_s": 16.43493103981018,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3989162565065694,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/07_candidate.metal",
+    "elapsed_s": 22.222644090652466,
+    "is_new_best": false
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3300315658175457,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/08_candidate.metal",
+    "elapsed_s": 20.11124038696289,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2985603319171353,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/09_candidate.metal",
+    "elapsed_s": 22.010390281677246,
+    "is_new_best": false
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.29006722874359747,
+    "fail_reason": null,
+    "source_path": "results/morton_claude-opus-4-7_20260514_150811/10_candidate.metal",
+    "elapsed_s": 19.43180775642395,
+    "is_new_best": false
+  }
+]

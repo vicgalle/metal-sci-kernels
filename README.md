@@ -1,6 +1,6 @@
 # Metal-Sci
 
-A 10-task scientific-compute benchmark for **Apple Silicon Metal** kernels,
+An 11-task scientific-compute benchmark for **Apple Silicon Metal** kernels,
 paired with a lightweight evolutionary harness for LLM-driven kernel search.
 
 Each task ships a Metal seed kernel, a CPU reference, a roofline-anchored
@@ -14,6 +14,14 @@ licenses.
 
 This repo accompanies the paper *Metal-Sci: A Scientific Compute Benchmark
 for Evolutionary LLM Kernel Search on Apple Silicon*.
+
+## News
+
+- **2026-05-14** — New task `morton` (R8 bit-permutation memory; 3D heat
+  stencil on Z-order storage). All three sweeped models generalize at
+  the held-out $256^3$ cube; Gemini reaches 90% of peak BW.
+- **2026-05-10** — Preprint on arXiv:
+  [arxiv.org/abs/2605.09708](https://arxiv.org/abs/2605.09708).
 
 <p align="center">
   <img src="figures/overview.png" alt="Metal-Sci overview: six optimization regimes (top) and the harness loop (bottom)" width="50%">
@@ -49,7 +57,8 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
   per-size roofline. The in-distribution score $S_\mathcal{T}$ is the
   geometric mean of `achieved / ceiling` across $\Sigma_\mathcal{T}$,
   hard-gated on correctness (any tolerance failure forces score $=0$).
-- **Tasks** (six optimization regimes, R1–R6, plus a smoke test):
+- **Tasks** (R1–R6 in the preprint, plus R8 added post-preprint, plus a
+  smoke test):
 
   | Regime | Task | Optimization lever | In-dist sizes | Held-out |
   |---|---|---|---|---|
@@ -62,6 +71,7 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
   | R4 atomics | `lj` | cell-list scatter, atomic contention | $N\in\lbrace 1.7,4.1,10.6\rbrace\mathrm{K}$ | $2744$ |
   | R5 multi-kernel | `gradshaf` | in-kernel reduction + var-coef stencil | $\lbrace 65,257,513\rbrace^2$ | $129^2$ |
   | R6 butterfly | `fft3d` | TG bank conflicts, mixed-radix, `simd_shuffle` | $\lbrace 32,64,128\rbrace^3$ | $256^3$ |
+  | R8 bit-perm | `morton` | Z-order encode/decode, neighbour-bit twiddle | $\lbrace 32,64,128\rbrace^3$ | $256^3$ |
   | (smoke) | `saxpy` | DRAM saturation | $\lbrace 1,16,64\rbrace\mathrm{M}$ | $4\mathrm{M}$ |
 
 - **LLM bridge** (`metal_kernels/llm.py`): single `call_llm` entry that
@@ -127,7 +137,7 @@ packet $\mathcal{F}_k$ the LLM sees during search.
 
 ## Reference results (Apple M1 Pro, 4500 GFLOPS / 200 GB/s)
 
-Three matched single-model sweeps over the 10 tasks at the same per-task
+Three matched single-model sweeps over the 11 tasks at the same per-task
 iteration budget (10 each except `lbm` at 25 and `wave3d` at 15),
 $\mu{=}1{+}\lambda{=}1$, no human prompt intervention.
 *In-dist. ×* = best/seed, gmean over the three in-distribution sizes.
@@ -147,6 +157,7 @@ improvements ($\geq 1.05\times$).
 | `lj`       | **1.77** | **1.98** | **1.62** | **1.24** | **1.87** | **1.34** | generalizes |
 | `lbm`      | **1.46** | **1.06** | **1.33** | 0.97     | **1.16** | 1.01     | tied at $192^2$ |
 | `hmc`      | **10.6** | **10.7** | **7.19** | **FAIL** | **17.6** | **18.6** | **Opus wrong at $d{=}24$**; Gemini, GPT generalize |
+| `morton`   | **6.72** | **4.22** | **2.79** | **11.6** | **12.6** | **4.60** | generalizes (added post-preprint) |
 
 (Opus = `claude-opus-4-7`, Gemini = `gemini-3.1-pro-preview`,
 GPT = `gpt-5.5`.)

@@ -1,0 +1,123 @@
+[
+  {
+    "iteration": 0,
+    "role": "seed",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.07649270554108457,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/00_seed.metal",
+    "elapsed_s": 0.8598639965057373,
+    "is_new_best": true
+  },
+  {
+    "iteration": 1,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:4:16: error: program scope variable must reside in constant address space\nconstexpr uint X_MASK = 0x09249249u;\n               ^\nprogram_source:5:16: error: program scope variable must reside in constant address space\nconstexpr uint Y_MASK = 0x12492492u;\n               ^\nprogram_source:6:16: error: program scope variable must reside in constant address space\nconstexpr uint Z_MASK = 0x24924924u;\n               ^\nprogram_source:8:16: error: program scope variable must reside in constant address space\nconstexpr uint YZ_MASK = Y_MASK | Z_MASK;\n               ^\nprogram_source:9:16: error: program scope variable must reside in constant address space\nconstexpr uint XZ_MASK = X_MASK | Z_MASK;\n               ^\nprogram_source:10:16: error: program scope variable must reside in constant address space\nconstexpr uint XY_MASK = X_MASK | Y_MASK;\n               ^\n\" UserInfo={NSLocalizedDescription=program_source:4:16: error: program scope variable must reside in constant address space\nconstexpr uint X_MASK = 0x09249249u;\n               ^\nprogram_source:5:16: error: program scope variable must reside in constant address space\nconstexpr uint Y_MASK = 0x12492492u;\n               ^\nprogram_source:6:16: error: program scope variable must reside in constant address space\nconstexpr uint Z_MASK = 0x24924924u;\n               ^\nprogram_source:8:16: error: program scope variable must reside in constant address space\nconstexpr uint YZ_MASK = Y_MASK | Z_MASK;\n               ^\nprogram_source:9:16: error: program scope variable must reside in constant address space\nconstexpr uint XZ_MASK = X_MASK | Z_MASK;\n               ^\nprogram_source:10:16: error: program scope variable must reside in constant address space\nconstexpr uint XY_MASK = X_MASK | Y_MASK;\n               ^\n}",
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/01_candidate.metal",
+    "elapsed_s": 155.04820442199707,
+    "is_new_best": false
+  },
+  {
+    "iteration": 2,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2867036352571831,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/02_candidate.metal",
+    "elapsed_s": 122.30057001113892,
+    "is_new_best": true
+  },
+  {
+    "iteration": 3,
+    "role": "candidate",
+    "compile_ok": false,
+    "correct": false,
+    "score": null,
+    "fail_reason": "compile error: Error Domain=MTLLibraryErrorDomain Code=3 \"program_source:6:35: error: expected ')'\n    device const float * restrict u_in   [[buffer(0)]],\n                                  ^\nprogram_source:5:27: note: to match this '('\nkernel void morton_stencil(\n                          ^\nprogram_source:13:18: error: use of undeclared identifier 'N'\n    uint N_val = N;\n                 ^\nprogram_source:15:9: error: use of undeclared identifier 'tid'\n    if (tid >= total) return;\n        ^\nprogram_source:17:14: error: use of undeclared identifier 'tid'\n    uint m = tid;\n             ^\nprogram_source:18:15: error: use of undeclared identifier 'u_in'\n    float c = u_in[m];\n              ^\nprogram_source:24:21: error: use of undeclared identifier 'logN'\n    uint logN_val = logN;\n                    ^\nprogram_source:38:9: error: use of undeclared identifier 'u_out'\n        u_out[m] = c;\n        ^\nprogram_source:55:17: error: use of undeclared identifier 'u_in'\n    float sum = u_in[m_xm] + u_in[m_xp] + \n                ^\nprogram_source:55:30: error: use of undeclared identifier 'u_in'\n    float sum = u_in[m_xm] + u_in[m_xp] + \n                             ^\nprogram_source:56:17: error: use of undeclared identifier 'u_in'\n                u_in[m_ym] + u_in[m_yp] + \n                ^\nprogram_source:56:30: error: use of undeclared identifier 'u_in'\n                u_in[m_ym] + u_in[m_yp] + \n                             ^\nprogram_source:57:17: error: use of undeclared identifier 'u_in'\n                u_in[m_zm] + u_in[m_zp];\n                ^\nprogram_source:57:30: error: use of undeclared identifier 'u_in'\n                u_in[m_zm] + u_in[m_zp];\n                             ^\nprogram_source:59:23: error: use of undeclared identifier 'alpha'\n    float alpha_val = alpha;\n                      ^\nprogram_source:61:5: error: use of undeclared identifier 'u_out'\n    u_out[m] = c + alpha_val * (sum - 6.0f * c);\n    ^\n\" UserInfo={NSLocalizedDescription=program_source:6:35: error: expected ')'\n    device const float * restrict u_in   [[buffer(0)]],\n                                  ^\nprogram_source:5:27: note: to match this '('\nkernel void morton_stencil(\n                          ^\nprogram_source:13:18: error: use of undeclared identifier 'N'\n    uint N_val = N;\n                 ^\nprogram_source:15:9: error: use of undeclared identifier 'tid'\n    if (tid >= total) return;\n        ^\nprogram_source:17:14: error: use of undeclared identifier 'tid'\n    uint m = tid;\n             ^\nprogram_source:18:15: error: use of undeclared identifier 'u_in'\n    float c = u_in[m];\n              ^\nprogram_source:24:21: error: use of undeclared identifier 'logN'\n    uint logN_val = logN;\n                    ^\nprogram_source:38:9: error: use of undeclared identifier 'u_out'\n        u_out[m] = c;\n        ^\nprogram_source:55:17: error: use of undeclared identifier 'u_in'\n    float sum = u_in[m_xm] + u_in[m_xp] + \n                ^\nprogram_source:55:30: error: use of undeclared identifier 'u_in'\n    float sum = u_in[m_xm] + u_in[m_xp] + \n                             ^\nprogram_source:56:17: error: use of undeclared identifier 'u_in'\n                u_in[m_ym] + u_in[m_yp] + \n                ^\nprogram_source:56:30: error: use of undeclared identifier 'u_in'\n                u_in[m_ym] + u_in[m_yp] + \n                             ^\nprogram_source:57:17: error: use of undeclared identifier 'u_in'\n                u_in[m_zm] + u_in[m_zp];\n                ^\nprogram_source:57:30: error: use of undeclared identifier 'u_in'\n                u_in[m_zm] + u_in[m_zp];\n                             ^\nprogram_source:59:23: error: use of undeclared identifier 'alpha'\n    float alpha_val = alpha;\n                      ^\nprogram_source:61:5: error: use of undeclared identifier 'u_out'\n    u_out[m] = c + alpha_val * (sum - 6.0f * c);\n    ^\n}",
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/03_candidate.metal",
+    "elapsed_s": 215.55718779563904,
+    "is_new_best": false
+  },
+  {
+    "iteration": 4,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.16311843894973352,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/04_candidate.metal",
+    "elapsed_s": 210.7606291770935,
+    "is_new_best": false
+  },
+  {
+    "iteration": 5,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2904362844232099,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/05_candidate.metal",
+    "elapsed_s": 253.7216601371765,
+    "is_new_best": true
+  },
+  {
+    "iteration": 6,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.15558260607106209,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/06_candidate.metal",
+    "elapsed_s": 228.27838110923767,
+    "is_new_best": false
+  },
+  {
+    "iteration": 7,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.3107642989753453,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/07_candidate.metal",
+    "elapsed_s": 175.56293082237244,
+    "is_new_best": true
+  },
+  {
+    "iteration": 8,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.1676186873462766,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/08_candidate.metal",
+    "elapsed_s": 301.77299284935,
+    "is_new_best": false
+  },
+  {
+    "iteration": 9,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.32282201022366386,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/09_candidate.metal",
+    "elapsed_s": 257.31501603126526,
+    "is_new_best": true
+  },
+  {
+    "iteration": 10,
+    "role": "candidate",
+    "compile_ok": true,
+    "correct": true,
+    "score": 0.2887382659538359,
+    "fail_reason": null,
+    "source_path": "results/morton_gemini-3.1-pro-preview_20260514_151235/10_candidate.metal",
+    "elapsed_s": 168.85914707183838,
+    "is_new_best": false
+  }
+]
