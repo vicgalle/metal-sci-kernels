@@ -89,17 +89,10 @@ end-of-run and is **never** folded into any $\mathcal{F}_k$.
 Verify the seed kernels compile, pass correctness, and time:
 
 ```sh
-uv run run_benchmark.py --task saxpy    --evaluate-seed-only
-uv run run_benchmark.py --task heat2d   --evaluate-seed-only
-uv run run_benchmark.py --task wave3d   --evaluate-seed-only
-uv run run_benchmark.py --task nbody    --evaluate-seed-only
-uv run run_benchmark.py --task hmc      --evaluate-seed-only
-uv run run_benchmark.py --task lbm      --evaluate-seed-only
-uv run run_benchmark.py --task ising    --evaluate-seed-only
-uv run run_benchmark.py --task lj       --evaluate-seed-only
-uv run run_benchmark.py --task gradshaf --evaluate-seed-only
-uv run run_benchmark.py --task fft3d    --evaluate-seed-only
+uv run run_benchmark.py --task <task>    --evaluate-seed-only
 ```
+
+with `<task>` one of the names from previous table.
 
 Run an evolution loop with Claude, Gemini, or GPT:
 
