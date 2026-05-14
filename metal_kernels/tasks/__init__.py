@@ -43,3 +43,7 @@ try:
     from . import fft3d   # noqa: F401
 except ImportError:
     pass
+try:
+    from . import morton  # noqa: F401
+except ImportError:
+    pass

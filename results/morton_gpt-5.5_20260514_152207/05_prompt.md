@@ -1,0 +1,403 @@
+## Task: morton
+
+3D heat-equation stencil with Morton (Z-order) buffer layout. For each cell at (x, y, z) ∈ [0, N)^3, the linear buffer index is the bit-interleave
+  M(x, y, z) = sum_{i=0}^{logN-1} ( x[i]·2^(3i)
+                                    + y[i]·2^(3i+1)
+                                    + z[i]·2^(3i+2) )
+with x[i] the i-th bit of x and logN = log2(N). N is a power of 2 in every test (both in-distribution and held-out), so M is a bijection onto [0, N^3) and the buffer is exactly N^3 floats with no padding.
+
+One forward-Euler timestep, 7-point Laplacian:
+  u_new[M(x,y,z)] = u[M(x,y,z)] + alpha * (
+         u[M(x-1,y,z)] + u[M(x+1,y,z)]
+       + u[M(x,y-1,z)] + u[M(x,y+1,z)]
+       + u[M(x,y,z-1)] + u[M(x,y,z+1)]
+       - 6 u[M(x,y,z)] )
+Stability requires alpha < 1/6 for the 3D 7-point heat stencil; the host uses alpha = 0.10. Dirichlet BC: every cell with x, y, or z in {0, N-1} (a face of the cube) MUST copy u → u_new unchanged. The initial state has those faces hard-zero. The host ping-pongs u_in/u_out across n_steps timesteps in one command buffer for accurate end-to-end GPU timing.
+
+Optimization lever, unique to this task:
+  (a) Morton encode/decode efficiency. The seed uses an O(logN) per-bit loop. Magic-constant bit spreading (PDEP-style) is O(1):
+    uint spread3(uint v) {  // pack 8 bits at stride 3
+        v = (v | (v << 16)) & 0x030000FFu;
+        v = (v | (v <<  8)) & 0x0300F00Fu;
+        v = (v | (v <<  4)) & 0x030C30C3u;
+        v = (v | (v <<  2)) & 0x09249249u;
+        return v;
+    }
+    uint M(uint x, uint y, uint z) {
+        return spread3(x) | (spread3(y)<<1) | (spread3(z)<<2);
+    }
+  256-entry per-byte lookup tables in constant memory are an alternative that trades register pressure for arithmetic.
+  (b) Neighbour-index arithmetic on the Morton index directly, avoiding the encode round-trip. With
+    X_MASK = 0x09249249u  // bits 0, 3, 6, ... up to 3·logN
+    Y_MASK = 0x12492492u  // bits 1, 4, 7, ...
+    Z_MASK = 0x24924924u  // bits 2, 5, 8, ...
+  (each truncated to 3·logN bits) one has
+    m_xp = ((m | (Y_MASK | Z_MASK)) + 1u) & X_MASK
+             | (m & (Y_MASK | Z_MASK));
+    m_xm = ((m & X_MASK) - 1u) & X_MASK
+             | (m & (Y_MASK | Z_MASK));
+  and analogous formulas for ± y, ± z by rotating the masks.
+  (c) Cache locality of the Morton traversal. Consecutive Morton indices cluster spatially: for logN ≥ 3 a 32-thread simdgroup covers a 4·2·4 block, so its 6 stencil neighbours reuse L1/SLC heavily. Threads MUST be dispatched 1-D with tid = Morton index — that is what the seed does and what the locality argument requires.
+
+The in-distribution sizes (32, 64, 128) are SLC-resident on M1 Pro; the held-out 256^3 has a 128 MB ping-pong working set and is solidly DRAM-bound, so the cache-locality lever actually matters there. A candidate that wins in-distribution by pure encode/decode speedups without delivering locality will reveal that at the held-out size.
+
+## Required kernel signature(s)
+
+```
+kernel void morton_stencil(
+    device const float *u_in   [[buffer(0)]],
+    device       float *u_out  [[buffer(1)]],
+    constant uint      &N      [[buffer(2)]],
+    constant uint      &logN   [[buffer(3)]],
+    constant float     &alpha  [[buffer(4)]],
+    uint tid [[thread_position_in_grid]]);
+
+Dispatch geometry (host-fixed): 1-D dispatch of N^3 threads padded up to a multiple of the chosen TG width; the host picks tg_width = min(256, maxTotalThreadsPerThreadgroup). Threads MUST early-exit if tid >= N^3.
+
+Convention: tid is the MORTON INDEX (not a (x,y,z) linear position). Consecutive threads therefore access consecutive buffer elements u_in[tid] / u_out[tid] — this is the trait Morton ordering exists to exploit; the kernel must keep it. Inside the kernel: decode tid → (x, y, z) for the boundary check, then compute the Morton indices of the six neighbours to gather the stencil. logN is provided as a separate constant so the kernel can iterate exactly logN times (5/6/7/8 across the size set) without a runtime log2; the host guarantees N == 1 << logN.
+
+If you cap the kernel with [[max_total_threads_per_threadgroup(W)]], place the attribute on the kernel declaration itself; the host picks tg_width = min(W, 256). Buffers 0 and 1 are read/write; the host ping-pongs their roles across timesteps, so do NOT assume u_in and u_out alias fixed addresses.
+```
+
+## Your previous attempt
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+kernel void morton_stencil(
+    device const float *u_in   [[buffer(0)]],
+    device       float *u_out  [[buffer(1)]],
+    constant uint      &N      [[buffer(2)]],
+    constant uint      &logN   [[buffer(3)]],
+    constant float     &alpha  [[buffer(4)]],
+    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]
+{
+    threadgroup float tile[256];
+    (void)N;
+
+    constexpr uint X_FULL  = 0x09249249u;
+    constexpr uint Y_FULL  = 0x12492492u;
+    constexpr uint Z_FULL  = 0x24924924u;
+    constexpr uint YZ_FULL = 0x36db6db6u;
+    constexpr uint XZ_FULL = 0x2db6db6du;
+    constexpr uint XY_FULL = 0x1b6db6dbu;
+
+    constexpr uint X_SIMD = 0x09u;
+    constexpr uint Y_SIMD = 0x12u;
+    constexpr uint Z_SIMD = 0x04u;
+
+    uint total = 1u << (3u * logN);
+
+    // For 32/64, avoid the barrier/tile overhead and use the proven SIMD-local path.
+    if (logN <= 6u) {
+        if (tid >= total) return;
+
+        uint validMask = total - 1u;
+        uint xmask = X_FULL & validMask;
+        uint ymask = xmask << 1;
+        uint zmask = xmask << 2;
+
+        uint mx = tid & X_FULL;
+        uint my = tid & Y_FULL;
+        uint mz = tid & Z_FULL;
+
+        bool boundary = (mx == 0u) || (mx == xmask) ||
+                        (my == 0u) || (my == ymask) ||
+                        (mz == 0u) || (mz == zmask);
+
+        float c = u_in[tid];
+
+        uint m_xm = tid, m_xp = tid;
+        uint m_ym = tid, m_yp = tid;
+        uint m_zm = tid, m_zp = tid;
+
+        if (!boundary) {
+            uint tid_yz = tid & YZ_FULL;
+            uint tid_xz = tid & XZ_FULL;
+            uint tid_xy = tid & XY_FULL;
+
+            m_xp = (((tid | YZ_FULL) + 1u) & X_FULL) | tid_yz;
+            m_xm = ((mx - 1u) & X_FULL) | tid_yz;
+
+            m_yp = (((tid | XZ_FULL) + 2u) & Y_FULL) | tid_xz;
+            m_ym = ((my - 2u) & Y_FULL) | tid_xz;
+
+            m_zp = (((tid | XY_FULL) + 4u) & Z_FULL) | tid_xy;
+            m_zm = ((mz - 4u) & Z_FULL) | tid_xy;
+        }
+
+        float sxm = simd_shuffle(c, ushort(m_xm & 31u));
+        float sxp = simd_shuffle(c, ushort(m_xp & 31u));
+        float sym = simd_shuffle(c, ushort(m_ym & 31u));
+        float syp = simd_shuffle(c, ushort(m_yp & 31u));
+        float szm = simd_shuffle(c, ushort(m_zm & 31u));
+        float szp = simd_shuffle(c, ushort(m_zp & 31u));
+
+        if (boundary) {
+            u_out[tid] = c;
+            return;
+        }
+
+        uint lx = tid & X_SIMD;
+        uint ly = tid & Y_SIMD;
+        uint lz = tid & Z_SIMD;
+
+        float xm = sxm;
+        if (lx == 0u) xm = u_in[m_xm];
+
+        float xp = sxp;
+        if (lx == X_SIMD) xp = u_in[m_xp];
+
+        float ym = sym;
+        if (ly == 0u) ym = u_in[m_ym];
+
+        float yp = syp;
+        if (ly == Y_SIMD) yp = u_in[m_yp];
+
+        float zm = szm;
+        if (lz == 0u) zm = u_in[m_zm];
+
+        float zp = szp;
+        if (lz == Z_SIMD) zp = u_in[m_zp];
+
+        u_out[tid] = c + alpha * (xm + xp + ym + yp + zm + zp - 6.0f * c);
+        return;
+    }
+
+    // Large grids: one 256-thread TG covers one aligned Morton block
+    // with low 8 Morton bits varying: 8 x 8 x 4 cells.
+    uint ltid = tid & 255u;
+    bool valid = (tid < total);
+
+    float c = 0.0f;
+    if (valid) {
+        c = u_in[tid];
+    }
+
+    tile[ltid] = c;
+    threadgroup_barrier(mem_flags::mem_threadgroup);
+
+    if (!valid) return;
+
+    uint validMask = total - 1u;
+    uint xmask = X_FULL & validMask;
+    uint ymask = xmask << 1;
+    uint zmask = xmask << 2;
+
+    uint mx = tid & X_FULL;
+    uint my = tid & Y_FULL;
+    uint mz = tid & Z_FULL;
+
+    bool boundary = (mx == 0u) || (mx == xmask) ||
+                    (my == 0u) || (my == ymask) ||
+                    (mz == 0u) || (mz == zmask);
+
+    uint m_xm = tid, m_xp = tid;
+    uint m_ym = tid, m_yp = tid;
+    uint m_zm = tid, m_zp = tid;
+
+    if (!boundary) {
+        uint tid_yz = tid & YZ_FULL;
+        uint tid_xz = tid & XZ_FULL;
+        uint tid_xy = tid & XY_FULL;
+
+        m_xp = (((tid | YZ_FULL) + 1u) & X_FULL) | tid_yz;
+        m_xm = ((mx - 1u) & X_FULL) | tid_yz;
+
+        m_yp = (((tid | XZ_FULL) + 2u) & Y_FULL) | tid_xz;
+        m_ym = ((my - 2u) & Y_FULL) | tid_xz;
+
+        m_zp = (((tid | XY_FULL) + 4u) & Z_FULL) | tid_xy;
+        m_zm = ((mz - 4u) & Z_FULL) | tid_xy;
+    }
+
+    float sxm = simd_shuffle(c, ushort(m_xm & 31u));
+    float sxp = simd_shuffle(c, ushort(m_xp & 31u));
+    float sym = simd_shuffle(c, ushort(m_ym & 31u));
+    float syp = simd_shuffle(c, ushort(m_yp & 31u));
+    float szm = simd_shuffle(c, ushort(m_zm & 31u));
+    float szp = simd_shuffle(c, ushort(m_zp & 31u));
+
+    if (boundary) {
+        u_out[tid] = c;
+        return;
+    }
+
+    constexpr uint X_TG = 0x49u;
+    constexpr uint Y_TG = 0x92u;
+    constexpr uint Z_TG = 0x24u;
+
+    uint lx = tid & X_SIMD;
+    uint ly = tid & Y_SIMD;
+    uint lz = tid & Z_SIMD;
+
+    uint lx8 = tid & X_TG;
+    uint ly8 = tid & Y_TG;
+    uint lz8 = tid & Z_TG;
+
+    float xm = sxm;
+    if (lx == 0u) {
+        xm = (lx8 != 0u) ? tile[m_xm & 255u] : u_in[m_xm];
+    }
+
+    float xp = sxp;
+    if (lx == X_SIMD) {
+        xp = (lx8 != X_TG) ? tile[m_xp & 255u] : u_in[m_xp];
+    }
+
+    float ym = sym;
+    if (ly == 0u) {
+        ym = (ly8 != 0u) ? tile[m_ym & 255u] : u_in[m_ym];
+    }
+
+    float yp = syp;
+    if (ly == Y_SIMD) {
+        yp = (ly8 != Y_TG) ? tile[m_yp & 255u] : u_in[m_yp];
+    }
+
+    float zm = szm;
+    if (lz == 0u) {
+        zm = (lz8 != 0u) ? tile[m_zm & 255u] : u_in[m_zm];
+    }
+
+    float zp = szp;
+    if (lz == Z_SIMD) {
+        zp = (lz8 != Z_TG) ? tile[m_zp & 255u] : u_in[m_zp];
+    }
+
+    u_out[tid] = c + alpha * (xm + xp + ym + yp + zm + zp - 6.0f * c);
+}
+```
+
+Result of previous attempt:
+  COMPILE FAILED: Error Domain=MTLLibraryErrorDomain Code=3 "program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]
+                                            ^
+" UserInfo={NSLocalizedDescription=program_source:10:45: error: 'max_total_threads_per_threadgroup' attribute cannot be applied to types
+    uint tid [[thread_position_in_grid]]) [[max_total_threads_per_threadgroup(256)]]
+                                            ^
+}
+
+## Current best (incumbent)
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+kernel void morton_stencil(
+    device const float *u_in   [[buffer(0)]],
+    device       float *u_out  [[buffer(1)]],
+    constant uint      &N      [[buffer(2)]],
+    constant uint      &logN   [[buffer(3)]],
+    constant float     &alpha  [[buffer(4)]],
+    uint tid [[thread_position_in_grid]])
+{
+    (void)N;
+
+    constexpr uint X_FULL  = 0x09249249u;
+    constexpr uint Y_FULL  = 0x12492492u;
+    constexpr uint Z_FULL  = 0x24924924u;
+    constexpr uint YZ_FULL = 0x36db6db6u;
+    constexpr uint XZ_FULL = 0x2db6db6du;
+    constexpr uint XY_FULL = 0x1b6db6dbu;
+
+    uint total = 1u << (3u * logN);
+    if (tid >= total) return;
+
+    uint validMask = total - 1u;
+    uint xmask = X_FULL & validMask;
+    uint ymask = xmask << 1;
+    uint zmask = xmask << 2;
+
+    uint mx = tid & X_FULL;
+    uint my = tid & Y_FULL;
+    uint mz = tid & Z_FULL;
+
+    bool boundary = (mx == 0u) || (mx == xmask) ||
+                    (my == 0u) || (my == ymask) ||
+                    (mz == 0u) || (mz == zmask);
+
+    float c = u_in[tid];
+
+    uint m_xm = tid, m_xp = tid;
+    uint m_ym = tid, m_yp = tid;
+    uint m_zm = tid, m_zp = tid;
+
+    if (!boundary) {
+        uint tid_yz = tid & YZ_FULL;
+        uint tid_xz = tid & XZ_FULL;
+        uint tid_xy = tid & XY_FULL;
+
+        m_xp = (((tid | YZ_FULL) + 1u) & X_FULL) | tid_yz;
+        m_xm = ((mx - 1u) & X_FULL) | tid_yz;
+
+        m_yp = (((tid | XZ_FULL) + 2u) & Y_FULL) | tid_xz;
+        m_ym = ((my - 2u) & Y_FULL) | tid_xz;
+
+        m_zp = (((tid | XY_FULL) + 4u) & Z_FULL) | tid_xy;
+        m_zm = ((mz - 4u) & Z_FULL) | tid_xy;
+    }
+
+    float sxm = simd_shuffle(c, ushort(m_xm & 31u));
+    float sxp = simd_shuffle(c, ushort(m_xp & 31u));
+    float sym = simd_shuffle(c, ushort(m_ym & 31u));
+    float syp = simd_shuffle(c, ushort(m_yp & 31u));
+    float szm = simd_shuffle(c, ushort(m_zm & 31u));
+    float szp = simd_shuffle(c, ushort(m_zp & 31u));
+
+    if (boundary) {
+        u_out[tid] = c;
+        return;
+    }
+
+    constexpr uint X_SIMD = 0x09u;
+    constexpr uint Y_SIMD = 0x12u;
+    constexpr uint Z_SIMD = 0x04u;
+
+    uint lx = tid & X_SIMD;
+    uint ly = tid & Y_SIMD;
+    uint lz = tid & Z_SIMD;
+
+    float xm = sxm;
+    if (lx == 0u) xm = u_in[m_xm];
+
+    float xp = sxp;
+    if (lx == X_SIMD) xp = u_in[m_xp];
+
+    float ym = sym;
+    if (ly == 0u) ym = u_in[m_ym];
+
+    float yp = syp;
+    if (ly == Y_SIMD) yp = u_in[m_yp];
+
+    float zm = szm;
+    if (lz == 0u) zm = u_in[m_zm];
+
+    float zp = szp;
+    if (lz == Z_SIMD) zp = u_in[m_zp];
+
+    u_out[tid] = c + alpha * (xm + xp + ym + yp + zm + zp - 6.0f * c);
+}
+```
+
+Incumbent result:
+           N32_120: correct, 1.32 ms, 23.9 GB/s (effective, 8 B/cell) (11.9% of 200 GB/s)
+            N64_60: correct, 2.83 ms, 44.5 GB/s (effective, 8 B/cell) (22.3% of 200 GB/s)
+           N128_30: correct, 7.80 ms, 64.6 GB/s (effective, 8 B/cell) (32.3% of 200 GB/s)
+  score (gmean of fraction): 0.2048
+
+## History
+
+- iter  0: compile=OK | correct=True | score=0.07345154143890095
+- iter  1: compile=OK | correct=True | score=0.20001246273698833
+- iter  2: compile=FAIL | correct=False | score=N/A
+- iter  3: compile=OK | correct=True | score=0.20477821903064605
+- iter  4: compile=FAIL | correct=False | score=N/A
+
+## Instructions
+
+Write an improved Metal kernel. Address the failure mode in the
+previous attempt (if any), then push beyond the incumbent. Output ONE
+fenced ```metal``` code block. Preserve kernel name(s) and buffer
+indices.
